@@ -38,6 +38,9 @@ import LegalInfo from './LegalInfo';
 import StudyPlanner from './StudyPlanner';
 import Performance from './Performance';
 import Videos from './Videos';
+import ClassIcon from '@mui/icons-material/Class';
+import AllCourses from './AllCourses';
+
 
 
 
@@ -156,7 +159,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 const MarginTop = {
-    marginTop: "70px"
+    marginTop: "70px",
+    padding:'10px',
+    overflow:'hidden'
 }
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
     ({ theme, open }) => ({
@@ -203,6 +208,7 @@ const AppBar1 = () => {
     const [show6, setShow6] = React.useState(false);
     const [show7, setShow7] = React.useState(false);
     const [show8, setShow8] = React.useState(false);
+    const [show9, setShow9] = React.useState(false);
 
     return (
         <>
@@ -217,7 +223,9 @@ const AppBar1 = () => {
                         sx={{ mr: 2, ...(open && { display: 'none' }) }}
                     >
                         <MenuIcon className={classes.iconColorMenu} />
+                        
                     </IconButton>
+                    <div>OnSchool</div>
 
                     {/* Search  */}
                     <Grid container className={classes.searchinput}>
@@ -264,6 +272,7 @@ const AppBar1 = () => {
                         setShow6(false);
                         setShow7(false);
                         setShow8(false);
+                        setShow9(false);
                     }}>
                         <Avatar src={image} variant="square" style={logoStyle} ></Avatar>
                         {/* <img */}
@@ -287,6 +296,8 @@ const AppBar1 = () => {
                             setShow6(false);
                             setShow7(false);
                             setShow8(false);
+                        setShow9(false);
+
                         }} >
                             <ListItemIcon>
                                 <HomeIcon className={classes.iconColor} />
@@ -306,6 +317,8 @@ const AppBar1 = () => {
                             setShow6(false);
                             setShow7(false);
                             setShow8(false);
+                        setShow9(false);
+
 
                         }}>
                             <ListItemIcon>
@@ -313,6 +326,27 @@ const AppBar1 = () => {
 
                             </ListItemIcon>
                             <ListItemText primary="Study Planner" />
+                        </ListItemButton>
+                    </ListItem>
+
+                    <ListItem disablePadding className={classes.ListStyle1}>
+                        <ListItemButton onClick={() => {
+                            setShow(false);
+                            setShow1(false);
+                            setShow2(false)
+                            setShow3(false);
+                            setShow4(false);
+                            setShow5(false);
+                            setShow6(false);
+                            setShow7(false);
+                            setShow8(false);
+                        setShow9(true);
+
+                        }} >
+                            <ListItemIcon>
+                                <ClassIcon className={classes.iconColor} />
+                            </ListItemIcon>
+                            <ListItemText primary="Classes" />
                         </ListItemButton>
                     </ListItem>
 
@@ -330,6 +364,8 @@ const AppBar1 = () => {
                             setShow6(false);
                             setShow7(false);
                             setShow8(false);
+                        setShow9(false);
+
                         }} >
                             <ListItemIcon>
                                 <VideoLibraryIcon className={classes.iconColor} />
@@ -348,6 +384,8 @@ const AppBar1 = () => {
                             setShow6(false);
                             setShow7(false);
                             setShow8(false);
+                        setShow9(false);
+
                         }}>
                             <ListItemIcon>
                                 <ListAltIcon className={classes.iconColor} />
@@ -367,11 +405,13 @@ const AppBar1 = () => {
                             setShow6(false);
                             setShow7(false);
                             setShow8(false);
+                        setShow9(false);
+
                         }} >
                             <ListItemIcon>
                                 <BookmarksIcon className={classes.iconColor} />
                             </ListItemIcon>
-                            <ListItemText primary="Bookmarks" />
+                            <ListItemText primary="Archieved" />
                         </ListItemButton>
                     </ListItem>
 
@@ -386,6 +426,8 @@ const AppBar1 = () => {
                             setShow6(false);
                             setShow7(false);
                             setShow8(false);
+                        setShow9(false);
+
 
                         }}>
                             <ListItemIcon>
@@ -408,6 +450,8 @@ const AppBar1 = () => {
                             setShow6(true);
                             setShow7(false);
                             setShow8(false);
+                        setShow9(false);
+
 
                         }}>
                             <ListItemIcon>
@@ -427,6 +471,8 @@ const AppBar1 = () => {
                             setShow6(false);
                             setShow7(true);
                             setShow8(false);
+                        setShow9(false);
+
                         }}>
                             <ListItemIcon>
                                 <SettingsIcon className={classes.iconColor} />
@@ -446,6 +492,8 @@ const AppBar1 = () => {
                             setShow6(false);
                             setShow7(false);
                             setShow8(true);
+                        setShow9(false);
+
                         }}>
                             <ListItemIcon>
                                 <LogoutIcon className={classes.iconColor} />
@@ -468,6 +516,7 @@ const AppBar1 = () => {
                 {show6 ? <Performance /> : null}
                 {show7 ? <LegalInfo /> : null}
                 {show8 ? < Logout /> : null}
+                {show9 ? < AllCourses /> : null}
 
 
             </Main>
