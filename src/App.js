@@ -8,6 +8,7 @@ import SignIn from './Pages/SignIn';
 import Home from './Pages/Homepage'
 import SignUp from './Pages/SignUp';
 import ForgetPassword from './Pages/ForgetPassword';
+import CourseStream from './Components/CourseStream'
 
 
 function App() {
@@ -25,6 +26,9 @@ function App() {
           </Routes> 
           <Routes>
             <Route exact path="/forgetpass" element={<ForgetPassword />}></Route>
+          </Routes>
+          <Routes>
+            <Route exact path="/coursestream" element={<CourseStream />}></Route>
           </Routes>
         </Router>
 

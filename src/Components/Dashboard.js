@@ -121,8 +121,8 @@ function Dashboard() {
                     {/* Cards */}
                     <Grid container spacing={2} className={classes.marginT}>
                         <Grid item xs={12} md={4} >
-                            <Button variant="outlined" className={classes.btn} startIcon={<VideoLibraryIcon />}>
-                                Videos
+                            <Button variant="outlined" className={classes.btn} startIcon={<ClassIcon  />}>
+                                Courses
                             </Button>
 
                         </Grid>

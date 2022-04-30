@@ -34,6 +34,9 @@ import TextField from '@mui/material/TextField';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
+
 
 
 
@@ -112,11 +115,48 @@ export const data = {
 };
 function AllCourses() {
   const classes = useStyles();
+  const navigate = useNavigate();
   // calender 
   const [value, onChange] = useState(new Date());
   // chart 
   ChartJS.register(ArcElement, Tooltip, Legend);
 
+  const [createTitle,setcreateTitle]=useState("");
+  const [createDescription,setcreateDescription]=useState("");
+  const Create = () => {
+    let timerInterval
+    Swal.fire({
+        title: 'Course Created Successfully',
+        html: 'Please wait !',
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: () => {
+            Swal.showLoading()
+            const b = Swal.getHtmlContainer().querySelector('b')
+            timerInterval = setInterval(() => {
+                b.textContent = Swal.getTimerLeft()
+            }, 100)
+        },
+        willClose: () => {
+            clearInterval(timerInterval)
+        }
+    }).then((result) => {
+        /* Read more about handling dismissals below */
+        if (result.dismiss === Swal.DismissReason.timer) {
+            console.log('I was closed by the timer')
+        }
+    })
+
+    navigate('/coursestream',
+    {
+        // state: {
+        //     post_id: idData,
+        //     data: props.data
+        // }
+    });
+    
+
+  }
 
   return (
     <div>
@@ -165,11 +205,6 @@ function AllCourses() {
                         </Grid>
 
                       </Grid>
-
-
-
-
-
 
                     </CardContent>
 
@@ -239,15 +274,23 @@ function AllCourses() {
 
                         </Grid>
                         <Grid item xs={12} md={12}>
-                          <TextField className={classes.btn} id="filled-basic" label="Enter Title" variant="filled" />
+                          <TextField className={classes.btn} id="filled-basic" label="Enter Title" variant="filled" 
+                           value={createTitle} onChange={
+                            (e) => setcreateTitle(e.target.value)
+                        } />
 
                         </Grid>
                         <Grid item xs={12} md={12}>
-                          <TextField className={classes.btn} id="filled-basic" label="Enter Description" variant="filled" />
+                          <TextField className={classes.btn} value={createDescription} id="filled-basic" label="Enter Description" variant="filled"
+                          onChange={
+                            (e) => setcreateDescription(e.target.value)
+                        } />
 
                         </Grid>
                         <Grid item xs={12} md={12}>
-                          <Button className={classes.btn} variant="contained" endIcon={<AddIcon />}>
+                          <Button onClick={()=>{
+                            Create()
+                          }} className={classes.btn} variant="contained" endIcon={<AddIcon />}>
                             Create
                           </Button>
                         </Grid>
@@ -300,48 +343,7 @@ function AllCourses() {
                   </Card>
                 </Grid>
                
-                <Grid item xs={12} md={12}>
-                  <Card sx={{ minWidth: 275 }}>
-                    <CardContent>
-                      <Button startIcon={
-                        <Avatar className={classes.iconstyle}><StickyNote2Icon /></Avatar>
-                      }>
-                        <div className={classes.headStyle}>Notes</div>
-
-                        {/* <Typography variant='h6'> Notes</Typography> */}
-
-                      </Button>
-                      <Typography variant="h5" component="div">
-
-                        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                          <ListItem>
-                            <ListItemAvatar>
-                              <Avatar>
-                                <StickyNote2Icon />
-                              </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="Notes 1" secondary="Due Date:Jan 9, 2014" />
-                          </ListItem>
-                          <Divider variant="inset" component="li" />
-                          <ListItem>
-                            <ListItemAvatar>
-                              <Avatar>
-                                <StickyNote2Icon />
-                              </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="Notes 2" secondary="Due Date:Jan 7, 2014" />
-                          </ListItem>
-                          <Divider variant="inset" component="li" />
-
-                        </List>
-                      </Typography>
-
-                    </CardContent>
-                    <CardActions>
-                      <Button size="small">View All</Button>
-                    </CardActions>
-                  </Card>
-                </Grid>
+                
               </Grid>
 
 
@@ -418,35 +420,6 @@ function AllCourses() {
                 </Grid>
 
 
-                <Grid item xs={12} md={12}>
-                  <Card sx={{ minWidth: 275 }}>
-                    <CardContent>
-                      <Button startIcon={
-                        <Avatar className={classes.iconstyle}><AssignmentIcon /></Avatar>
-                      }>
-                        <div className={classes.headStyle}>Mobile Apps</div>
-
-                        {/* <Typography variant='h6'> Mobile Apps</Typography> */}
-
-                      </Button>
-                      <Typography variant="h5" component="div" className={classes.textStyle}>
-                        Download our iOS or Android app to learn anywhere and anytime—even when you‘re offline.
-                      </Typography>
-
-                    </CardContent>
-                    <CardActions>
-                      <Button size="small">
-                        <Avatar src={Img} variant="square" className={classes.appbtn} ></Avatar>
-
-                      </Button>
-                      <Button size="small">
-                        <Avatar src={Imgs} variant="square" className={classes.appbtn} ></Avatar>
-
-                      </Button>
-                    </CardActions>
-                  </Card>
-
-                </Grid>
               </Grid>
 
             </Grid>
