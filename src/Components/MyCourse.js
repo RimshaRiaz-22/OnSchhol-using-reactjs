@@ -20,10 +20,10 @@ import TextareaAutosize from '@mui/material/TextareaAutosize';
 import { styled } from '@mui/material/styles';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import IconButton from '@mui/material/IconButton';
-
-
-
-
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 
 const useStyles = makeStyles({
     cardCenter: {
@@ -68,6 +68,10 @@ const Input = styled('input')({
     display: 'none',
 });
 function MyCourse() {
+    const [value1, setValue1] = React.useState(null);
+    const [value2, setValue2] = React.useState(new Date());
+
+
     const [show, setShow] = React.useState(true);
     const [showUpload, setShowUpload] = React.useState(false);
     const [showUploadAssign, setshowUploadAssign] = React.useState(false);
@@ -77,7 +81,7 @@ function MyCourse() {
 
 
 
-    
+
 
     const classes = useStyles();
     const [value, setValue] = React.useState('1');
@@ -94,7 +98,7 @@ function MyCourse() {
         setShow(true);
 
     }
-   
+
     // Upload 
     const [createTitle, setcreateTitle] = useState("");
     const [createDescription, setcreateDescription] = useState("");
@@ -174,11 +178,7 @@ function MyCourse() {
                     <>
                         <Grid item xs={12} md={6} >
                             <Grid container spacing={2}>
-                                {/* <Grid item xs={12} md={12}>
-                            <Typography variant='h6' className={classes.cardCenter}>
-                            Course Name</Typography>
-                           
-                        </Grid> */}
+
                                 <Grid item xs={12} md={12}>
                                     <Card sx={{ minWidth: 275 }} className={classes.cardCenter}>
                                         <CardContent>
@@ -350,8 +350,87 @@ function MyCourse() {
                                                             </Card>
 
                                                         </TabPanel>
-                                                        <TabPanel value="3">Item Three</TabPanel>
-                                                        <TabPanel value="4">Item Three</TabPanel>
+                                                        <TabPanel value="3">
+                                                            dfdg
+
+                                                        </TabPanel>
+                                                        <TabPanel value="4">
+                                                            <Card sx={{ minWidth: 275 }} className={classes.margincard}>
+                                                                <CardContent>
+                                                                    <Grid container spacing={2}>
+                                                                        <Grid item xs={12} md={12}>
+                                                                            <Grid container spacing={2}>
+                                                                                <Grid item xs={12} md={12}>
+                                                                                    <Typography variant='h5'>
+                                                                                        Update Class
+                                                                                    </Typography>
+                                                                                </Grid>
+                                                                                <Grid item xs={12} md={12}>
+                                                                                    <Grid container spacing={2}>
+                                                                                        <Grid item xs={12} md={12}>
+                                                                                            <input className={classes.InputStyle} name="password"
+                                                                                                //  value={inputPassword}
+                                                                                                type="text" placeholder="Enter Password"
+                                                                                            // onChange={
+                                                                                            //     (e) => setInputPassword(e.target.value)
+                                                                                            // }
+                                                                                            />
+                                                                                        </Grid>
+                                                                                        <Grid item xs={12} md={12}>
+                                                                                            <Button variant="contained" className={classes.btnB} onClick={() => {
+                                                                                                setShowUpload(false);
+                                                                                                setshowUploadAssign(true);
+                                                                                                setshowUploadQuiz(false);
+                                                                                                setshowUploadLink(false);
+                                                                                                setshowUploadUpdate(false);
+                                                                                            }}>Assignment</Button>
+                                                                                        </Grid>
+                                                                                        <Grid item xs={4} md={4}>
+                                                                                            <Button variant="contained" className={classes.btnB} onClick={() => {
+                                                                                                setShowUpload(false);
+                                                                                                setshowUploadAssign(false);
+                                                                                                setshowUploadQuiz(true);
+                                                                                                setshowUploadLink(false);
+                                                                                                setshowUploadUpdate(false);
+                                                                                            }}>Quiz</Button>
+
+                                                                                        </Grid>
+                                                                                        <Grid item xs={4} md={4}>
+                                                                                            <Button variant="contained" className={classes.btnB} onClick={() => {
+                                                                                                setShowUpload(false);
+                                                                                                setshowUploadAssign(false);
+                                                                                                setshowUploadQuiz(false);
+                                                                                                setshowUploadLink(false);
+                                                                                                setshowUploadUpdate(true);
+                                                                                            }}>Update</Button>
+
+                                                                                        </Grid>
+                                                                                        <Grid item xs={4} md={4}>
+                                                                                            <Button variant="contained" className={classes.btnB} onClick={() => {
+                                                                                                setShowUpload(false);
+                                                                                                setshowUploadAssign(false);
+                                                                                                setshowUploadQuiz(false);
+                                                                                                setshowUploadLink(true);
+                                                                                                setshowUploadUpdate(false);
+                                                                                            }}>Class Link</Button>
+
+                                                                                        </Grid>
+                                                                                    </Grid>
+
+
+
+
+
+                                                                                </Grid>
+
+                                                                            </Grid>
+                                                                        </Grid>
+                                                                    </Grid>
+
+                                                                </CardContent>
+
+                                                            </Card>
+                                                        </TabPanel>
                                                     </TabContext>
 
                                                 </Grid>
@@ -460,8 +539,8 @@ function MyCourse() {
                                                 Submit
                                             </Button>
                                         </Grid>
-                      
-                                       
+
+
 
 
                                     </Grid>
@@ -475,7 +554,7 @@ function MyCourse() {
                         : null}
 
 
-{showUploadAssign ?
+                    {showUploadAssign ?
                         <>
                             {/* <Grid container spacing={2}> */}
 
@@ -508,6 +587,28 @@ function MyCourse() {
                                             />
                                         </Grid>
                                         <Grid item xs={12} md={12}>
+                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                <DatePicker
+                                                    label="Basic example"
+                                                    value={value1}
+                                                    onChange={(newValue) => {
+                                                        setValue1(newValue);
+                                                    }}
+                                                    renderInput={(params) => <TextField {...params} />}
+                                                />
+                                            </LocalizationProvider>
+                                        </Grid>
+                                        <Grid item xs={12} md={12}>
+                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                <TimePicker
+                                                    value={value2}
+                                                    onChange={setValue2}
+                                                    renderInput={(params) => <TextField {...params} />}
+                                                />
+                                            </LocalizationProvider>
+                                        </Grid>
+
+                                        <Grid item xs={12} md={12}>
                                             <label htmlFor="contained-button-file">
                                                 <Input accept="file/*" id="icon-button-file" type="file" />
                                                 <IconButton color="primary" aria-label="upload picture" component="span">
@@ -521,8 +622,8 @@ function MyCourse() {
                                                 Submit
                                             </Button>
                                         </Grid>
-                      
-                                       
+
+
 
 
                                     </Grid>
@@ -535,7 +636,7 @@ function MyCourse() {
 
                         : null}
 
-{showUploadQuiz ?
+                    {showUploadQuiz ?
                         <>
                             {/* <Grid container spacing={2}> */}
 
@@ -567,6 +668,28 @@ function MyCourse() {
 
                                             />
                                         </Grid>
+
+                                        <Grid item xs={12} md={12}>
+                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                <DatePicker
+                                                    label="Basic example"
+                                                    value={value1}
+                                                    onChange={(newValue) => {
+                                                        setValue1(newValue);
+                                                    }}
+                                                    renderInput={(params) => <TextField {...params} />}
+                                                />
+                                            </LocalizationProvider>
+                                        </Grid>
+                                        <Grid item xs={12} md={12}>
+                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                <TimePicker
+                                                    value={value2}
+                                                    onChange={setValue2}
+                                                    renderInput={(params) => <TextField {...params} />}
+                                                />
+                                            </LocalizationProvider>
+                                        </Grid>
                                         <Grid item xs={12} md={12}>
                                             <label htmlFor="contained-button-file">
                                                 <Input accept="file/*" id="icon-button-file" type="file" />
@@ -581,8 +704,8 @@ function MyCourse() {
                                                 Submit
                                             </Button>
                                         </Grid>
-                      
-                                       
+
+
 
 
                                     </Grid>
@@ -594,7 +717,7 @@ function MyCourse() {
                         </>
 
                         : null}
-                         {showUploadUpdate ?
+                    {showUploadUpdate ?
                         <>
                             {/* <Grid container spacing={2}> */}
 
@@ -640,8 +763,8 @@ function MyCourse() {
                                                 Submit
                                             </Button>
                                         </Grid>
-                      
-                                       
+
+
 
 
                                     </Grid>
@@ -653,7 +776,7 @@ function MyCourse() {
                         </>
 
                         : null}
-                         {showUploadLink ?
+                    {showUploadLink ?
                         <>
                             {/* <Grid container spacing={2}> */}
 
@@ -685,22 +808,14 @@ function MyCourse() {
 
                                             />
                                         </Grid>
-                                        <Grid item xs={12} md={12}>
-                                            <label htmlFor="contained-button-file">
-                                                <Input accept="file/*" id="icon-button-file" type="file" />
-                                                <IconButton color="primary" aria-label="upload picture" component="span">
-                                                    <AttachFileIcon /><Typography>Attach File</Typography>
-                                                </IconButton>
 
-                                            </label>
-                                        </Grid>
                                         <Grid item xs={12} md={12}>
                                             <Button variant="contained" className={classes.btn} color='primary' component="span" >
                                                 Submit
                                             </Button>
                                         </Grid>
-                      
-                                       
+
+
 
 
                                     </Grid>

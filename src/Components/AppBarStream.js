@@ -58,8 +58,8 @@ const useStyles = makeStyles({
         borderBottom: ' 1px solid #262635',
         paddingLeft: '65px'
 
-    },BackGroundMain:{
-        backgroundColor:'#f5f5f5'
+    }, BackGroundMain: {
+        backgroundColor: '#f5f5f5'
 
     }, iconColor: {
         color: '#6c7073'
@@ -89,8 +89,8 @@ const useStyles = makeStyles({
         // backgroundColor: '#1f1f2b',
         // color: 'white',
         height: '100%'
-    },account:{
-        marginTop:'10px'
+    }, account: {
+        marginTop: '10px'
     }
 })
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -161,8 +161,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 const MarginTop = {
     marginTop: "70px",
-    padding:'10px',
-    overflow:'hidden'
+    padding: '10px',
+    overflow: 'hidden'
 }
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
     ({ theme, open }) => ({
@@ -225,14 +225,14 @@ const AppBarStream = () => {
                         sx={{ mr: 2, ...(open && { display: 'none' }) }}
                     >
                         <MenuIcon className={classes.iconColorMenu} />
-                        
+
                     </IconButton>
                     <div>OnSchool</div>
 
                     {/* Search  */}
                     <Grid container className={classes.searchinput}>
                         <Grid item >
-                            <AccountCircle className={classes.account}/>
+                            <AccountCircle className={classes.account} />
                         </Grid>
                         <Grid item >
                             <Search className={classes.searchinput}>
@@ -299,8 +299,8 @@ const AppBarStream = () => {
                             setShow6(false);
                             setShow7(false);
                             setShow8(false);
-                        setShow9(false);
-                        setShow10(false);
+                            setShow9(false);
+                            setShow10(false);
 
                         }} >
                             <ListItemIcon>
@@ -321,8 +321,8 @@ const AppBarStream = () => {
                             setShow6(false);
                             setShow7(false);
                             setShow8(false);
-                        setShow9(false);
-                        setShow10(false);
+                            setShow9(false);
+                            setShow10(false);
 
 
                         }}>
@@ -345,8 +345,8 @@ const AppBarStream = () => {
                             setShow6(false);
                             setShow7(false);
                             setShow8(false);
-                        setShow9(true);
-                        setShow10(false);
+                            setShow9(true);
+                            setShow10(false);
 
                         }} >
                             <ListItemIcon>
@@ -370,8 +370,8 @@ const AppBarStream = () => {
                             setShow6(false);
                             setShow7(false);
                             setShow8(false);
-                        setShow9(false);
-                        setShow10(false);
+                            setShow9(false);
+                            setShow10(false);
 
                         }} >
                             <ListItemIcon>
@@ -391,8 +391,8 @@ const AppBarStream = () => {
                             setShow6(false);
                             setShow7(false);
                             setShow8(false);
-                        setShow9(false);
-                        setShow10(false);
+                            setShow9(false);
+                            setShow10(false);
 
                         }}>
                             <ListItemIcon>
@@ -413,8 +413,8 @@ const AppBarStream = () => {
                             setShow6(false);
                             setShow7(false);
                             setShow8(false);
-                        setShow9(false);
-                        setShow10(false);
+                            setShow9(false);
+                            setShow10(false);
 
                         }} >
                             <ListItemIcon>
@@ -435,8 +435,8 @@ const AppBarStream = () => {
                             setShow6(false);
                             setShow7(false);
                             setShow8(false);
-                        setShow9(false);
-                        setShow10(false);
+                            setShow9(false);
+                            setShow10(false);
 
 
                         }}>
@@ -460,8 +460,8 @@ const AppBarStream = () => {
                             setShow6(true);
                             setShow7(false);
                             setShow8(false);
-                        setShow9(false);
-                        setShow10(false);
+                            setShow9(false);
+                            setShow10(false);
 
 
                         }}>
@@ -482,8 +482,8 @@ const AppBarStream = () => {
                             setShow6(false);
                             setShow7(true);
                             setShow8(false);
-                        setShow9(false);
-                        setShow10(false);
+                            setShow9(false);
+                            setShow10(false);
 
                         }}>
                             <ListItemIcon>
@@ -504,8 +504,8 @@ const AppBarStream = () => {
                             setShow6(false);
                             setShow7(false);
                             setShow8(true);
-                        setShow9(false);
-                        setShow10(false);
+                            setShow9(false);
+                            setShow10(false);
 
                         }}>
                             <ListItemIcon>
