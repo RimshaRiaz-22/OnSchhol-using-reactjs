@@ -8,6 +8,8 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import { makeStyles } from '@material-ui/core/styles';
 import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2';
+import axios from "axios";
+
 
 const useStyles = makeStyles({
     logoStyle:{
@@ -60,8 +62,13 @@ const useStyles = makeStyles({
     }
 })
 const heading = "------------ OR ------------";
-
+const URL = 'http://localhost:4000';
+const headers = {
+    'Content-Type': 'application/json'
+}
 function SignIn() {
+    const [inputEmail, setInputEmail] = useState('');
+    const [inputPassword, setInputPassword] = useState('');
     
     const classes = useStyles();
     // Navigation 
@@ -78,16 +85,19 @@ function SignIn() {
     // Submit handler 
     const submitHandler = async(e) => {
       
-        // e.preventDefault()
+        e.preventDefault()
         // POst Request 
-        // await axios.put('https://hiiguest.com/login-admin-profile', {
-        //     email: email,
-        //     password: password
-        // }, { headers }).then(response => {
-        //     console.log(response)
-        //     const session1 = response.data.session;
-
-            // console.log(response.data.session);
+        await axios.put(`${URL}/users/login`, {
+            email: inputEmail,
+            password: inputPassword
+        }, { headers }).then(response => {
+            console.log(response);
+            if(response.user){
+                alert('Login Successful')
+                navigate('/home')
+            }else{
+                alert('please check your username and password')
+            }
 
             // Login Successfull Alert 
 
@@ -115,21 +125,21 @@ function SignIn() {
             })
             navigate('/home');
         
-        // })
-            // .catch(err => {
-                // console.log(err)
+        })
+            .catch(err => {
+                console.log(err)
                 // -----Invalid Credential----
-                // Swal.fire({
-                //     title: 'Invalid Credentials',
-                //     showClass: {
-                //         popup: 'animate__animated animate__fadeInDown'
-                //     },
-                //     hideClass: {
-                //         popup: 'animate__animated animate__fadeOutUp'
-                //     }
-                // })
+                Swal.fire({
+                    title: 'Invalid Credentials',
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInDown'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutUp'
+                    }
+                })
                 // -----Invalid Credential---
-            // })
+            })
     }
  
     return (
@@ -150,20 +160,20 @@ function SignIn() {
                         </Button>
                         <h6 className={classes.headingStyle}>{heading}</h6>
                         <input className={classes.InputStyle} name="email"
-                            //  value={inputEmail}
+                             value={inputEmail}
                             type="text" placeholder="Enter Email"
-                        // onChange={
-                        //     (e) => setInputEmail(e.target.value)
-                        // }
+                        onChange={
+                            (e) => setInputEmail(e.target.value)
+                        }
 
                         />
                         <br /><br />
                         <input className={classes.InputStyle} name="password"
-                            //  value={inputPassword}
+                             value={inputPassword}
                             type="password" placeholder="Enter Password"
-                        // onChange={
-                        //     (e) => setInputPassword(e.target.value)
-                        // }
+                        onChange={
+                            (e) => setInputPassword(e.target.value)
+                        }
                         />
 
                         <br />

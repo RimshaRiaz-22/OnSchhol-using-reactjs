@@ -10,9 +10,8 @@ import Swal from 'sweetalert2';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import Axios from "axios";
-import Cookies from "universal-cookie";
-
+import axios from "axios";
+// import Cookies from "universal-cookie";
 
 const useStyles = makeStyles({
     logoStyle: {
@@ -71,15 +70,15 @@ const useStyles = makeStyles({
 
 
 const heading = "------------ OR ------------";
-const URL = 'http://localhost:5000';
+const URL = 'http://localhost:4000';
 
 
 
 
 function SignUp() {
+    const [inputUsername, setInputUsername] = useState('');
     const [inputEmail, setInputEmail] = useState('');
     const [inputPassword, setInputPassword] = useState('');
-    const [inputUsername, setInputUsername] = useState('');
     const [error, setError] = useState([]);
     const classes = useStyles();
     // Navigation 
@@ -92,81 +91,37 @@ function SignUp() {
     const ForgetPass = async (e) => {
         navigate('/forgetpass')
     }
-
+    const headers = {
+        'Content-Type': 'application/json'
+    }
     // Submit handler 
     const submitHandler = async (e) => {
         console.log('awws')
-        e.preventDefault();
-
-        // if (error === "") {
-            await Axios.post(`${URL}/users/register`, { email: inputEmail, username: inputUsername, password: inputPassword })
-                .then(res => {
-                    const token = new Cookies();
-                    token.set('token', res.data.token, { path: '/', maxAge: 604800 })
-                    console.log(res)
-                    //return to home page
-                    let timerInterval
-                    Swal.fire({
-                        title: 'Login Successfull',
-                        html: 'Please wait !',
-                        timer: 2000,
-                        timerProgressBar: true,
-                        didOpen: () => {
-                            Swal.showLoading()
-                            const b = Swal.getHtmlContainer().querySelector('b')
-                            timerInterval = setInterval(() => {
-                                b.textContent = Swal.getTimerLeft()
-                            }, 100)
-                        },
-                        willClose: () => {
-                            clearInterval(timerInterval)
-                        }
-                    }).then((result) => {
-                        /* Read more about handling dismissals below */
-                        if (result.dismiss === Swal.DismissReason.timer) {
-                            console.log('I was closed by the timer')
-                        }
-                    })
-                    navigate('/home');
-                })
-                .catch(err =>{
-
-                    setError(err.response.data.message)
-                    console.log('error')
-                    console.log(error)
-
-                });
-        // }
-        // e.preventDefault()
+        e.preventDefault()
         // POst Request 
-        // await axios.put('https://hiiguest.com/login-admin-profile', {
-        //     email: email,
-        //     password: password
-        // }, { headers }).then(response => {
-        //     console.log(response)
-        //     const session1 = response.data.session;
-
-        // console.log(response.data.session);
+        await axios.post(`${URL}/users/register`, {
+           email: inputEmail, 
+           name: inputUsername,
+        password: inputPassword 
+        }, { headers }).then(response => {
+            console.log(response)
+            console.log('successfull')
 
         // Login Successfull Alert 
-
-
-
-        // })
-        // .catch(err => {
-        // console.log(err)
+        }).catch(err => {
+        console.log(err)
         // -----Invalid Credential----
-        // Swal.fire({
-        //     title: 'Invalid Credentials',
-        //     showClass: {
-        //         popup: 'animate__animated animate__fadeInDown'
-        //     },
-        //     hideClass: {
-        //         popup: 'animate__animated animate__fadeOutUp'
-        //     }
-        // })
+        Swal.fire({
+            title: 'Invalid Credentials',
+            showClass: {
+                popup: 'animate__animated animate__fadeInDown'
+            },
+            hideClass: {
+                popup: 'animate__animated animate__fadeOutUp'
+            }
+        })
         // -----Invalid Credential---
-        // })
+        })
     }
     useEffect(() => {
         if (inputEmail.length > 0) setError('');
