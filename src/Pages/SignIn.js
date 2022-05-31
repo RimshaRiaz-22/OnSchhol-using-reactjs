@@ -1,5 +1,4 @@
 import { Grid, Button, Avatar } from '@material-ui/core'
-
 import React,{useState,useEffect} from 'react'
 import image from './logo.png'
 import GoogleIcon from '@mui/icons-material/Google';
@@ -9,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2';
 import axios from "axios";
-
+import url from '../Components/url'
 
 const useStyles = makeStyles({
     logoStyle:{
@@ -62,13 +61,13 @@ const useStyles = makeStyles({
     }
 })
 const heading = "------------ OR ------------";
-const URL = 'http://localhost:4000';
 const headers = {
     'Content-Type': 'application/json'
 }
 function SignIn() {
     const [inputEmail, setInputEmail] = useState('');
     const [inputPassword, setInputPassword] = useState('');
+    const [session, setSession] = useState("");
     
     const classes = useStyles();
     // Navigation 
@@ -84,22 +83,18 @@ function SignIn() {
 
     // Submit handler 
     const submitHandler = async(e) => {
-      
         e.preventDefault()
         // POst Request 
-        await axios.put(`${URL}/users/login`, {
+        await axios.put(`${url}user/login`, {
             email: inputEmail,
             password: inputPassword
         }, { headers }).then(response => {
-            console.log(response);
-            if(response.user){
-                alert('Login Successful')
-                navigate('/home')
-            }else{
-                alert('please check your username and password')
-            }
+            console.log(response)
+            const session1 = response.data.session;
+            const Id=response.data._id;
 
-            // Login Successfull Alert 
+            setSession(response.data.session);
+            console.log(session1);
 
             let timerInterval
             Swal.fire({
@@ -123,12 +118,17 @@ function SignIn() {
                     console.log('I was closed by the timer')
                 }
             })
-            navigate('/home');
-        
+            navigate('/home'
+                ,
+                {
+                    state: {
+                        email: Id,
+                    }
+                }
+            );
         })
             .catch(err => {
                 console.log(err)
-                // -----Invalid Credential----
                 Swal.fire({
                     title: 'Invalid Credentials',
                     showClass: {
@@ -138,7 +138,6 @@ function SignIn() {
                         popup: 'animate__animated animate__fadeOutUp'
                     }
                 })
-                // -----Invalid Credential---
             })
     }
  
@@ -182,7 +181,7 @@ function SignIn() {
                                 submitHandler
 
                             }
-                            className={classes.btn} >Login</Button>
+                            className={classes.btn}>Login</Button>
 
                         <h6 className={classes.headingStyle1}>You are not registered yet? <span className={classes.link}
                          onClick={

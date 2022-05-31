@@ -36,12 +36,8 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
-
-
-
-
-
-
+import axios from 'axios'
+import url from './url'
 
 
 const useStyles = makeStyles({
@@ -113,7 +109,10 @@ export const data = {
     },
   ],
 };
-function AllCourses() {
+function AllCourses(props) {
+  const headers = {
+    'Content-Type': 'application/json'
+}
   const classes = useStyles();
   const navigate = useNavigate();
   // calender 
@@ -121,39 +120,82 @@ function AllCourses() {
   // chart 
   ChartJS.register(ArcElement, Tooltip, Legend);
 
+  const [classId,setclassId]=useState("");
   const [createTitle,setcreateTitle]=useState("");
   const [createDescription,setcreateDescription]=useState("");
   const Create = () => {
-    let timerInterval
-    Swal.fire({
-        title: 'Course Created Successfully',
-        html: 'Please wait !',
-        timer: 2000,
-        timerProgressBar: true,
-        didOpen: () => {
-            Swal.showLoading()
-            const b = Swal.getHtmlContainer().querySelector('b')
-            timerInterval = setInterval(() => {
-                b.textContent = Swal.getTimerLeft()
-            }, 100)
-        },
-        willClose: () => {
-            clearInterval(timerInterval)
-        }
-    }).then((result) => {
-        /* Read more about handling dismissals below */
-        if (result.dismiss === Swal.DismissReason.timer) {
-            console.log('I was closed by the timer')
-        }
-    })
+    axios.post(`${url}class/create`, {
+      name: createTitle,
+      description: createDescription,
+      owner:props.data
+  }, { headers }).then(response => {
+      console.log(response)
+      setclassId(response.data.classId)
+      let timerInterval
+      Swal.fire({
+          title: 'Created Class Successfully',
+          timer: 2000,
+          timerProgressBar: true,
+          didOpen: () => {
+              Swal.showLoading()
+              const b = Swal.getHtmlContainer().querySelector('b')
+              timerInterval = setInterval(() => {
+                  b.textContent = Swal.getTimerLeft()
+              }, 100)
+          },
+          willClose: () => {
+              clearInterval(timerInterval)
+          }
+      }).then((result) => {
+          /* Read more about handling dismissals below */
+          if (result.dismiss === Swal.DismissReason.timer) {
+              console.log('I was closed by the timer')
+          }
+          navigate('/coursestream',
+          {
+              state: {
+                  post_id: classId,
+                  data: props.data
+              }
+          });
+      })
+  })
+      .catch(err => {
+          console.log(err)
+      })
 
-    navigate('/coursestream',
-    {
-        // state: {
-        //     post_id: idData,
-        //     data: props.data
-        // }
-    });
+    // POst Request 
+        //   navigate('/home');
+    // let timerInterval
+    // Swal.fire({
+    //     title: 'Course Created Successfully',
+    //     html: 'Please wait !',
+    //     timer: 2000,
+    //     timerProgressBar: true,
+    //     didOpen: () => {
+    //         Swal.showLoading()
+    //         const b = Swal.getHtmlContainer().querySelector('b')
+    //         timerInterval = setInterval(() => {
+    //             b.textContent = Swal.getTimerLeft()
+    //         }, 100)
+    //     },
+    //     willClose: () => {
+    //         clearInterval(timerInterval)
+    //     }
+    // }).then((result) => {
+    //     /* Read more about handling dismissals below */
+    //     if (result.dismiss === Swal.DismissReason.timer) {
+    //         console.log('I was closed by the timer')
+    //     }
+    // })
+
+    // navigate('/coursestream',
+    // {
+    //     // state: {
+    //     //     post_id: idData,
+    //     //     data: props.data
+    //     // }
+    // });
     
 
   }
@@ -296,12 +338,6 @@ function AllCourses() {
                         </Grid>
 
                       </Grid>
-
-
-
-
-
-
                     </CardContent>
 
                   </Card>
@@ -332,12 +368,6 @@ function AllCourses() {
                         </Grid>
 
                       </Grid>
-
-
-
-
-
-
                     </CardContent>
 
                   </Card>
@@ -345,9 +375,6 @@ function AllCourses() {
                
                 
               </Grid>
-
-
-              {/* <Typography variant='h5'>Cards</Typography> */}
               {/* Second Card  */}
 
 

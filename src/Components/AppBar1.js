@@ -40,9 +40,10 @@ import Performance from './Performance';
 import Videos from './Videos';
 import ClassIcon from '@mui/icons-material/Class';
 import AllCourses from './AllCourses';
-
-
-
+import axios from 'axios';
+import Swal from 'sweetalert2'
+import url from './url'
+import { useNavigate } from 'react-router-dom'
 
 const drawerWidth = 240;
 const logoStyle = {
@@ -181,9 +182,13 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
         }),
     }),
 );
-const AppBar1 = () => {
-    // console.log('appbar session')
-    // console.log(props.data);
+const AppBar1 = (props) => {
+    const headers = {
+        'Content-Type': 'application/json'
+    }
+    console.log('appbar session')
+    console.log(props.data);
+    let navigate = useNavigate();
 
     const classes = useStyles();
     const theme = useTheme();
@@ -209,6 +214,28 @@ const AppBar1 = () => {
     const [show7, setShow7] = React.useState(false);
     const [show8, setShow8] = React.useState(false);
     const [show9, setShow9] = React.useState(false);
+
+     // Logout Admin Profile
+     const logout = () => {
+        console.log('Logout');
+        axios.put(`${url}user/logout`, {
+            _id: props.data
+        }, { headers }).then(response => {
+            console.log(response);
+            console.log('Logout Successfull');
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Logout Successfull',
+                showConfirmButton: false,
+                timer: 1500
+            })
+            navigate('/')
+        })
+            .catch(err => {
+                console.log(err)
+            })
+    };
 
     return (
         <>
@@ -482,19 +509,7 @@ const AppBar1 = () => {
                     </ListItem>
 
                     <ListItem disablePadding className={classes.ListStyle1}>
-                        <ListItemButton onClick={() => {
-                            setShow(false);
-                            setShow1(false);
-                            setShow2(false)
-                            setShow3(false);
-                            setShow4(false);
-                            setShow5(false);
-                            setShow6(false);
-                            setShow7(false);
-                            setShow8(true);
-                        setShow9(false);
-
-                        }}>
+                        <ListItemButton onClick={logout}>
                             <ListItemIcon>
                                 <LogoutIcon className={classes.iconColor} />
                             </ListItemIcon>
@@ -507,16 +522,15 @@ const AppBar1 = () => {
             </Drawer>
             <Main open={open} style={MarginTop} className={classes.BackGroundMain}>
                 {/* <ProfileData/> */}
-                {show ? <Dashboard /> : null}
-                {show1 ? <StudyPlanner /> : null}
-                {show2 ? <Videos /> : null}
-                {show3 ? <LearningPaths /> : null}
-                {show4 ? < Bookmarks /> : null}
-                {show5 ? < Notes /> : null}
-                {show6 ? <Performance /> : null}
-                {show7 ? <LegalInfo /> : null}
-                {show8 ? < Logout /> : null}
-                {show9 ? < AllCourses /> : null}
+                {show ? <Dashboard data={props.data}/> : null}
+                {show1 ? <StudyPlanner data={props.data}/> : null}
+                {show2 ? <Videos data={props.data}/> : null}
+                {show3 ? <LearningPaths data={props.data}/> : null}
+                {show4 ? < Bookmarks data={props.data}/> : null}
+                {show5 ? < Notes data={props.data}/> : null}
+                {show6 ? <Performance data={props.data}/> : null}
+                {show7 ? <LegalInfo data={props.data}/> : null}
+                {show9 ? < AllCourses data={props.data}/> : null}
 
 
             </Main>

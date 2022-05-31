@@ -1,31 +1,19 @@
-import React,{useEffect} from 'react'
-import Box from '@mui/material/Box';
-import AppBar1 from '../Components/AppBar1';
-// import jwt from 'jsonwebtoken'
-// import { useNavigate } from 'react-router-dom'
+import React from 'react'
+import Container from '../Components/Container';
+import { useLocation } from 'react-router-dom';
 
 function Homepage() {
-  // let navigate = useNavigate();
+    const { state } = useLocation();
+    
+    return (
+        <>
+       { console.log('Homepage session')}
+        {console.log(state.email)}
+        <Container data={state.email}/>
 
-  // useEffect(()=>{
-  // const token = localStorage.getItem('token')
-  // if(token){
-  //   const user = jwt.decode(token)
-  //   if(!user){
-  //     localStorage.removeItem('token')
-  //     navigate('/')
 
-  //   }
-  // }
-  // },[])
-  return (
-    <>
-    <Box sx={{ display: 'flex' }} >
-    <AppBar1 />
-
-    </Box>
-    </>
-  )
+        </>
+    )
 }
 
 export default Homepage

@@ -11,7 +11,7 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import axios from "axios";
-// import Cookies from "universal-cookie";
+import url from '../Components/url'
 
 const useStyles = makeStyles({
     logoStyle: {
@@ -68,24 +68,20 @@ const useStyles = makeStyles({
     }
 })
 
-
 const heading = "------------ OR ------------";
-const URL = 'http://localhost:4000';
-
-
-
 
 function SignUp() {
     const [inputUsername, setInputUsername] = useState('');
     const [inputEmail, setInputEmail] = useState('');
     const [inputPassword, setInputPassword] = useState('');
+    const [session, setSession] = useState("");
     const [error, setError] = useState([]);
     const classes = useStyles();
     // Navigation 
     let navigate = useNavigate();
     // SignUp
     const signIN = async (e) => {
-        navigate('/signin');
+        navigate('/');
     }
     //Forget Password
     const ForgetPass = async (e) => {
@@ -96,43 +92,56 @@ function SignUp() {
     }
     // Submit handler 
     const submitHandler = async (e) => {
-        console.log('awws')
         e.preventDefault()
         // POst Request 
-        await axios.post(`${URL}/users/register`, {
-           email: inputEmail, 
-           name: inputUsername,
-        password: inputPassword 
+        await axios.post(`${url}user/create`, {
+            name:inputUsername,
+            email: inputEmail,
+            password: inputPassword
         }, { headers }).then(response => {
             console.log(response)
-            console.log('successfull')
+            const session1 = response.data.session;
 
-        // Login Successfull Alert 
-        }).catch(err => {
-        console.log(err)
-        // -----Invalid Credential----
-        Swal.fire({
-            title: 'Invalid Credentials',
-            showClass: {
-                popup: 'animate__animated animate__fadeInDown'
-            },
-            hideClass: {
-                popup: 'animate__animated animate__fadeOutUp'
-            }
+            setSession(response.data.session);
+            console.log(session1);
+
+            let timerInterval
+            Swal.fire({
+                title: 'SignUp Successfull',
+                html: 'Please wait !',
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading()
+                    const b = Swal.getHtmlContainer().querySelector('b')
+                    timerInterval = setInterval(() => {
+                        b.textContent = Swal.getTimerLeft()
+                    }, 100)
+                },
+                willClose: () => {
+                    clearInterval(timerInterval)
+                }
+            }).then((result) => {
+                /* Read more about handling dismissals below */
+                if (result.dismiss === Swal.DismissReason.timer) {
+                    console.log('I was closed by the timer')
+                }
+            })
+            navigate('/');
         })
-        // -----Invalid Credential---
-        })
+            .catch(err => {
+                console.log(err)
+                Swal.fire({
+                    title: 'Invalid Credentials',
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInDown'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutUp'
+                    }
+                })
+            })
     }
-    useEffect(() => {
-        if (inputEmail.length > 0) setError('');
-    }, [inputEmail])
-
-    //validating users' input
-    // useEffect(() => {
-    //     if (inputUsername.length < 3 && inputUsername.length !== 0) setError("Username length should be more than or equal to three");
-    //     else if (inputUsername.length > 50) setError('Username length should be less or equal to 50');
-    //     else setError('');
-    // }, [inputPassword, inputPasswordConfirmation, inputUsername])
     return (
         <div>
             <Grid container className={classes.ContainerStyle}>
@@ -177,8 +186,6 @@ function SignUp() {
                             }
                         />
                         <br /><br />
-
-
                         <br />
                         <FormGroup>
                             <FormControlLabel className={classes.checkbox} control={<Checkbox defaultChecked />} label="I accept OnSchool Terms and Conditions" />
