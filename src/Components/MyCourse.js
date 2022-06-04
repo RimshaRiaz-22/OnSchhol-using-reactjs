@@ -54,7 +54,11 @@ const useStyles = makeStyles({
     }, margincard: {
         marginBottom: '10px'
 
-    }, due: {
+    },marginBtn:{
+        marginBottom:'20px',
+        marginTop:'20px'
+
+    },due: {
         color: 'rgba(0, 0, 0, 0.6)',
         fontSize: '14px'
     }, btn: {
@@ -151,6 +155,7 @@ function MyCourse(props) {
 
     const [show, setShow] = React.useState(true);
     const [showUpload, setShowUpload] = React.useState(false);
+    const [showNews, setShowNews] = React.useState(true);
     const [showUploadAssign, setshowUploadAssign] = React.useState(false);
     const [showUploadQuiz, setshowUploadQuiz] = React.useState(false);
     const [showUploadLink, setshowUploadLink] = React.useState(false);
@@ -514,117 +519,143 @@ function MyCourse(props) {
             })
             .catch(error => console.error(`Error:${error}`));
     }
+    // Video Get 
+     // Stream-Get
+     const [VideoData, setVideoData] = useState([]);
+     const getAllVideo = () => {
+         axios.get(`${url}stream/get-class-streams`, {
+             params: {
+                 _id: ClassIdData
+             }
+         })
+             .then((response) => {
+                 const allData = response.data;
+                 console.log(allData);
+                 setVideoData(response.data);
+                 console.log('assignment data');
+                 console.log(VideoData);
+                 // setData(allData);
+                 // setTitle(allData.name);
+                 // setClassId(allData.classId);
+                 // setDescription(allData.description);
+ 
+                 // setEnrolledStud(allData.enrolledStudents.length);
+                 setLoading(true)
+ 
+             })
+             .catch(error => console.error(`Error:${error}`));
+     }
     // File Upload 
 
-      const [selectedFile1,setSelectedFile1]= useState('')
-      const onFileChange = (e) => { 
-          console.log(e)
-          const formData = new FormData(); 
-          formData.append( 
-            "file", 
-            e, 
-          ); 
-         
-          // Details of the uploaded file 
+    const [selectedFile1, setSelectedFile1] = useState('')
+    const onFileChange = (e) => {
+        console.log(e)
+        const formData = new FormData();
+        formData.append(
+            "file",
+            e,
+        );
+
+        // Details of the uploaded file 
         //   console.log(selectedFile1); 
-         
-          // Request made to the backend api 
-          // Send formData object 
-          axios.post(`${url}upload-file`, formData,
-          { headers }).then(response => {
-              console.log(response.data.file)
-              setSelectedFile1(response.data.file)
 
-          })
-          
-      }
-      const [selectedFileQuiz,setSelectedFileQuiz]= useState('')
-      const onFileChangeQuiz = (e) => { 
-          console.log(e)
-          const formData = new FormData(); 
-          formData.append( 
-            "file", 
-            e, 
-          ); 
-         
-          // Details of the uploaded file 
+        // Request made to the backend api 
+        // Send formData object 
+        axios.post(`${url}upload-file`, formData,
+            { headers }).then(response => {
+                console.log(response.data.file)
+                setSelectedFile1(response.data.file)
+
+            })
+
+    }
+    const [selectedFileQuiz, setSelectedFileQuiz] = useState('')
+    const onFileChangeQuiz = (e) => {
+        console.log(e)
+        const formData = new FormData();
+        formData.append(
+            "file",
+            e,
+        );
+
+        // Details of the uploaded file 
         //   console.log(selectedFile1); 
-         
-          // Request made to the backend api 
-          // Send formData object 
-          axios.post(`${url}upload-file`, formData,
-          { headers }).then(response => {
-              console.log(response.data.file)
-              setSelectedFileQuiz(response.data.file)
 
-          })
-          
-      }
+        // Request made to the backend api 
+        // Send formData object 
+        axios.post(`${url}upload-file`, formData,
+            { headers }).then(response => {
+                console.log(response.data.file)
+                setSelectedFileQuiz(response.data.file)
 
-//    Video 
-const [selectedFileVideoPath,setSelectedFileVideoPath]= useState('')
-const [selectedFileVideoduration,setSelectedFileVideoDuration]= useState('')
+            })
 
-const onFileChangeVideo = (e) => { 
-    console.log(e)
-    const formData = new FormData(); 
-    formData.append( 
-      "video", 
-      e, 
-    ); 
-   
-    // Details of the uploaded file 
-  //   console.log(selectedFile1); 
-   
-    // Request made to the backend api 
-    // Send formData object 
-    axios.post(`${url}upload-video`, formData,
-    { headers }).then(response => {
-        console.log(response.data)
-        setSelectedFileVideoPath(response.data.path)
-        setSelectedFileVideoDuration(response.data.duration)
+    }
 
-    })
-    
-}
-const VideoUpload = () => {
- 
-    axios.post(`${url}quiz-question/create`, {
-        class: ClassIdData,
-        path: selectedFileVideoPath,
-        duration: selectedFileVideoduration,
-        
-    }, { headers }).then(response => {
-        console.log(response)
-        // setData([...data, response.data]);
+    //    Video 
+    const [selectedFileVideoPath, setSelectedFileVideoPath] = useState('')
+    const [selectedFileVideoduration, setSelectedFileVideoDuration] = useState('')
 
-        let timerInterval
-        Swal.fire({
-            title: 'Video Lecture Uploaded Successfully',
-            timer: 2000,
-            timerProgressBar: true,
-            didOpen: () => {
-                Swal.showLoading()
-                const b = Swal.getHtmlContainer().querySelector('b')
-                timerInterval = setInterval(() => {
-                    b.textContent = Swal.getTimerLeft()
-                }, 100)
-            },
-            willClose: () => {
-                clearInterval(timerInterval)
-            }
-        }).then((result) => {
-            /* Read more about handling dismissals below */
-            if (result.dismiss === Swal.DismissReason.timer) {
-                console.log('I was closed by the timer')
-            }
+    const onFileChangeVideo = (e) => {
+        console.log(e)
+        const formData = new FormData();
+        formData.append(
+            "video",
+            e,
+        );
+
+        // Details of the uploaded file 
+        //   console.log(selectedFile1); 
+
+        // Request made to the backend api 
+        // Send formData object 
+        axios.post(`${url}upload-video`, formData,
+            { headers }).then(response => {
+                console.log(response.data)
+                setSelectedFileVideoPath(response.data.path)
+                setSelectedFileVideoDuration(response.data.duration)
+
+            })
+
+    }
+    const VideoUpload = () => {
+
+        axios.post(`${url}quiz-question/create`, {
+            class: ClassIdData,
+            path: selectedFileVideoPath,
+            duration: selectedFileVideoduration,
+
+        }, { headers }).then(response => {
+            console.log(response)
+            // setData([...data, response.data]);
+
+            let timerInterval
+            Swal.fire({
+                title: 'Video Lecture Uploaded Successfully',
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading()
+                    const b = Swal.getHtmlContainer().querySelector('b')
+                    timerInterval = setInterval(() => {
+                        b.textContent = Swal.getTimerLeft()
+                    }, 100)
+                },
+                willClose: () => {
+                    clearInterval(timerInterval)
+                }
+            }).then((result) => {
+                /* Read more about handling dismissals below */
+                if (result.dismiss === Swal.DismissReason.timer) {
+                    console.log('I was closed by the timer')
+                }
+            })
         })
-    })
-        .catch(err => {
-            console.log(err)
-        })
+            .catch(err => {
+                console.log(err)
+            })
 
-}
+    }
 
     return (
         <div>
@@ -892,6 +923,7 @@ const VideoUpload = () => {
                                                                                                 setshowUploadQuiz(false);
                                                                                                 setshowUploadLink(false);
                                                                                                 setshowUploadUpdate(false);
+                                                                                                setShowNews(false)
                                                                                             }}>Stream</Button>
                                                                                         </Grid>
                                                                                         <Grid item xs={4} md={4}>
@@ -901,6 +933,7 @@ const VideoUpload = () => {
                                                                                                 setshowUploadQuiz(false);
                                                                                                 setshowUploadLink(false);
                                                                                                 setshowUploadUpdate(false);
+                                                                                                setShowNews(false)
                                                                                             }}>Assignment</Button>
                                                                                         </Grid>
                                                                                         <Grid item xs={4} md={4}>
@@ -910,6 +943,7 @@ const VideoUpload = () => {
                                                                                                 setshowUploadQuiz(true);
                                                                                                 setshowUploadLink(false);
                                                                                                 setshowUploadUpdate(false);
+                                                                                                setShowNews(false)
                                                                                             }}>Quiz</Button>
 
                                                                                         </Grid>
@@ -920,6 +954,7 @@ const VideoUpload = () => {
                                                                                                 setshowUploadQuiz(false);
                                                                                                 setshowUploadLink(true);
                                                                                                 setshowUploadUpdate(false);
+                                                                                                setShowNews(false)
                                                                                             }}>Video</Button>
                                                                                         </Grid>
 
@@ -1068,6 +1103,7 @@ const VideoUpload = () => {
                     </>
                 }
                 <Grid item xs={12} md={3} >
+                
                     {showUpload ?
                         <>
                             {/* <Grid container spacing={2}> */}
@@ -1118,7 +1154,45 @@ const VideoUpload = () => {
 
                         </>
 
-                        : null}
+                        : 
+                       null}
+
+{showNews ?
+                        <>
+                            {/* <Grid container spacing={2}> */}
+
+
+                            {/* <Grid item xs={12} md={12}> */}
+                            <Card sx={{ minWidth: 275 }} className={classes.cardCenter1}>
+                                <CardContent>
+                                    <Grid container >
+                                        <Grid item xs={12} md={12}>
+                                            <Typography variant='h6' > Latest Updates</Typography>
+                                        </Grid>
+                                        <Grid item xs={12} md={12}>
+                                        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                                                {loading && StreamData.map((row) => (
+                                                    <>
+                                                    <ListItem>
+                                                        <ListItemText primary={row.title} secondary={row.date} />
+    
+                                                    </ListItem>
+
+                                                    <Divider variant="inset" component="li" />
+                                                    </>
+                                                ))}
+                                                </List>
+                                        </Grid>
+                                    </Grid>
+                                </CardContent>
+                            </Card>
+                            {/* </Grid> */}
+                            {/* </Grid> */}
+
+                        </>
+
+                        : 
+                       null}
 
 
                     {showUploadAssign ?
@@ -1143,12 +1217,15 @@ const VideoUpload = () => {
                                             Upload File
                                         </Grid>
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
-                                         
 
-<input type="file" onChange={(e) =>onFileChange(e.target.files[0])} /> 
-              
-                {/* {this.fileData()}  */}
 
+                                            <input type="file" onChange={(e) => onFileChange(e.target.files[0])} />
+
+                                            {/* {this.fileData()}  */}
+
+                                        </Grid>
+                                        <Grid item xs={12} md={12}>
+                                            <Typography variant='h6' style={{color:'blue', fontSize:'11px'}} > Please Select pdf file </Typography>
                                         </Grid>
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
                                             Select Due Date
@@ -1256,8 +1333,11 @@ const VideoUpload = () => {
                                             Upload File
                                         </Grid>
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
-                                           
-                                                <input type="file" onChange={(e) =>onFileChangeQuiz(e.target.files[0])} /> 
+
+                                            <input type="file" onChange={(e) => onFileChangeQuiz(e.target.files[0])} />
+                                        </Grid>
+                                        <Grid item xs={12} md={12}>
+                                            <Typography variant='h6' style={{color:'blue', fontSize:'11px'}} > Please Select pdf file </Typography>
                                         </Grid>
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
                                             Select Due Date
@@ -1379,18 +1459,21 @@ const VideoUpload = () => {
                                 <CardContent>
                                     <Grid container >
                                         <Grid item xs={12} md={12}>
-                                            <Typography variant='h6' > Class Link</Typography>
+                                            <Typography variant='h6' > Upload Video Lecture</Typography>
                                         </Grid>
                                         <Grid item xs={12} md={12}>
-                                        <Grid item xs={12} md={12} className={classes.marginstyle}>
-                                           
-                                           <input type="file" onChange={(e) =>onFileChangeVideo(e.target.files[0])} /> 
-                                   </Grid>
+                                            <Typography variant='h6' style={{color:'blue', fontSize:'11px'}} > Please Select mp4 file </Typography>
                                         </Grid>
+                                        {/* <Grid item xs={12} md={12}> */}
+                                        <Grid item xs={12} md={12} className={classes.marginBtn}>
+
+                                            <input type="file" onChange={(e) => onFileChangeVideo(e.target.files[0])} />
+                                        </Grid>
+                                        {/* </Grid> */}
 
                                         <Grid item xs={12} md={12}>
-                                        <Button variant="contained" className={classes.btn} color='primary' 
-                                        onClick={VideoUpload} component="span" >
+                                            <Button variant="contained" className={classes.btn} color='primary'
+                                                onClick={VideoUpload} component="span" >
                                                 Upload
                                             </Button>
                                         </Grid>
