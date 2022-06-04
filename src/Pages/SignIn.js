@@ -148,7 +148,7 @@ function SignIn() {
                 <Grid item xs={12} sm={12} md={4} lg={4} xl={4} className={classes.gridCont}>
                     <Grid align='center'>
                         <Avatar src={image} variant="square" className={classes.logoStyle} />
-                        <Button variant="outlined" className={classes.btnsocial} startIcon={<GoogleIcon />}>
+                        {/* <Button variant="outlined" className={classes.btnsocial} startIcon={<GoogleIcon />}>
                             CONTINUE WITH GOOGLE
                         </Button>
                         <Button variant="outlined" className={classes.btnsocial} startIcon={<FacebookIcon />}>
@@ -156,8 +156,8 @@ function SignIn() {
                         </Button>
                         <Button variant="outlined" className={classes.btnsocial} startIcon={<LinkedInIcon />}>
                             CONTINUE WITH LIKEDIN
-                        </Button>
-                        <h6 className={classes.headingStyle}>{heading}</h6>
+                        </Button> */}
+                        {/* <h6 className={classes.headingStyle}>{heading}</h6> */}
                         <input className={classes.InputStyle} name="email"
                              value={inputEmail}
                             type="text" placeholder="Enter Email"

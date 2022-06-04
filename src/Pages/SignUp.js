@@ -151,7 +151,7 @@ function SignUp() {
 
                         <Avatar src={image} variant="square" className={classes.logoStyle} />
                         <Typography variant='h6'>Create your free account now</Typography>
-                        <Button variant="outlined" className={classes.btnsocial} startIcon={<GoogleIcon />}>
+                        {/* <Button variant="outlined" className={classes.btnsocial} startIcon={<GoogleIcon />}>
                             CONTINUE WITH GOOGLE
                         </Button>
                         <Button variant="outlined" className={classes.btnsocial} startIcon={<FacebookIcon />}>
@@ -159,8 +159,8 @@ function SignUp() {
                         </Button>
                         <Button variant="outlined" className={classes.btnsocial} startIcon={<LinkedInIcon />}>
                             CONTINUE WITH LIKEDIN
-                        </Button>
-                        <h6 className={classes.headingStyle}>{heading}</h6>
+                        </Button> */}
+                        {/* <h6 className={classes.headingStyle}>{heading}</h6> */}
                         <input className={classes.InputStyle} name="username"
                             value={inputUsername}
                             type="text" placeholder="Enter UserName"

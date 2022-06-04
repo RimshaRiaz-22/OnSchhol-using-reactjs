@@ -8,7 +8,8 @@ import SignIn from './Pages/SignIn';
 import Home from './Pages/Homepage'
 import SignUp from './Pages/SignUp';
 import ForgetPassword from './Pages/ForgetPassword';
-import CourseStream from './Components/CourseStream'
+import CourseStream from './Components/CourseStream';
+import CourseStreamJoin from './Components/CourseStreamJoin'
 
 
 function App() {
@@ -30,6 +31,10 @@ function App() {
           <Routes>
             <Route exact path="/coursestream" element={<CourseStream />}></Route>
           </Routes>
+          <Routes>
+            <Route exact path="/coursestreamjoin" element={<CourseStreamJoin />}></Route>
+          </Routes>
+          
         </Router>
 
     </>

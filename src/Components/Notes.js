@@ -4,23 +4,24 @@ import Grid from '@mui/material/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button';
-import Alert from '@mui/material/Alert';
-import IconButton from '@mui/material/IconButton';
-import Collapse from '@mui/material/Collapse';
-import CloseIcon from '@mui/icons-material/Close';
 import url from './url'
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
-import { Card } from 'react-bootstrap'
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import Swal from 'sweetalert2'
+import DialogContentText from '@mui/material/DialogContentText';
 
 const useStyles = makeStyles({
   GridStyle: {
-    border: ' 1px solid #e4e6ef',
+    // border: ' 1px solid #e4e6ef',
     borderRadius: '5px',
     marginTop: '45px',
     padding: '30px',
@@ -49,9 +50,11 @@ const useStyles = makeStyles({
     borderRadius: '5px',
     color: 'white',
     marginLeft: '234px'
-}
+  }
 })
-
+const TextColor = {
+  color: '#9a9cab',
+}
 const heading = {
   marginBottom: '30px'
 }
@@ -61,6 +64,7 @@ const btn = {
   color: '#1976d2',
   backgroundColor: 'transparent',
 }
+
 const Notes = (props) => {
   console.log('setting props');
   console.log(props.data)
@@ -68,32 +72,34 @@ const Notes = (props) => {
 
   //Get API Axios Update-km-per hour
 
-  useEffect(() => {
-    getAllData2();
-  }, []);
+
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
+  const [datanotes, setDataNotes] = useState([]);
   const [loading2, setLoading2] = useState(false);
   const [data2, setData2] = useState([]);
   const headers = {
     'Content-Type': 'application/json'
   }
 
-  const getAllData2 = () => {
-    axios.get(`${url}notes/get-user-notes`, {
-      params: {
-          _id: props.data
-      }
-  })
-      .then((response) => {
-          console.log('get notes user')
-          console.log(response);
-          setData2(response.data)
-         
-      })
-      .catch(error => console.error(`Error:${error}`));
+  // const getAllData = async() => {
+  //   const idData = props.data;
+  //   console.log(idData)
+  //   await axios.get(`${url}notes/get-user-notes`, {
+  //     params: {
+  //       _id: props.data
+  //     }
+  //   })
+  //     .then((response) => {
+  //       console.log('get notes user')
+  //       console.log(response);
+  //       const allData = response.data
+  //       setDataNotes(allData);
+  //       console.log(datanotes)
 
-  }
+  //     })
+  //     .catch(error => console.error(`Error:${error}`));
+
+  // }
   // Add 
   const [openAdd, setOpenAdd] = React.useState(false);
   const [details, setdetails] = useState('');
@@ -107,43 +113,247 @@ const Notes = (props) => {
   const submitHandler = async (e) => {
     e.preventDefault()
     axios.post(`${url}notes/create`, {
-         owner:props.data,
-        details: details,
+      owner: props.data,
+      details: details,
     }, { headers }).then(response => {
-        console.log(response)
-        setOpenAdd(false);
-        setData([...data, response.data]);
-        // Clear Dta 
-        let timerInterval
-        Swal.fire({
-            title: 'Notes Saved Successfully',
-            timer: 2000,
-            timerProgressBar: true,
-            didOpen: () => {
-                Swal.showLoading()
-                const b = Swal.getHtmlContainer().querySelector('b')
-                timerInterval = setInterval(() => {
-                    b.textContent = Swal.getTimerLeft()
-                }, 100)
-            },
-            willClose: () => {
-                clearInterval(timerInterval)
-            }
-        }).then((result) => {
-            /* Read more about handling dismissals below */
-            if (result.dismiss === Swal.DismissReason.timer) {
-                console.log('I was closed by the timer')
-            }
-        })
-    })
-        .catch(err => {
-            console.log(err)
-        })
-  }
+      console.log(response)
+      setOpenAdd(false);
+      // setDataNotes([...data, response.data]);
+      // Clear Dta 
+      let timerInterval
+      Swal.fire({
+        title: 'Notes Saved Successfully',
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading()
+          const b = Swal.getHtmlContainer().querySelector('b')
+          timerInterval = setInterval(() => {
+            b.textContent = Swal.getTimerLeft()
+          }, 100)
+        },
+        willClose: () => {
+          clearInterval(timerInterval)
+        }
+      }).then((result) => {
+        /* Read more about handling dismissals below */
+        if (result.dismiss === Swal.DismissReason.timer) {
+          console.log('I was closed by the timer')
+            //    refresh componenet 
+            axios.get(`${url}notes/get-user-notes`, {
+              params: {
+                  _id: props.data
+              }
+          })
+                .then((response) => {
+                    const allData = response.data;
+                    console.log(allData);
+                    setData(response.data);
+                    setLoading(true)
+                     
+                })
+                .catch(error => console.error(`Error:${error}`));
+                setdetails("")
 
+        }
+      })
+    })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+  // Edit 
+  const [openUpdate, setOpenUpdate] = React.useState(false);
+
+  const handleCloseUpdate = () => {
+      setOpenUpdate(false);
+  };
+  const [descriptionUpdate, setDescriptionUpdate] = useState([]);
+  const [IdNotesUpdate, setIdNotesUpdate] = useState([]);
+
+  const [dateUpdate, setDateUpdate] = useState(new Date());
+
+  const onToggleEditMode = async (id) => {
+      setOpenUpdate(true);
+      console.log(id);
+      await axios.get(`${url}notes/get`, {
+          params: {
+              _id: id
+          }
+      }, { headers }).then(response => {
+          console.log('response')
+          console.log(response.data);
+         setDescriptionUpdate(response.data.details)
+         setIdNotesUpdate(response.data._id)
+      })
+          .catch(err => {
+              console.log(err)
+          })
+  }
+     // submitUpdate
+     const submitUpdate = (e) => {
+      e.preventDefault()
+    
+         
+      // POst Request 
+      axios.put(`${url}notes/update`, {
+          _id: IdNotesUpdate,
+          details: descriptionUpdate,
+      }, { headers }).then(response => {
+          console.log(response)
+          setOpenUpdate(false);
+          // Clear Dta 
+    
+
+          let timerInterval
+          Swal.fire({
+              title: 'Updated Notes Successfully',
+              timer: 2000,
+              timerProgressBar: true,
+              didOpen: () => {
+                  Swal.showLoading()
+                  const b = Swal.getHtmlContainer().querySelector('b')
+                  timerInterval = setInterval(() => {
+                      b.textContent = Swal.getTimerLeft()
+                  }, 100)
+              },
+              willClose: () => {
+                  clearInterval(timerInterval)
+              }
+          }).then((result) => {
+              /* Read more about handling dismissals below */
+              if (result.dismiss === Swal.DismissReason.timer) {
+                  console.log('I was closed by the timer')
+              }
+          
+      })
+           //    refresh componenet 
+           axios.get(`${url}notes/get-user-notes`, {
+            params: {
+                _id: props.data
+            }
+        })
+              .then((response) => {
+                  const allData = response.data;
+                  console.log(allData);
+                  setData(response.data);
+                  setLoading(true)
+                   
+              })
+              .catch(error => console.error(`Error:${error}`));
+      })
+          .catch(err => {
+              console.log(err)
+          })
+  }
+     // Delete 
+    // Alert 
+    const deleteData = (id,owner) => {
+      console.log('deleting phone no')
+      console.log(id);
+      axios.delete(`${url}notes/delete`, {
+          data: {
+              _id: id
+          }
+      }, { headers })
+          .then(res => {
+              console.log(res);
+              console.log(res.data);
+              const swalWithBootstrapButtons = Swal.mixin({
+                  customClass: {
+                      confirmButton: 'btn btn-success',
+                      cancelButton: 'btn btn-danger'
+                  },
+                  buttonsStyling: {
+                      backgroundColor: '#4CAF50', /* Green */
+                      border: 'none',
+                      color: 'white',
+                      padding: '15px 32px',
+                      textAlign: 'center',
+                      textDecoration: 'none',
+                      display: 'inline-block',
+                      fontSize: '16px'
+                  }
+              })
+
+              swalWithBootstrapButtons.fire({
+                  title: 'Are you sure?',
+                  text: "You won't be able to revert this!",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonText: 'Yes, delete it!',
+                  cancelButtonText: 'No, cancel!',
+                  reverseButtons: true
+              }).then((result) => {
+                  if (result.isConfirmed) {
+                      swalWithBootstrapButtons.fire(
+                          'Deleted!',
+                          'Notes has been deleted.',
+                          'success'
+                      )
+                      //    refresh componenet 
+                      axios.get(`${url}notes/get-user-notes`, {
+                        params: {
+                            _id: owner
+                        }
+                    })
+                          .then((response) => {
+                              const allData = response.data;
+                              console.log(allData);
+                              setData(response.data);
+                              setLoading(true)
+                               
+                          })
+                          .catch(error => console.error(`Error:${error}`));
+
+                      // window.location.reload(false);
+                  } else if (
+                      /* Read more about handling dismissals below */
+                      result.dismiss === Swal.DismissReason.cancel
+                  ) {
+                      swalWithBootstrapButtons.fire(
+                          'Cancelled',
+                          'Topic is safe :)',
+                          'error'
+                      )
+                  }
+              })
+              // setOpen1(true);
+          }).catch(err => {
+              console.log(err)
+          })
+  }
+  const [data, setData] = useState([]);
+
+  const getAllData = () => {
+    axios.get(`${url}notes/get-user-notes`, {
+      params: {
+          _id: props.data
+      }
+  })
+        .then((response) => {
+            const allData = response.data;
+            console.log(allData);
+            setData(response.data);
+            setLoading(true)
+             
+        })
+        .catch(error => console.error(`Error:${error}`));
+}
+useEffect(() => {
+    getAllData();
+
+}, []);
+  // useEffect(() => {
+  //   getAllData();
+  // }, []);
 
   return (
-    <div>
+    <>
+     <Grid container spacing={2}>
+        <Grid item  xs={12}  md={2}></Grid>
+        <Grid item xs={12} md={8}>
+     
       <Grid container spacing={2} className={classes.GridStyle}>
         <Grid item xs={10} md={10}>
           <Typography variant='h6' style={heading}>Notes</Typography>
@@ -184,37 +394,83 @@ const Notes = (props) => {
           </Dialog>
           {/* Dialog End  */}
         </Grid>
-        {/* Update admin credential  */}
-        <Grid item xs={12} md={12}  >
-          <Grid container spacing={2}>
-            {/* {loading2 && data2.map((row) => ( */}
-              <Grid item xs={12} md={4}>
-                <Card className='cardPadding' style={{ width: '18rem' }}>
-                  <Card.Body>
-                    <Card.Title>ow.details</Card.Title>
-                    <Card.Text>
-                      sfsffs
-                    </Card.Text>
-                    <h5>
-
-                    </h5>
-                    <h6 className='Heading1'>
-
-                    </h6>
-                  </Card.Body>
-                </Card>
-              </Grid>
-             {/* ))}  */}
-          </Grid>
+        {/* data view  */}
+       
 
 
-        </Grid>
+        {/* <Grid item xs={12} md={12}>
+          <Grid container spacing={2}> */}
+          {loading && data.map((row) => (
+                        <Grid item xs={12} md={4}>
+                       
+                            <Card variant="outlined">
+              <>
+                <CardContent>
+                  <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                    {row.date}
+                  </Typography>
+                  <Typography variant="h5" component="div">
+                  </Typography>
+                 
+                  <Typography variant="body2">
+                   {row.details}
+                  </Typography>
+                </CardContent>
+                <CardActions>
+                  <Button size="small"
+                  onClick={() => {
+                    console.log(row._id)
+                    deleteData(row._id,row.owner)
+                }}><DeleteIcon/></Button>
+                  <Button size="small"
+                   onClick={() => onToggleEditMode(row._id)}
+                  
+                  ><ModeEditOutlineIcon/></Button>
 
-        {/* <Grid item xs={12} md={6}  >
-                    
-                </Grid> */}
+                </CardActions>
+              </>
+            </Card>
+
+                        </Grid>
+                        ))}
+                    {/* </Grid>
+        </Grid> */}
+       
+       
       </Grid>
-    </div>
+      {/* Dialog */}
+      <Dialog open={openUpdate} onClose={handleCloseUpdate}>
+                                <DialogTitle>Update Notes</DialogTitle>
+                                <DialogContent>
+                                    {/* Form  */}
+                                    <form onSubmit={submitUpdate}>
+                                        <Grid container spacing={2} className={classes.gridS}>
+                                            <Grid item xs={12} md={6}>
+                                              
+                                                  <TextareaAutosize
+                      aria-label="minimum height"
+                      minRows={10}
+                      value={descriptionUpdate}
+                      onChange={(e) => setDescriptionUpdate(e.target.value)}
+                      placeholder="Enter Notes"
+                      style={{ width: 500 }}
+                    />
+                                            </Grid>
+                                       <br />
+                                            <Grid item xs={6} md={6} >
+                                                <button className={classes.btnSubmit} type='submit'>Submit</button>
+                                            </Grid>
+                                        </Grid>
+                                    </form>
+                                    {/* End form  */}
+                                </DialogContent>
+                            </Dialog>
+                            {/* Dialog End  */}
+                            </Grid>
+    <Grid item  xs={12}  md={2}></Grid>
+    </Grid>
+    </>
+   
   )
 }
 

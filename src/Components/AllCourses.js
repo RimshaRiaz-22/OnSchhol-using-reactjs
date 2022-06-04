@@ -1,5 +1,5 @@
 import { Grid, Typography } from '@material-ui/core'
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import Box from '@mui/material/Box';
 import { makeStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types';
@@ -83,6 +83,8 @@ const styleBtn = {
   borderRadius: '24px',
 
 }
+
+
 export const data = {
   labels: ['Not Attempted', 'Quiz Attempted', 'Attendence'],
   datasets: [
@@ -113,14 +115,78 @@ function AllCourses(props) {
   const headers = {
     'Content-Type': 'application/json'
 }
+// Get all Enrolled Courses
+const [dataEnrolled, setDataEnrolled] = useState([]);
+const [loadingEnroll, setLoadingEnroll] = useState(false);
+const getAllDataEnrolled = () => {
+    axios.get(`${url}class/get-enrolled-classes`, {
+      params: {
+          _id: props.data
+      }
+  })
+        .then((response) => {
+            const allData = response.data;
+            console.log(allData);
+            setDataEnrolled(response.data);
+            setLoadingEnroll(true)
+             
+        })
+        .catch(error => console.error(`Error:${error}`));
+}
+// Get all Courses
+const [loading, setLoading] = useState(false);
+const getAllData = () => {
+    axios.get(`${url}class/get-owner-classes`, {
+      params: {
+          _id: props.data
+      }
+  })
+        .then((response) => {
+            const allData = response.data;
+            console.log(allData);
+            setData(response.data);
+            setLoading(true)
+             
+        })
+        .catch(error => console.error(`Error:${error}`));
+}
+useEffect(() => {
+    getAllData();
+    getAllDataEnrolled();
+
+}, []);
+
+const openClass = (idData) => {
+  console.log(idData)
+  navigate('/coursestream',
+  {
+      state: {
+          post_id: idData,
+      }
+  });
+
+}
+const openClassJoin = (idData) => {
+  console.log(idData)
+  navigate('/coursestreamjoin',
+  {
+      state: {
+          post_id: idData,
+      }
+  });
+
+}
+const [data, setData] = useState([]);
   const classes = useStyles();
   const navigate = useNavigate();
+  const userId=props.data
   // calender 
   const [value, onChange] = useState(new Date());
   // chart 
   ChartJS.register(ArcElement, Tooltip, Legend);
 
-  const [classId,setclassId]=useState("");
+  // const [classId,setclassId]=useState("");
+  // const [userId,setuserId]=useState("");
   const [createTitle,setcreateTitle]=useState("");
   const [createDescription,setcreateDescription]=useState("");
   const Create = () => {
@@ -130,7 +196,8 @@ function AllCourses(props) {
       owner:props.data
   }, { headers }).then(response => {
       console.log(response)
-      setclassId(response.data.classId)
+      const classId =response.data._id
+      // setuserId(response.data._id)
       let timerInterval
       Swal.fire({
           title: 'Created Class Successfully',
@@ -155,9 +222,85 @@ function AllCourses(props) {
           {
               state: {
                   post_id: classId,
-                  data: props.data
               }
           });
+      })
+  })
+      .catch(err => {
+          console.log(err)
+      })
+
+    // POst Request 
+        //   navigate('/home');
+    // let timerInterval
+    // Swal.fire({
+    //     title: 'Course Created Successfully',
+    //     html: 'Please wait !',
+    //     timer: 2000,
+    //     timerProgressBar: true,
+    //     didOpen: () => {
+    //         Swal.showLoading()
+    //         const b = Swal.getHtmlContainer().querySelector('b')
+    //         timerInterval = setInterval(() => {
+    //             b.textContent = Swal.getTimerLeft()
+    //         }, 100)
+    //     },
+    //     willClose: () => {
+    //         clearInterval(timerInterval)
+    //     }
+    // }).then((result) => {
+    //     /* Read more about handling dismissals below */
+    //     if (result.dismiss === Swal.DismissReason.timer) {
+    //         console.log('I was closed by the timer')
+    //     }
+    // })
+
+    // navigate('/coursestream',
+    // {
+    //     // state: {
+    //     //     post_id: idData,
+    //     //     data: props.data
+    //     // }
+    // });
+    
+
+  }
+  // Join Class 
+  const [joinClassCode,setjoinClassCode]=useState("");
+  const Join = () => {
+    axios.put(`${url}class/join`, {
+      classId: joinClassCode,
+      user_id: props.data,
+  }, { headers }).then(response => {
+      console.log(response)
+      // const classId =response.data._id
+      // setuserId(response.data._id)
+      let timerInterval
+      Swal.fire({
+          title: 'Joined Class Successfully',
+          timer: 2000,
+          timerProgressBar: true,
+          didOpen: () => {
+              Swal.showLoading()
+              const b = Swal.getHtmlContainer().querySelector('b')
+              timerInterval = setInterval(() => {
+                  b.textContent = Swal.getTimerLeft()
+              }, 100)
+          },
+          willClose: () => {
+              clearInterval(timerInterval)
+          }
+      }).then((result) => {
+          /* Read more about handling dismissals below */
+          if (result.dismiss === Swal.DismissReason.timer) {
+              console.log('I was closed by the timer')
+          }
+          // navigate('/coursestream',
+          // {
+          //     state: {
+          //         post_id: classId,
+          //     }
+          // });
       })
   })
       .catch(err => {
@@ -228,7 +371,20 @@ function AllCourses(props) {
                           </Button>
 
                         </Grid>
+                        {loading && data.map((row) => (
                         <Grid item xs={12} md={4}>
+                        <Button variant="outlined" className={classes.btn} 
+                        onClick={() => {
+                          openClass(row._id)}}>
+                                {row.name}
+                            </Button>
+
+                        </Grid>
+                        ))}
+
+
+
+                        {/* <Grid item xs={12} md={4}>
                         <Button variant="outlined" className={classes.btn} >
                                 Course Name
                             </Button>
@@ -238,13 +394,7 @@ function AllCourses(props) {
                         <Button variant="outlined" className={classes.btn} >
                                 Course Name
                             </Button>
-
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                        <Button variant="outlined" className={classes.btn} >
-                                Course Name
-                            </Button>
-                        </Grid>
+                        </Grid> */}
 
                       </Grid>
 
@@ -268,23 +418,17 @@ function AllCourses(props) {
                           </Button>
 
                         </Grid>
+                        {loading && dataEnrolled.map((row) => (
                         <Grid item xs={12} md={4}>
-                        <Button variant="outlined" className={classes.btn} >
-                                Course Name
+                        <Button variant="outlined" className={classes.btn} 
+                        onClick={() => {
+                          openClassJoin(row._id)}}>
+                                {row.name}
                             </Button>
 
                         </Grid>
-                        <Grid item xs={12} md={4}>
-                        <Button variant="outlined" className={classes.btn} >
-                                Course Name
-                            </Button>
-
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                        <Button variant="outlined" className={classes.btn} >
-                                Course Name
-                            </Button>
-                        </Grid>
+                        ))}
+                       
 
                       </Grid>
 
@@ -332,7 +476,8 @@ function AllCourses(props) {
                         <Grid item xs={12} md={12}>
                           <Button onClick={()=>{
                             Create()
-                          }} className={classes.btn} variant="contained" endIcon={<AddIcon />}>
+                          }}
+                           className={classes.btn} variant="contained" endIcon={<AddIcon />}>
                             Create
                           </Button>
                         </Grid>
@@ -358,11 +503,17 @@ function AllCourses(props) {
 
                         </Grid>
                         <Grid item xs={12} md={12}>
-                          <TextField className={classes.btn} id="filled-basic" label="Enter Class Code" variant="filled" />
+                          <TextField className={classes.btn} id="filled-basic" label="Enter Class Code" variant="filled"
+                          value={joinClassCode} onChange={
+                            (e) => setjoinClassCode(e.target.value)
+                        } />
 
                         </Grid>
                         <Grid item xs={12} md={12}>
-                          <Button className={classes.btn} variant="contained" endIcon={<AddIcon />}>
+                          <Button className={classes.btn} variant="contained" endIcon={<AddIcon />}
+                          onClick={()=>{
+                            Join()
+                          }}>
                             Join
                           </Button>
                         </Grid>

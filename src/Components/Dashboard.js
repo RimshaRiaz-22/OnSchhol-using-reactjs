@@ -1,5 +1,5 @@
 import { Grid, Typography } from '@material-ui/core'
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import Box from '@mui/material/Box';
 import { makeStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types';
@@ -28,12 +28,8 @@ import { Doughnut } from 'react-chartjs-2';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import Img from './Images/ggg.svg'
 import Imgs from './Images/appstore.svg'
-
-
-
-
-
-
+import axios from 'axios';
+import url from './url';
 
 const useStyles = makeStyles({
     btn: {
@@ -101,10 +97,75 @@ export const data = {
         },
     ],
 };
-function Dashboard() {
-    const classes = useStyles();
+function Dashboard(props) {
     // chart 
     ChartJS.register(ArcElement, Tooltip, Legend);
+    const classes = useStyles();
+    const [loading,setLoading]=useState([]);
+
+    const [data1,setData1]=useState([]);
+    const getAllData1=() => {
+        const idData = props.data;
+        console.log(idData)
+         axios.get(`${url}notes/get-user-notes`, {
+          params: {
+            _id: idData
+          }
+        })
+          .then((response) => {
+            console.log('get notes user')
+            console.log(response);
+            const allData=response.data;
+            setData1(allData.slice(0,3));
+            console.log(data1)
+    
+          })
+          .catch(error => console.error(`Error:${error}`));
+    
+      }
+      const [dataStream,setDataStream]=useState([]);
+      const getAllDataStream=() => {
+          const idData = props.data;
+          console.log(idData)
+           axios.get(`${url}stream/get-all`)
+            .then((response) => {
+              console.log('Get Streams All')
+              console.log(response);
+              const allData=response.data;
+              setDataStream(allData.slice(0,5));
+              console.log(dataStream)
+      
+            })
+            .catch(error => console.error(`Error:${error}`));
+      
+        }
+      const [data2,setData2]=useState([]);
+      const getAllData2=() => {
+          const idData = props.data;
+          console.log(idData)
+           axios.get(`${url}class/get-owner-classes`, {
+            params: {
+              _id: idData
+            }
+          })
+            .then((response) => {
+              console.log('get class user')
+              console.log(response);
+              const allData=response.data;
+              setData2(allData.slice(0,3));
+              console.log(data2)
+      
+            })
+            .catch(error => console.error(`Error:${error}`));
+      
+        }
+      useEffect(() => {
+        getAllData1();
+        getAllData2();
+        getAllDataStream();
+      }, []);
+    
+    
 
 
     return (
@@ -150,112 +211,40 @@ function Dashboard() {
                         <Grid item xs={12} md={6}>
                             {/* First Cards  */}
                             <Grid container spacing={2}>
-                                <Grid item xs={12} md={12}>
-                                    <Card sx={{ minWidth: 275 }}>
-                                        <CardContent>
-                                            <Button startIcon={
-                                                <Avatar className={classes.iconstyle}><VideoLibraryIcon /></Avatar>
-                                            }>
-                                                <div className={classes.headStyle}>Videos</div>
-                                                {/* <Typography variant='h6' className={classes.headStyle}> Videos</Typography> */}
-
-                                            </Button>
-                                            <CardActions>
-                                                <Button size="small">View All</Button>
-                                            </CardActions>
-                                            <Typography variant="h5" component="div">
-                                                <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                                                    <ListItem alignItems="flex-start">
-                                                        <ListItemAvatar>
-                                                            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                                                        </ListItemAvatar>
-                                                        <ListItemText className={classes.listStyle}
-                                                            primary="Freelancing"
-
-                                                        />
-                                                        <ChevronRightIcon className={classes.listStyle} />
-                                                    </ListItem>
-                                                    <Divider variant="inset" component="li" />
-                                                    <ListItem alignItems="flex-start">
-                                                        <ListItemAvatar>
-                                                            <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-                                                        </ListItemAvatar>
-                                                        <ListItemText className={classes.listStyle}
-                                                            primary="Web Development"
-
-                                                        />
-                                                        <ChevronRightIcon className={classes.listStyle} />
-                                                    </ListItem>
-                                                    <Divider variant="inset" component="li" />
-                                                    <ListItem alignItems="flex-start">
-                                                        <ListItemAvatar>
-                                                            <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-                                                        </ListItemAvatar>
-                                                        <ListItemText className={classes.listStyle}
-                                                            primary="Andriod App"
-
-                                                        />
-                                                        <ChevronRightIcon className={classes.listStyle} />
-                                                    </ListItem>
-                                                </List>
-
-                                            </Typography>
-
-
-                                        </CardContent>
-
-                                    </Card>
-                                </Grid>
+                               
                                 <Grid item xs={12} md={12}>
                                     <Card sx={{ minWidth: 275 }}>
                                         <CardContent>
                                             <Button startIcon={
                                                 <Avatar className={classes.iconstyle}><ClassIcon /></Avatar>
                                             }>
-                                                <div className={classes.headStyle}> All Courses</div>
+                                                <div className={classes.headStyle}> Your Courses</div>
                                                 {/* <Typography variant='h6'> All Courses</Typography> */}
 
                                             </Button>
-                                            <CardActions>
-                                                <Button size="small">View All</Button>
-                                            </CardActions>
+                                         
                                             <Typography variant="h5" component="div">
-                                                <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                                                    <ListItem alignItems="flex-start">
+                                            <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                                                {loading && data2.map((row) => (
+                                                    <>
+                                                    <ListItem>
                                                         <ListItemAvatar>
-                                                            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                                                            <Avatar>
+                                                                <StickyNote2Icon />
+                                                            </Avatar>
                                                         </ListItemAvatar>
-                                                        <ListItemText className={classes.listStyle}
-                                                            primary="Freelancing"
-
-                                                        />
-                                                        <ChevronRightIcon className={classes.listStyle} />
+                                                        <ListItemText primary={row.name} secondary={row.description} />
                                                     </ListItem>
+
                                                     <Divider variant="inset" component="li" />
-                                                    <ListItem alignItems="flex-start">
-                                                        <ListItemAvatar>
-                                                            <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-                                                        </ListItemAvatar>
-                                                        <ListItemText className={classes.listStyle}
-                                                            primary="Web Development"
-
-                                                        />
-                                                        <ChevronRightIcon className={classes.listStyle} />
-                                                    </ListItem>
-                                                    <Divider variant="inset" component="li" />
-                                                    <ListItem alignItems="flex-start">
-                                                        <ListItemAvatar>
-                                                            <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-                                                        </ListItemAvatar>
-                                                        <ListItemText className={classes.listStyle}
-                                                            primary="Andriod App"
-
-                                                        />
-                                                        <ChevronRightIcon className={classes.listStyle} />
-                                                    </ListItem>
+                                                    </>
+                                                ))}
                                                 </List>
 
                                             </Typography>
+                                            <CardActions>
+                                                <Button size="small">View All</Button>
+                                            </CardActions>
 
                                         </CardContent>
 
@@ -271,30 +260,59 @@ function Dashboard() {
                                                 <div className={classes.headStyle}>Notes</div>
 
                                                 {/* <Typography variant='h6'> Notes</Typography> */}
-
                                             </Button>
                                             <Typography variant="h5" component="div">
-
                                                 <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                                                {loading && data1.map((row) => (
+                                                    <>
                                                     <ListItem>
                                                         <ListItemAvatar>
                                                             <Avatar>
                                                                 <StickyNote2Icon />
                                                             </Avatar>
                                                         </ListItemAvatar>
-                                                        <ListItemText primary="Notes 1" secondary="Due Date:Jan 9, 2014" />
+                                                        <ListItemText primary={row.details} secondary={row.date} />
                                                     </ListItem>
-                                                    <Divider variant="inset" component="li" />
-                                                    <ListItem>
-                                                        <ListItemAvatar>
-                                                            <Avatar>
-                                                                <StickyNote2Icon />
-                                                            </Avatar>
-                                                        </ListItemAvatar>
-                                                        <ListItemText primary="Notes 2" secondary="Due Date:Jan 7, 2014" />
-                                                    </ListItem>
-                                                    <Divider variant="inset" component="li" />
 
+                                                    <Divider variant="inset" component="li" />
+                                                    </>
+                                                ))}
+                                                </List>
+                                            </Typography>
+
+                                        </CardContent>
+                                        <CardActions>
+                                            <Button size="small">View All</Button>
+                                        </CardActions>
+                                    </Card>
+                                </Grid>
+                                {/* Study Planner  */}
+                                <Grid item xs={12} md={12}>
+                                    <Card sx={{ minWidth: 275 }}>
+                                        <CardContent>
+                                            <Button startIcon={
+                                                <Avatar className={classes.iconstyle}><StickyNote2Icon /></Avatar>
+                                            }>
+                                                <div className={classes.headStyle}>Study Planner</div>
+
+                                                {/* <Typography variant='h6'> Notes</Typography> */}
+                                            </Button>
+                                            <Typography variant="h5" component="div">
+                                                <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                                                {loading && data1.map((row) => (
+                                                    <>
+                                                    <ListItem>
+                                                        <ListItemAvatar>
+                                                            <Avatar>
+                                                                <StickyNote2Icon />
+                                                            </Avatar>
+                                                        </ListItemAvatar>
+                                                        <ListItemText primary={row.details} secondary={row.date} />
+                                                    </ListItem>
+
+                                                    <Divider variant="inset" component="li" />
+                                                    </>
+                                                ))}
                                                 </List>
                                             </Typography>
 
@@ -305,6 +323,9 @@ function Dashboard() {
                                     </Card>
                                 </Grid>
                             </Grid>
+
+                           
+                            {/* </Grid> */}
 
 
                             {/* <Typography variant='h5'>Cards</Typography> */}
@@ -341,46 +362,36 @@ function Dashboard() {
                                     <Card sx={{ minWidth: 275 }}>
                                         <CardContent>
                                             <Button startIcon={
-                                                <Avatar className={classes.iconstyle}><AssignmentIcon /></Avatar>
+                                                <Avatar className={classes.iconstyle}><StickyNote2Icon /></Avatar>
                                             }>
-                                                <div className={classes.headStyle}> Study Planner</div>
+                                                <div className={classes.headStyle}>Latest News</div>
 
-                                                {/* <Typography variant='h6'> Study Planner</Typography> */}
-
+                                                {/* <Typography variant='h6'> Notes</Typography> */}
                                             </Button>
                                             <Typography variant="h5" component="div">
                                                 <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                                                {loading && dataStream.map((row) => (
+                                                    <>
                                                     <ListItem>
                                                         <ListItemAvatar>
                                                             <Avatar>
-                                                                <AssignmentLateIcon />
+                                                                <StickyNote2Icon />
                                                             </Avatar>
                                                         </ListItemAvatar>
-                                                        <ListItemText primary="Assignment 1" secondary="Due Date:Jan 9, 2014" />
+                                                        <ListItemText primary={row.title} secondary={row.details} />
                                                     </ListItem>
-                                                    <Divider variant="inset" component="li" />
-                                                    <ListItem>
-                                                        <ListItemAvatar>
-                                                            <Avatar>
-                                                                <AssignmentLateIcon />
-                                                            </Avatar>
-                                                        </ListItemAvatar>
-                                                        <ListItemText primary="Assignment 2" secondary="Due Date:Jan 7, 2014" />
-                                                    </ListItem>
-                                                    <Divider variant="inset" component="li" />
 
+                                                    <Divider variant="inset" component="li" />
+                                                    </>
+                                                ))}
                                                 </List>
                                             </Typography>
 
+
                                         </CardContent>
-                                        <CardActions>
-                                            <Button size="small">View All</Button>
-                                        </CardActions>
                                     </Card>
 
                                 </Grid>
-
-
                                 <Grid item xs={12} md={12}>
                                     <Card sx={{ minWidth: 275 }}>
                                         <CardContent>
@@ -410,6 +421,7 @@ function Dashboard() {
                                     </Card>
 
                                 </Grid>
+
                             </Grid>
 
                         </Grid>

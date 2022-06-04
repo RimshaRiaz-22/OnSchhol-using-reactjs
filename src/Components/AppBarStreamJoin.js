@@ -41,10 +41,10 @@ import Performance from './Performance';
 import Videos from './Videos';
 import ClassIcon from '@mui/icons-material/Class';
 import AllCourses from './AllCourses';
-import MyCourse from './MyCourse'
 import { useNavigate } from 'react-router-dom'
 import url from './url';
 import axios from 'axios'
+import MyCourseJoin from './MyCourseJoin'
 
 const drawerWidth = 240;
 const logoStyle = {
@@ -558,7 +558,7 @@ const AppBarStream = (props) => {
                 {show7 ? <LegalInfo /> : null}
                 {show8 ? < Logout /> : null}
                 {show9 ? < AllCourses /> : null}
-                {show10 ? < MyCourse data={props.data} /> : null}
+                {show10 ? < MyCourseJoin data={props.data} /> : null}
 
 
             </Main>

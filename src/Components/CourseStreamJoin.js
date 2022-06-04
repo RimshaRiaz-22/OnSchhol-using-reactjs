@@ -1,17 +1,17 @@
 import React from 'react'
 import Box from '@mui/material/Box';
-import AppBarStream from '../Components/AppBarStream';
+import AppBarStreamJoin from '../Components/AppBarStreamJoin';
 import { useLocation } from 'react-router-dom';
 
 
-function CourseStream() {
+function CourseStreamJoin() {
   const { state } = useLocation();
   return (
     <>
     <Box sx={{ display: 'flex' }} >
       {console.log('corse stream')}
       {console.log(state.post_id)}
-    <AppBarStream data={state.post_id}
+    <AppBarStreamJoin data={state.post_id}
        />
 
     </Box>
@@ -19,4 +19,4 @@ function CourseStream() {
   )
 }
 
-export default CourseStream
+export default CourseStreamJoin

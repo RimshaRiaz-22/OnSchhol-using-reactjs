@@ -421,7 +421,7 @@ const AppBar1 = (props) => {
                         </ListItemButton>
                     </ListItem>
 
-                    <ListItem disablePadding className={classes.ListStyle1}>
+                    {/* <ListItem disablePadding className={classes.ListStyle1}>
                         <ListItemButton onClick={() => {
                             setShow(false);
                             setShow1(false);
@@ -440,7 +440,7 @@ const AppBar1 = (props) => {
                             </ListItemIcon>
                             <ListItemText primary="Archieved" />
                         </ListItemButton>
-                    </ListItem>
+                    </ListItem> */}
 
                     <ListItem disablePadding className={classes.ListStyle1}>
                         <ListItemButton onClick={() => {

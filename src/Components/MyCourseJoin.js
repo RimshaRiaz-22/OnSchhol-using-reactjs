@@ -178,42 +178,42 @@ function MyCourse(props) {
     const headers = {
         'Content-Type': 'application/json'
     }
-    // People 
-    // Class Students
-
+     // People 
+      // Class Students
+    
     // Settings 
-    // Class Update 
-    const [classTitleUpdate, setclassTitleUpdate] = useState("");
-    const [classDescriptionUpdate, setclassDescriptionUpdate] = useState("");
-    const classUpdate = () => {
-
-        axios.put(`${url}class/update`, {
-            _id: ClassIdData,
-            name: classTitleUpdate,
-            description: setclassTitleUpdate,
-        }, { headers }).then(response => {
-            console.log(response)
-            // setData([...data, response.data]);
-
-            let timerInterval
-            Swal.fire({
-                title: 'Class Updated Successfully',
-                timer: 2000,
-                timerProgressBar: true,
-                didOpen: () => {
-                    Swal.showLoading()
-                    const b = Swal.getHtmlContainer().querySelector('b')
-                    timerInterval = setInterval(() => {
-                        b.textContent = Swal.getTimerLeft()
-                    }, 100)
-                },
-                willClose: () => {
-                    clearInterval(timerInterval)
-                }
-            }).then((result) => {
-                /* Read more about handling dismissals below */
-                if (result.dismiss === Swal.DismissReason.timer) {
-                    console.log('I was closed by the timer')
+      // Class Update 
+      const [classTitleUpdate, setclassTitleUpdate] = useState("");
+      const [classDescriptionUpdate, setclassDescriptionUpdate] = useState("");
+      const classUpdate = () => {
+  
+          axios.put(`${url}class/update`, {
+              _id: ClassIdData,
+              name: classTitleUpdate,
+              description: setclassTitleUpdate,
+          }, { headers }).then(response => {
+              console.log(response)
+              // setData([...data, response.data]);
+  
+              let timerInterval
+              Swal.fire({
+                  title: 'Class Updated Successfully',
+                  timer: 2000,
+                  timerProgressBar: true,
+                  didOpen: () => {
+                      Swal.showLoading()
+                      const b = Swal.getHtmlContainer().querySelector('b')
+                      timerInterval = setInterval(() => {
+                          b.textContent = Swal.getTimerLeft()
+                      }, 100)
+                  },
+                  willClose: () => {
+                      clearInterval(timerInterval)
+                  }
+              }).then((result) => {
+                  /* Read more about handling dismissals below */
+                  if (result.dismiss === Swal.DismissReason.timer) {
+                      console.log('I was closed by the timer')
                     //   Refresh 
                     axios.get(`${url}class/get`, {
                         params: {
@@ -229,7 +229,7 @@ function MyCourse(props) {
                             setDescription(allData.description);
                             setclassDescriptionUpdate(allData.description)
                             setclassTitleUpdate(allData.name)
-
+            
                             setEnrolledStud(allData.enrolledStudents.length);
                             axios.get(`${url}user/get`, {
                                 params: {
@@ -242,23 +242,23 @@ function MyCourse(props) {
                                     setOwnerId(allData1.name);
                                 })
                                 .catch(error => console.error(`Error:${error}`));
-
-
-
-
+            
+            
+            
+            
                             setLoading(true)
-
+            
                         })
                         .catch(error => console.error(`Error:${error}`));
-                }
-            })
-        })
-            .catch(err => {
-                console.log(err)
-            })
-
-
-    }
+                  }
+              })
+          })
+              .catch(err => {
+                  console.log(err)
+              })
+  
+  
+      }
     // Upload 
     const [createTitle, setcreateTitle] = useState("");
     const [createDescription, setcreateDescription] = useState("");
@@ -301,10 +301,15 @@ function MyCourse(props) {
 
     }
     const assignUpload = () => {
-
+        // const formData = new FormData();
+        // formData.append('file', file);
+        // axios.post(`${url}upload-file`,
+        //     formData).then(response => {
+        //         console.log(response.data)
+        // setfile(response.data);
         axios.post(`${url}assignment-question/create`, {
             class: ClassIdData,
-            filePath: selectedFile1,
+            filePath: 'response.data',
             name: AssignTitle,
             dueDate: dueDate,
             numbers: number,
@@ -359,7 +364,7 @@ function MyCourse(props) {
         // setfile(response.data);
         axios.post(`${url}quiz-question/create`, {
             class: ClassIdData,
-            filePath: selectedFileQuiz,
+            filePath: 'response.data',
             name: QuizTitle,
             dueDate: dueDateQuiz,
             numbers: numberQuiz,
@@ -514,117 +519,6 @@ function MyCourse(props) {
             })
             .catch(error => console.error(`Error:${error}`));
     }
-    // File Upload 
-
-      const [selectedFile1,setSelectedFile1]= useState('')
-      const onFileChange = (e) => { 
-          console.log(e)
-          const formData = new FormData(); 
-          formData.append( 
-            "file", 
-            e, 
-          ); 
-         
-          // Details of the uploaded file 
-        //   console.log(selectedFile1); 
-         
-          // Request made to the backend api 
-          // Send formData object 
-          axios.post(`${url}upload-file`, formData,
-          { headers }).then(response => {
-              console.log(response.data.file)
-              setSelectedFile1(response.data.file)
-
-          })
-          
-      }
-      const [selectedFileQuiz,setSelectedFileQuiz]= useState('')
-      const onFileChangeQuiz = (e) => { 
-          console.log(e)
-          const formData = new FormData(); 
-          formData.append( 
-            "file", 
-            e, 
-          ); 
-         
-          // Details of the uploaded file 
-        //   console.log(selectedFile1); 
-         
-          // Request made to the backend api 
-          // Send formData object 
-          axios.post(`${url}upload-file`, formData,
-          { headers }).then(response => {
-              console.log(response.data.file)
-              setSelectedFileQuiz(response.data.file)
-
-          })
-          
-      }
-
-//    Video 
-const [selectedFileVideoPath,setSelectedFileVideoPath]= useState('')
-const [selectedFileVideoduration,setSelectedFileVideoDuration]= useState('')
-
-const onFileChangeVideo = (e) => { 
-    console.log(e)
-    const formData = new FormData(); 
-    formData.append( 
-      "video", 
-      e, 
-    ); 
-   
-    // Details of the uploaded file 
-  //   console.log(selectedFile1); 
-   
-    // Request made to the backend api 
-    // Send formData object 
-    axios.post(`${url}upload-video`, formData,
-    { headers }).then(response => {
-        console.log(response.data)
-        setSelectedFileVideoPath(response.data.path)
-        setSelectedFileVideoDuration(response.data.duration)
-
-    })
-    
-}
-const VideoUpload = () => {
- 
-    axios.post(`${url}quiz-question/create`, {
-        class: ClassIdData,
-        path: selectedFileVideoPath,
-        duration: selectedFileVideoduration,
-        
-    }, { headers }).then(response => {
-        console.log(response)
-        // setData([...data, response.data]);
-
-        let timerInterval
-        Swal.fire({
-            title: 'Video Lecture Uploaded Successfully',
-            timer: 2000,
-            timerProgressBar: true,
-            didOpen: () => {
-                Swal.showLoading()
-                const b = Swal.getHtmlContainer().querySelector('b')
-                timerInterval = setInterval(() => {
-                    b.textContent = Swal.getTimerLeft()
-                }, 100)
-            },
-            willClose: () => {
-                clearInterval(timerInterval)
-            }
-        }).then((result) => {
-            /* Read more about handling dismissals below */
-            if (result.dismiss === Swal.DismissReason.timer) {
-                console.log('I was closed by the timer')
-            }
-        })
-    })
-        .catch(err => {
-            console.log(err)
-        })
-
-}
 
     return (
         <div>
@@ -726,9 +620,9 @@ const VideoUpload = () => {
                                                                 <Tab label="Stream" value="1" />
                                                                 <Tab label="Assignments" value="5" />
                                                                 <Tab label="Quizes" value="6" />
-                                                                <Tab label="Classwork" value="2" />
+                                                                {/* <Tab label="Classwork" value="2" /> */}
                                                                 <Tab label="People" value="3" />
-                                                                <Tab label="Settings" value="4" />
+                                                                {/* <Tab label="Settings" value="4" /> */}
                                                             </TabList>
                                                         </Box>
                                                         {/* Stream */}
@@ -872,7 +766,7 @@ const VideoUpload = () => {
                                                         </TabPanel>
                                                         {/* Classwork  */}
 
-                                                        <TabPanel value="2" style={GridBackground}>
+                                                        {/* <TabPanel value="2" style={GridBackground}>
                                                             <Card sx={{ minWidth: 275 }} className={classes.margincard}>
                                                                 <CardContent>
                                                                     <Grid container spacing={2}>
@@ -913,15 +807,6 @@ const VideoUpload = () => {
                                                                                             }}>Quiz</Button>
 
                                                                                         </Grid>
-                                                                                        <Grid item xs={4} md={4}>
-                                                                                            <Button variant="contained" className={classes.btnB} onClick={() => {
-                                                                                                setShowUpload(false);
-                                                                                                setshowUploadAssign(false);
-                                                                                                setshowUploadQuiz(false);
-                                                                                                setshowUploadLink(true);
-                                                                                                setshowUploadUpdate(false);
-                                                                                            }}>Video</Button>
-                                                                                        </Grid>
 
                                                                                     </Grid>
                                                                                 </Grid>
@@ -931,24 +816,24 @@ const VideoUpload = () => {
                                                                 </CardContent>
                                                             </Card>
 
-                                                        </TabPanel>
+                                                        </TabPanel> */}
                                                         <TabPanel value="3">
-                                                            <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                                                                {/* {loading && data2.map((row) => ( */}
-                                                                <>
-                                                                    <ListItem>
-                                                                        <ListItemAvatar>
-                                                                            <Avatar>
-                                                                                <StickyNote2Icon />
-                                                                            </Avatar>
-                                                                        </ListItemAvatar>
-                                                                        <ListItemText primary='hrllo' secondary='{row.description}' />
-                                                                    </ListItem>
+                                                        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                                                {/* {loading && data2.map((row) => ( */}
+                                                    <>
+                                                    <ListItem>
+                                                        <ListItemAvatar>
+                                                            <Avatar>
+                                                                <StickyNote2Icon />
+                                                            </Avatar>
+                                                        </ListItemAvatar>
+                                                        <ListItemText primary='hrllo' secondary='{row.description}' />
+                                                    </ListItem>
 
-                                                                    <Divider variant="inset" component="li" />
-                                                                </>
-                                                                {/* ))} */}
-                                                            </List>
+                                                    <Divider variant="inset" component="li" />
+                                                    </>
+                                                {/* ))} */}
+                                                </List>
 
                                                         </TabPanel>
                                                         <TabPanel value="4">
@@ -964,32 +849,32 @@ const VideoUpload = () => {
                                                                                 </Grid>
                                                                                 <Grid item xs={12} md={12}>
                                                                                     <Grid container spacing={2}>
-                                                                                        <Grid item xs={12} md={12}>
-                                                                                            <TextField className={classes.btn} id="filled-basic" label="Enter Title" variant="filled"
-                                                                                                value={classTitleUpdate} onChange={
-                                                                                                    (e) => setclassTitleUpdate(e.target.value)
-                                                                                                } />
-                                                                                        </Grid>
-                                                                                        <Grid item xs={12} md={12}>
+                                                                                    <Grid item xs={12} md={12}>
+                                            <TextField className={classes.btn} id="filled-basic" label="Enter Title" variant="filled"
+                                                value={classTitleUpdate} onChange={
+                                                    (e) => setclassTitleUpdate(e.target.value)
+                                                } />
+                                        </Grid>
+                                        <Grid item xs={12} md={12}>
 
-                                                                                            <TextareaAutosize
-                                                                                                className={classes.btn}
-                                                                                                aria-label="minimum height"
-                                                                                                minRows={3}
-                                                                                                placeholder="Enter Description"
-                                                                                                value={classDescriptionUpdate}
-                                                                                                onChange={
-                                                                                                    (e) => setclassDescriptionUpdate(e.target.value)
-                                                                                                }
+                                            <TextareaAutosize
+                                                className={classes.btn}
+                                                aria-label="minimum height"
+                                                minRows={3}
+                                                placeholder="Enter Description"
+                                                value={classDescriptionUpdate}
+                                                onChange={
+                                                    (e) => setclassDescriptionUpdate(e.target.value)
+                                                }
 
-                                                                                            />
-                                                                                        </Grid>
-                                                                                        <Grid item xs={12} md={12}>
-                                                                                            <Button variant="contained" className={classes.btn} color='primary' component="span"
-                                                                                                onClick={classUpdate} >
-                                                                                                Submit
-                                                                                            </Button>
-                                                                                        </Grid>
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} md={12}>
+                                            <Button variant="contained" className={classes.btn} color='primary' component="span"
+                                                onClick={classUpdate} >
+                                                Submit
+                                            </Button>
+                                        </Grid>
                                                                                     </Grid>
 
 
@@ -1143,12 +1028,12 @@ const VideoUpload = () => {
                                             Upload File
                                         </Grid>
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
-                                         
-
-<input type="file" onChange={(e) =>onFileChange(e.target.files[0])} /> 
-              
-                {/* {this.fileData()}  */}
-
+                                            <input type="file" name="image" className={classes.inputStyle} placeholder="image"
+                                                onChange={
+                                                    (e) => changeHandler(e.target.files[0])
+                                                    // setfile(e.target.files[0])
+                                                    // changeHandler
+                                                } />
                                         </Grid>
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
                                             Select Due Date
@@ -1256,8 +1141,12 @@ const VideoUpload = () => {
                                             Upload File
                                         </Grid>
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
-                                           
-                                                <input type="file" onChange={(e) =>onFileChangeQuiz(e.target.files[0])} /> 
+                                            <input type="file" name="image" className={classes.inputStyle} placeholder="image"
+                                                onChange={
+                                                    (e) => changeHandlerQuiz(e.target.files[0])
+                                                    // setfile(e.target.files[0])
+                                                    // changeHandler
+                                                } />
                                         </Grid>
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
                                             Select Due Date
@@ -1382,16 +1271,29 @@ const VideoUpload = () => {
                                             <Typography variant='h6' > Class Link</Typography>
                                         </Grid>
                                         <Grid item xs={12} md={12}>
-                                        <Grid item xs={12} md={12} className={classes.marginstyle}>
-                                           
-                                           <input type="file" onChange={(e) =>onFileChangeVideo(e.target.files[0])} /> 
-                                   </Grid>
+                                            <TextField className={classes.btn} id="filled-basic" label="Enter Title" variant="filled"
+                                                value={createTitle} onChange={
+                                                    (e) => setcreateTitle(e.target.value)
+                                                } />
+                                        </Grid>
+                                        <Grid item xs={12} md={12}>
+
+                                            <TextareaAutosize
+                                                className={classes.btn}
+                                                aria-label="minimum height"
+                                                minRows={3}
+                                                placeholder="Enter Description"
+                                                value={createDescription}
+                                                onChange={
+                                                    (e) => setcreateDescription(e.target.value)
+                                                }
+
+                                            />
                                         </Grid>
 
                                         <Grid item xs={12} md={12}>
-                                        <Button variant="contained" className={classes.btn} color='primary' 
-                                        onClick={VideoUpload} component="span" >
-                                                Upload
+                                            <Button variant="contained" className={classes.btn} color='primary' component="span" >
+                                                Submit
                                             </Button>
                                         </Grid>
 
