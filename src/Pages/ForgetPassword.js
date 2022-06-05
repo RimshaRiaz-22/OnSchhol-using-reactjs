@@ -1,8 +1,11 @@
-import React from 'react'
+import React,{useState} from 'react'
 import { Grid,Avatar,Button } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import image from './logo.png'
 import Swal from 'sweetalert2';
+import url from '../Components/url'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 
 
@@ -37,21 +40,62 @@ const useStyles = makeStyles({
     }
 
 })
-
+const headers = {
+    'Content-Type': 'application/json'
+}
 
 function ForgetPassword() {
     const classes = useStyles();
+    const [email,setEmail]= useState();
+    const [password,setPassword]= useState();
+    let navigate = useNavigate();
+
     // submit handler 
 const submitHandler = async (e) => {
-    Swal.fire({
-        title: 'Password Changed Link has been send to your email',
-        showClass: {
-            popup: 'animate__animated animate__fadeInDown'
-        },
-        hideClass: {
-            popup: 'animate__animated animate__fadeOutUp'
-        }
-    })
+    e.preventDefault()
+        // POst Request 
+        await axios.put(`${url}user/update-password`, {
+            email: email,
+            password: password
+        }, { headers }).then(response => {
+            console.log(response)
+
+            let timerInterval
+            Swal.fire({
+                title: 'Password Changed Successfully',
+                html: 'Please wait !',
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading()
+                    const b = Swal.getHtmlContainer().querySelector('b')
+                    timerInterval = setInterval(() => {
+                        b.textContent = Swal.getTimerLeft()
+                    }, 100)
+                },
+                willClose: () => {
+                    clearInterval(timerInterval)
+                }
+            }).then((result) => {
+                /* Read more about handling dismissals below */
+                if (result.dismiss === Swal.DismissReason.timer) {
+                    console.log('I was closed by the timer')
+                }
+            })
+            navigate('/');
+        })
+            .catch(err => {
+                console.log(err)
+                Swal.fire({
+                    title: 'Invalid Credentials',
+                    showClass: {
+                        popup: 'animate__animated animate__fadeInDown'
+                    },
+                    hideClass: {
+                        popup: 'animate__animated animate__fadeOutUp'
+                    }
+                })
+            })
 
 }
   return (
@@ -68,11 +112,20 @@ const submitHandler = async (e) => {
                         <h3>Forgot Password ?</h3>
                         <p>Enter Here the email address you have registered with.</p>
                         <input className={classes.InputStyle} name="email"
-                            //  value={email}
+                             value={email}
                             type="text" placeholder="Enter Email"
-                        // onChange={
-                        //     (e) => setEmail(e.target.value)
-                        // }
+                        onChange={
+                            (e) => setEmail(e.target.value)
+                        }
+                        />
+                        <p>Type new password.</p>
+
+                         <input className={classes.InputStyle} name="password"
+                             value={password}
+                            type="password" placeholder="Enter Password"
+                        onChange={
+                            (e) => setPassword(e.target.value)
+                        }
                         />
                         <Button variant="contained"
                             onClick={

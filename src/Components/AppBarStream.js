@@ -358,7 +358,7 @@ const AppBarStream = (props) => {
                                 <AssignmentIcon className={classes.iconColor} />
 
                             </ListItemIcon>
-                            <ListItemText primary="Study Planner" />
+                            <ListItemText primary="Tasks" />
                         </ListItemButton>
                     </ListItem>
 

@@ -352,7 +352,7 @@ const AppBar1 = (props) => {
                                 <AssignmentIcon className={classes.iconColor} />
 
                             </ListItemIcon>
-                            <ListItemText primary="Study Planner" />
+                            <ListItemText primary="Tasks" />
                         </ListItemButton>
                     </ListItem>
 

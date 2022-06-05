@@ -38,6 +38,7 @@ import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'
 import url from './url'
+import { DeleteOutline } from '@material-ui/icons';
 
 
 const useStyles = makeStyles({
@@ -71,6 +72,22 @@ const useStyles = makeStyles({
   },
   gridmargin: {
 
+  },notification: {
+    // backgroundColor: '#555',
+    // color:' white',
+    textDecoration: 'none',
+    // padding:' 15px 26px',
+    position: 'relative',
+    display: 'inline-block',
+    borderRadius: '2px'
+  },badge :{
+    position: 'absolute',
+    top: '10px',
+    right: '10px',
+    padding: '5px 10px',
+    borderRadius:' 50%',
+    // backgroundColor: 'red',
+    color: 'red'
   }
 
 })
@@ -164,6 +181,69 @@ const openClass = (idData) => {
           post_id: idData,
       }
   });
+
+}
+// Delete Class 
+const deleteClass = (idData) => {
+  console.log(idData)
+  axios.delete(`${url}class/delete`, {
+    data: {
+        _id: idData
+    }
+}, { headers })
+    .then(res => {
+        console.log(res);
+        console.log(res.data);
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: {
+                backgroundColor: '#4CAF50', /* Green */
+                border: 'none',
+                color: 'white',
+                padding: '15px 32px',
+                textAlign: 'center',
+                textDecoration: 'none',
+                display: 'inline-block',
+                fontSize: '16px'
+            }
+        })
+
+        swalWithBootstrapButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                swalWithBootstrapButtons.fire(
+                    'Deleted!',
+                    'Course has been deleted.',
+                    'success'
+                )
+                //    refresh componenet 
+            getAllData();
+                // window.location.reload(false);
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelled',
+                    'Course is safe :)',
+                    'error'
+                )
+            }
+        })
+        // setOpen1(true);
+    }).catch(err => {
+        console.log(err)
+    })
 
 }
 const openClassJoin = (idData) => {
@@ -372,12 +452,15 @@ const [data, setData] = useState([]);
 
                         </Grid>
                         {loading && data.map((row) => (
-                        <Grid item xs={12} md={4}>
+                        <Grid item xs={12} md={4} className={classes.notification}>
                         <Button variant="outlined" className={classes.btn} 
                         onClick={() => {
                           openClass(row._id)}}>
                                 {row.name}
                             </Button>
+                            <span className={classes.badge} 
+                            onClick={() => {
+                          deleteClass(row._id)}}><DeleteOutline/></span>
 
                         </Grid>
                         ))}

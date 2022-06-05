@@ -10,6 +10,7 @@ import SignUp from './Pages/SignUp';
 import ForgetPassword from './Pages/ForgetPassword';
 import CourseStream from './Components/CourseStream';
 import CourseStreamJoin from './Components/CourseStreamJoin'
+import ReactPdfViewer from './Components/ReactPdfViewer';
 
 
 function App() {
@@ -33,6 +34,9 @@ function App() {
           </Routes>
           <Routes>
             <Route exact path="/coursestreamjoin" element={<CourseStreamJoin />}></Route>
+          </Routes>
+          <Routes>
+            <Route exact path="/pdf" element={<ReactPdfViewer />}></Route>
           </Routes>
           
         </Router>

@@ -20,6 +20,8 @@ import TextareaAutosize from '@mui/material/TextareaAutosize';
 import { styled } from '@mui/material/styles';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import IconButton from '@mui/material/IconButton';
+import { useNavigate } from 'react-router-dom'
+
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -40,7 +42,7 @@ import ClassIcon from '@mui/icons-material/Class';
 import AssignmentLateIcon from '@mui/icons-material/AssignmentLate';
 import ListItemButton from '@mui/material/ListItemButton';
 import StickyNote2Icon from '@mui/icons-material/StickyNote2';
-
+import { Document, Page } from 'react-pdf';
 
 const useStyles = makeStyles({
     cardCenter: {
@@ -54,11 +56,11 @@ const useStyles = makeStyles({
     }, margincard: {
         marginBottom: '10px'
 
-    },marginBtn:{
-        marginBottom:'20px',
-        marginTop:'20px'
+    }, marginBtn: {
+        marginBottom: '20px',
+        marginTop: '20px'
 
-    },due: {
+    }, due: {
         color: 'rgba(0, 0, 0, 0.6)',
         fontSize: '14px'
     }, btn: {
@@ -103,7 +105,6 @@ function MyCourse(props) {
     const [description, setDescription] = useState([]);
     const [ownerId, setOwnerId] = useState([]);
     const [enrolledStud, setEnrolledStud] = useState([]);
-    const [enrolledStudData, setEnrolledStudData] = useState([]);
 
     const ClassIdData = props.data;
     const getAllData = () => {
@@ -122,9 +123,7 @@ function MyCourse(props) {
                 setclassDescriptionUpdate(allData.description)
                 setclassTitleUpdate(allData.name)
                 setEnrolledStud(allData.enrolledStudents.length);
-                setEnrolledStudData(response.data.enrolledStudents)
-                console.log('enrolled students ');
-                console.log(enrolledStudData)
+
                 axios.get(`${url}user/get`, {
                     params: {
                         _id: allData.owner
@@ -146,6 +145,7 @@ function MyCourse(props) {
         getAllAssignment();
         getAllStream();
         getAllQuiz();
+        getAllEnrollData();
 
     }, []);
 
@@ -160,6 +160,8 @@ function MyCourse(props) {
     const [showUploadQuiz, setshowUploadQuiz] = React.useState(false);
     const [showUploadLink, setshowUploadLink] = React.useState(false);
     const [showUploadUpdate, setshowUploadUpdate] = React.useState(false);
+    const [showViewAssignment, setshowViewAssignment] = React.useState(false);
+    const [showViewQuiz, setshowViewQuiz] = React.useState(false);
 
 
 
@@ -172,8 +174,10 @@ function MyCourse(props) {
         setValue(newValue);
     };
 
+
     const viewLec = () => {
         setShow(false);
+        setShowNews(false)
 
     }
     const backtocourse = () => {
@@ -469,6 +473,319 @@ function MyCourse(props) {
             })
             .catch(error => console.error(`Error:${error}`));
     }
+    // Delete Assignment 
+    // Delete 
+    // Alert 
+    const deleteData = (id) => {
+        console.log('deleting phone no')
+        console.log(id);
+        axios.delete(`${url}assignment-question/delete`, {
+            data: {
+                _id: id
+            }
+        }, { headers })
+            .then(res => {
+                console.log(res);
+                console.log(res.data);
+                const swalWithBootstrapButtons = Swal.mixin({
+                    customClass: {
+                        confirmButton: 'btn btn-success',
+                        cancelButton: 'btn btn-danger'
+                    },
+                    buttonsStyling: {
+                        backgroundColor: '#4CAF50', /* Green */
+                        border: 'none',
+                        color: 'white',
+                        padding: '15px 32px',
+                        textAlign: 'center',
+                        textDecoration: 'none',
+                        display: 'inline-block',
+                        fontSize: '16px'
+                    }
+                })
+
+                swalWithBootstrapButtons.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'No, cancel!',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        swalWithBootstrapButtons.fire(
+                            'Deleted!',
+                            'Assignment has been deleted.',
+                            'success'
+                        )
+                        //    refresh componenet 
+                        getAllAssignment();
+
+                        // window.location.reload(false);
+                    } else if (
+                        /* Read more about handling dismissals below */
+                        result.dismiss === Swal.DismissReason.cancel
+                    ) {
+                        swalWithBootstrapButtons.fire(
+                            'Cancelled',
+                            'Assignment is safe :)',
+                            'error'
+                        )
+                    }
+                })
+                // setOpen1(true);
+            }).catch(err => {
+                console.log(err)
+            })
+    }
+      // Delete Quiz 
+    // Delete 
+    // Alert 
+    const deleteDataQuiz = (id) => {
+        console.log('deleting phone no')
+        console.log(id);
+        axios.delete(`${url}quiz-question/delete`, {
+            data: {
+                _id: id
+            }
+        }, { headers })
+            .then(res => {
+                console.log(res);
+                console.log(res.data);
+                const swalWithBootstrapButtons = Swal.mixin({
+                    customClass: {
+                        confirmButton: 'btn btn-success',
+                        cancelButton: 'btn btn-danger'
+                    },
+                    buttonsStyling: {
+                        backgroundColor: '#4CAF50', /* Green */
+                        border: 'none',
+                        color: 'white',
+                        padding: '15px 32px',
+                        textAlign: 'center',
+                        textDecoration: 'none',
+                        display: 'inline-block',
+                        fontSize: '16px'
+                    }
+                })
+
+                swalWithBootstrapButtons.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'No, cancel!',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        swalWithBootstrapButtons.fire(
+                            'Deleted!',
+                            'Quiz has been deleted.',
+                            'success'
+                        )
+                        //    refresh componenet 
+                        getAllQuiz();
+
+                        // window.location.reload(false);
+                    } else if (
+                        /* Read more about handling dismissals below */
+                        result.dismiss === Swal.DismissReason.cancel
+                    ) {
+                        swalWithBootstrapButtons.fire(
+                            'Cancelled',
+                            'Quiz is safe :)',
+                            'error'
+                        )
+                    }
+                })
+                // setOpen1(true);
+            }).catch(err => {
+                console.log(err)
+            })
+    }
+    let navigate = useNavigate();
+
+    // View Update Assignment 
+    const [viewAssignName, setViewAssignName] = useState();
+    const [viewAssignDue, setViewAssignDue] = useState();
+    const [viewAssignFilePath, setViewAssignFilePath] = useState();
+    const [viewAssignNumbers, setViewAssignNumbers] = useState();
+    const [viewAssignId, setViewAssignId] = useState();
+
+    const viewAssignment = async (idData) => {
+        console.log(idData)
+        setShowNews(false);
+        setshowViewAssignment(true);
+        getAssignment(idData);
+
+    }
+    // View Assignment Pdf 
+    const viewPdf = () => {
+        let timerInterval
+        Swal.fire({
+            title: 'Opening Pdf',
+            html: 'Please wait !',
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading()
+                const b = Swal.getHtmlContainer().querySelector('b')
+                timerInterval = setInterval(() => {
+                    b.textContent = Swal.getTimerLeft()
+                }, 100)
+            },
+            willClose: () => {
+                clearInterval(timerInterval)
+            }
+        }).then((result) => {
+            /* Read more about handling dismissals below */
+            if (result.dismiss === Swal.DismissReason.timer) {
+                console.log('I was closed by the timer')
+            }
+        })
+        navigate('/pdf'
+            ,
+            {
+                state: {
+                    link: viewAssignFilePath
+                }
+            }
+        );
+    }
+    //  Update Assignment 
+    const assignUpdate = async () => {
+        await axios.put(`${url}assignment-question/update`, {
+            _id: viewAssignId,
+            filePath: viewAssignFilePath,
+            dueDate: viewAssignDue,
+            numbers: viewAssignNumbers,
+            name: viewAssignName,
+        }, { headers }).then(response => {
+            console.log(response)
+            setshowViewAssignment(false);
+
+
+            let timerInterval
+            Swal.fire({
+                title: 'Updated Assignment Successfully',
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading()
+                    const b = Swal.getHtmlContainer().querySelector('b')
+                    timerInterval = setInterval(() => {
+                        b.textContent = Swal.getTimerLeft()
+                    }, 100)
+                },
+                willClose: () => {
+                    clearInterval(timerInterval)
+                }
+            }).then((result) => {
+                /* Read more about handling dismissals below */
+                if (result.dismiss === Swal.DismissReason.timer) {
+                    console.log('I was closed by the timer')
+                }
+                getAllAssignment();
+            })
+                .catch(err => {
+                    console.log(err)
+                })
+        })
+    }
+    // Get Assignment 
+    const getAssignment = async (idData) => {
+        await axios.get(`${url}assignment-question/get`, {
+            params: {
+                _id: idData
+            }
+        }, { headers }).then(response => {
+            console.log('response')
+            console.log(response.data);
+            setViewAssignId(response.data._id)
+            setViewAssignDue(response.data.dueDate)
+            setViewAssignFilePath(response.data.filePath)
+            setViewAssignNumbers(response.data.numbers)
+            setViewAssignName(response.data.name)
+        })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+    // Get Quiz
+    const [viewQuizName, setViewQuizName] = useState();
+    const [viewQuizDue, setViewQuizDue] = useState();
+    const [viewQuizFilePath, setViewQuizFilePath] = useState();
+    const [viewQuizNumbers, setViewQuizNumbers] = useState();
+    const [viewQuizId, setViewQuizId] = useState();
+
+    const viewQuiz = async (idData) => {
+        console.log(idData)
+        setShowNews(false);
+        setshowViewQuiz(true);
+        getQuiz(idData);
+
+    }
+        // Get Quiz 
+        const getQuiz = async (idData) => {
+            await axios.get(`${url}quiz-question/get`, {
+                params: {
+                    _id: idData
+                }
+            }, { headers }).then(response => {
+                console.log('response')
+                console.log(response.data);
+                setViewQuizId(response.data._id)
+                setViewQuizDue(response.data.dueDate)
+                setViewQuizFilePath(response.data.filePath)
+                setViewQuizNumbers(response.data.numbers)
+                setViewQuizName(response.data.name)
+            })
+                .catch(err => {
+                    console.log(err)
+                })
+        }
+          //  Update Quiz 
+    const QuizUpdate = async () => {
+        await axios.put(`${url}quiz-question/update`, {
+            _id: viewQuizId,
+            filePath: viewQuizFilePath,
+            dueDate: viewQuizDue,
+            numbers: viewQuizNumbers,
+            name: viewQuizName,
+        }, { headers }).then(response => {
+            console.log(response)
+            setshowViewQuiz(false);
+
+
+            let timerInterval
+            Swal.fire({
+                title: 'Updated Quiz Successfully',
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading()
+                    const b = Swal.getHtmlContainer().querySelector('b')
+                    timerInterval = setInterval(() => {
+                        b.textContent = Swal.getTimerLeft()
+                    }, 100)
+                },
+                willClose: () => {
+                    clearInterval(timerInterval)
+                }
+            }).then((result) => {
+                /* Read more about handling dismissals below */
+                if (result.dismiss === Swal.DismissReason.timer) {
+                    console.log('I was closed by the timer')
+                }
+                getAllQuiz();
+            })
+                .catch(err => {
+                    console.log(err)
+                })
+        })
+    }
     // Quiz-Get
     const [QuizData, setQuizData] = useState([]);
     const getAllQuiz = () => {
@@ -494,6 +811,7 @@ function MyCourse(props) {
             })
             .catch(error => console.error(`Error:${error}`));
     }
+
     // Stream-Get
     const [StreamData, setStreamData] = useState([]);
     const getAllStream = () => {
@@ -508,6 +826,26 @@ function MyCourse(props) {
                 setStreamData(response.data);
                 console.log('assignment data');
                 console.log(StreamData);
+                setLoading(true)
+
+            })
+            .catch(error => console.error(`Error:${error}`));
+    }
+    // Video Get 
+    // Stream-Get
+    const [VideoData, setVideoData] = useState([]);
+    const getAllVideo = () => {
+        axios.get(`${url}stream/get-class-streams`, {
+            params: {
+                _id: ClassIdData
+            }
+        })
+            .then((response) => {
+                const allData = response.data;
+                console.log(allData);
+                setVideoData(response.data);
+                console.log('assignment data');
+                console.log(VideoData);
                 // setData(allData);
                 // setTitle(allData.name);
                 // setClassId(allData.classId);
@@ -519,32 +857,25 @@ function MyCourse(props) {
             })
             .catch(error => console.error(`Error:${error}`));
     }
-    // Video Get 
-     // Stream-Get
-     const [VideoData, setVideoData] = useState([]);
-     const getAllVideo = () => {
-         axios.get(`${url}stream/get-class-streams`, {
-             params: {
-                 _id: ClassIdData
-             }
-         })
-             .then((response) => {
-                 const allData = response.data;
-                 console.log(allData);
-                 setVideoData(response.data);
-                 console.log('assignment data');
-                 console.log(VideoData);
-                 // setData(allData);
-                 // setTitle(allData.name);
-                 // setClassId(allData.classId);
-                 // setDescription(allData.description);
- 
-                 // setEnrolledStud(allData.enrolledStudents.length);
-                 setLoading(true)
- 
-             })
-             .catch(error => console.error(`Error:${error}`));
-     }
+    //  Get Enrolled Students 
+    const [enrolledStudData, setEnrolledStudData] = useState([]);
+    const getAllEnrollData = () => {
+        axios.get(`${url}class/get-enrolled-students`, {
+            params: {
+                _id: ClassIdData
+            }
+        })
+            .then((response) => {
+                const allData = response.data;
+                console.log(allData);
+                setEnrolledStudData(response.data);
+                console.log('Enroll student Data');
+                console.log(enrolledStudData);
+                setLoading(true)
+
+            })
+            .catch(error => console.error(`Error:${error}`));
+    }
     // File Upload 
 
     const [selectedFile1, setSelectedFile1] = useState('')
@@ -565,6 +896,50 @@ function MyCourse(props) {
             { headers }).then(response => {
                 console.log(response.data.file)
                 setSelectedFile1(response.data.file)
+
+            })
+
+    }
+    // Assignment update file 
+    const onFileChangeUpdate = (e) => {
+        console.log(e)
+        const formData = new FormData();
+        formData.append(
+            "file",
+            e,
+        );
+
+        // Details of the uploaded file 
+        //   console.log(selectedFile1); 
+
+        // Request made to the backend api 
+        // Send formData object 
+        axios.post(`${url}upload-file`, formData,
+            { headers }).then(response => {
+                console.log(response.data.file)
+                setViewAssignFilePath(response.data.file)
+
+            })
+
+    }
+     // Quiz update file 
+     const onFileChangeQuizUpdate = (e) => {
+        console.log(e)
+        const formData = new FormData();
+        formData.append(
+            "file",
+            e,
+        );
+
+        // Details of the uploaded file 
+        //   console.log(selectedFile1); 
+
+        // Request made to the backend api 
+        // Send formData object 
+        axios.post(`${url}upload-file`, formData,
+            { headers }).then(response => {
+                console.log(response.data.file)
+                setViewQuizFilePath(response.data.file)
 
             })
 
@@ -836,14 +1211,22 @@ function MyCourse(props) {
 
                                                                     </CardContent>
                                                                     <CardActions>
-                                                                        <Grid item xs={5} md={5}>
+                                                                        <Grid item xs={2} md={2}>
                                                                             <Button size="small"
                                                                                 onClick={() => {
-                                                                                    viewLec()
+                                                                                    viewAssignment(row._id)
                                                                                 }}
                                                                             >View</Button>
                                                                         </Grid>
-                                                                        <Grid item xs={7} md={7}>
+                                                                        <Grid item xs={4} md={4}>
+                                                                            <Button size="small"
+                                                                                onClick={() => {
+                                                                                    console.log(row._id)
+                                                                                    deleteData(row._id)
+                                                                                }}
+                                                                            >Delete</Button>
+                                                                        </Grid>
+                                                                        <Grid item xs={6} md={6}>
                                                                             Due Date:{row.dueDate}
                                                                         </Grid>
 
@@ -884,14 +1267,22 @@ function MyCourse(props) {
 
                                                                     </CardContent>
                                                                     <CardActions>
-                                                                        <Grid item xs={5} md={5}>
+                                                                        <Grid item xs={2} md={2}>
                                                                             <Button size="small"
                                                                                 onClick={() => {
-                                                                                    viewLec()
+                                                                                    viewQuiz(row._id)
                                                                                 }}
                                                                             >View</Button>
                                                                         </Grid>
-                                                                        <Grid item xs={7} md={7}>
+                                                                        <Grid item xs={4} md={4}>
+                                                                            <Button size="small"
+                                                                                onClick={() => {
+                                                                                    console.log(row._id)
+                                                                                    deleteDataQuiz(row._id)
+                                                                                }}
+                                                                            >Delete</Button>
+                                                                        </Grid>
+                                                                        <Grid item xs={6} md={6}>
                                                                             Due Date:{row.dueDate}
                                                                         </Grid>
 
@@ -967,22 +1358,23 @@ function MyCourse(props) {
                                                             </Card>
 
                                                         </TabPanel>
+                                                        {/* Enrolled students  */}
                                                         <TabPanel value="3">
                                                             <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                                                                {/* {loading && data2.map((row) => ( */}
-                                                                <>
-                                                                    <ListItem>
-                                                                        <ListItemAvatar>
-                                                                            <Avatar>
-                                                                                <StickyNote2Icon />
-                                                                            </Avatar>
-                                                                        </ListItemAvatar>
-                                                                        <ListItemText primary='hrllo' secondary='{row.description}' />
-                                                                    </ListItem>
+                                                                {loading && enrolledStudData.map((row) => (
+                                                                    <>
+                                                                        <ListItem>
+                                                                            <ListItemAvatar>
+                                                                                <Avatar>
+                                                                                    S
+                                                                                </Avatar>
+                                                                            </ListItemAvatar>
+                                                                            <ListItemText primary={row.name} secondary={row.email} />
+                                                                        </ListItem>
 
-                                                                    <Divider variant="inset" component="li" />
-                                                                </>
-                                                                {/* ))} */}
+                                                                        <Divider variant="inset" component="li" />
+                                                                    </>
+                                                                ))}
                                                             </List>
 
                                                         </TabPanel>
@@ -1103,7 +1495,7 @@ function MyCourse(props) {
                     </>
                 }
                 <Grid item xs={12} md={3} >
-                
+
                     {showUpload ?
                         <>
                             {/* <Grid container spacing={2}> */}
@@ -1154,10 +1546,10 @@ function MyCourse(props) {
 
                         </>
 
-                        : 
-                       null}
+                        :
+                        null}
 
-{showNews ?
+                    {showNews ?
                         <>
                             {/* <Grid container spacing={2}> */}
 
@@ -1170,18 +1562,18 @@ function MyCourse(props) {
                                             <Typography variant='h6' > Latest Updates</Typography>
                                         </Grid>
                                         <Grid item xs={12} md={12}>
-                                        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                                            <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
                                                 {loading && StreamData.map((row) => (
                                                     <>
-                                                    <ListItem>
-                                                        <ListItemText primary={row.title} secondary={row.date} />
-    
-                                                    </ListItem>
+                                                        <ListItem>
+                                                            <ListItemText primary={row.title} secondary={row.date} />
 
-                                                    <Divider variant="inset" component="li" />
+                                                        </ListItem>
+
+                                                        <Divider variant="inset" component="li" />
                                                     </>
                                                 ))}
-                                                </List>
+                                            </List>
                                         </Grid>
                                     </Grid>
                                 </CardContent>
@@ -1191,8 +1583,8 @@ function MyCourse(props) {
 
                         </>
 
-                        : 
-                       null}
+                        :
+                        null}
 
 
                     {showUploadAssign ?
@@ -1225,7 +1617,7 @@ function MyCourse(props) {
 
                                         </Grid>
                                         <Grid item xs={12} md={12}>
-                                            <Typography variant='h6' style={{color:'blue', fontSize:'11px'}} > Please Select pdf file </Typography>
+                                            <Typography variant='h6' style={{ color: 'blue', fontSize: '11px' }} > Please Select pdf file </Typography>
                                         </Grid>
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
                                             Select Due Date
@@ -1309,8 +1701,176 @@ function MyCourse(props) {
 
                         </>
 
+                        :
+                        null}
+
+                    {showViewAssignment ?
+                        <>
+                            {/* <Grid container spacing={2}> */}
+
+
+                            {/* <Grid item xs={12} md={12}> */}
+                            <Card sx={{ minWidth: 275 }} className={classes.cardCenter1}>
+                                <CardContent>
+                                    {/* {loading && viewAssign.map((row) => ( */}
+                                    <Grid container >
+                                        <Grid item xs={12} md={12}>
+                                            <Typography variant='h6' > Assignment</Typography>
+                                        </Grid>
+                                        <Grid item xs={12} md={12} className={classes.marginstyle}>
+                                            <TextField className={classes.btn} id="filled-basic" label="Enter Title" variant="filled"
+                                                value={viewAssignName} onChange={
+                                                    (e) => setViewAssignName(e.target.value)
+                                                } />
+                                        </Grid>
+                                        <Grid item xs={12} md={12} className={classes.marginstyle}>
+                                            Assignment File
+                                        </Grid>
+                                        <Grid item xs={12} md={12} className={classes.marginstyle}>
+
+                                            {/* <iframe src="https://people.engr.tamu.edu/choe/choe/courses/12summer/315/lectures/kwon-android01.pdf" width="100%" height="500px">
+                                        </iframe> */}
+                                            <Button variant="contained" className={classes.btn} color='primary' component="span"
+                                                onClick={viewPdf} >
+                                                Open Pdf
+                                            </Button>
+                                            <input type="file" onChange={(e) => onFileChangeUpdate(e.target.files[0])} />
+
+                                        </Grid>
+                                        <Grid item xs={12} md={12} className={classes.marginstyle}>
+                                            Select Due Date
+                                        </Grid>
+                                        <Grid item xs={12} md={12} className={classes.marginstyle}>
+                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                <DateTimePicker
+                                                    renderInput={(props) => <TextField {...props} />}
+                                                    label="Due Date"
+                                                    value={viewAssignDue}
+                                                    onChange={(newValue) => {
+                                                        setViewAssignDue(newValue);
+                                                    }}
+                                                />
+                                            </LocalizationProvider>
+                                        </Grid>
+
+
+                                        <Grid item xs={12} md={12} className={classes.marginstyle}>
+                                            <div className={classes.TextStyle}>
+                                                Enter Total Marks:
+                                            </div>
+
+                                        </Grid>
+                                        <Grid item xs={12} md={12} className={classes.marginstyle}>
+
+                                            <TextField className={classes.btn} id="filled-basic" label="Enter Marks" variant="filled"
+                                                value={viewAssignNumbers} onChange={
+                                                    (e) => setViewAssignNumbers(e.target.value)
+                                                } />
+                                        </Grid>
+
+                                        <Grid item xs={12} md={12} className={classes.marginstyle}>
+                                            <Button variant="contained" className={classes.btn} color='primary' onClick={assignUpdate} component="span" >
+                                                Update
+                                            </Button>
+                                        </Grid>
+
+
+
+
+                                    </Grid>
+
+                                </CardContent>
+                            </Card>
+                            {/* </Grid> */}
+                            {/* </Grid> */}
+
+                        </>
+
                         : null}
 
+{showViewQuiz ?
+                        <>
+                            {/* <Grid container spacing={2}> */}
+
+
+                            {/* <Grid item xs={12} md={12}> */}
+                            <Card sx={{ minWidth: 275 }} className={classes.cardCenter1}>
+                                <CardContent>
+                                    {/* {loading && viewAssign.map((row) => ( */}
+                                    <Grid container >
+                                        <Grid item xs={12} md={12}>
+                                            <Typography variant='h6' > Quiz</Typography>
+                                        </Grid>
+                                        <Grid item xs={12} md={12} className={classes.marginstyle}>
+                                            <TextField className={classes.btn} id="filled-basic" label="Enter Title" variant="filled"
+                                                value={viewQuizName} onChange={
+                                                    (e) => setViewQuizName(e.target.value)
+                                                } />
+                                        </Grid>
+                                        <Grid item xs={12} md={12} className={classes.marginstyle}>
+                                        Quiz File
+                                        </Grid>
+                                        <Grid item xs={12} md={12} className={classes.marginstyle}>
+
+                                            {/* <iframe src="https://people.engr.tamu.edu/choe/choe/courses/12summer/315/lectures/kwon-android01.pdf" width="100%" height="500px">
+                                        </iframe> */}
+                                            <Button variant="contained" className={classes.btn} color='primary' component="span"
+                                                onClick={viewPdf} >
+                                                Open Pdf
+                                            </Button>
+                                            <input type="file" onChange={(e) => onFileChangeQuizUpdate(e.target.files[0])} />
+
+                                        </Grid>
+                                        <Grid item xs={12} md={12} className={classes.marginstyle}>
+                                            Select Due Date
+                                        </Grid>
+                                        <Grid item xs={12} md={12} className={classes.marginstyle}>
+                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                <DateTimePicker
+                                                    renderInput={(props) => <TextField {...props} />}
+                                                    label="Due Date"
+                                                    value={viewQuizDue}
+                                                    onChange={(newValue) => {
+                                                        setViewQuizDue(newValue);
+                                                    }}
+                                                />
+                                            </LocalizationProvider>
+                                        </Grid>
+
+
+                                        <Grid item xs={12} md={12} className={classes.marginstyle}>
+                                            <div className={classes.TextStyle}>
+                                                Enter Total Marks:
+                                            </div>
+
+                                        </Grid>
+                                        <Grid item xs={12} md={12} className={classes.marginstyle}>
+
+                                            <TextField className={classes.btn} id="filled-basic" label="Enter Marks" variant="filled"
+                                                value={viewQuizNumbers} onChange={
+                                                    (e) => setViewQuizNumbers(e.target.value)
+                                                } />
+                                        </Grid>
+
+                                        <Grid item xs={12} md={12} className={classes.marginstyle}>
+                                            <Button variant="contained" className={classes.btn} color='primary' onClick={QuizUpdate} component="span" >
+                                                Update
+                                            </Button>
+                                        </Grid>
+
+
+
+
+                                    </Grid>
+
+                                </CardContent>
+                            </Card>
+                            {/* </Grid> */}
+                            {/* </Grid> */}
+
+                        </>
+
+                        : null}
                     {showUploadQuiz ?
                         <>
                             {/* <Grid container spacing={2}> */}
@@ -1337,7 +1897,7 @@ function MyCourse(props) {
                                             <input type="file" onChange={(e) => onFileChangeQuiz(e.target.files[0])} />
                                         </Grid>
                                         <Grid item xs={12} md={12}>
-                                            <Typography variant='h6' style={{color:'blue', fontSize:'11px'}} > Please Select pdf file </Typography>
+                                            <Typography variant='h6' style={{ color: 'blue', fontSize: '11px' }} > Please Select pdf file </Typography>
                                         </Grid>
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
                                             Select Due Date
@@ -1462,7 +2022,7 @@ function MyCourse(props) {
                                             <Typography variant='h6' > Upload Video Lecture</Typography>
                                         </Grid>
                                         <Grid item xs={12} md={12}>
-                                            <Typography variant='h6' style={{color:'blue', fontSize:'11px'}} > Please Select mp4 file </Typography>
+                                            <Typography variant='h6' style={{ color: 'blue', fontSize: '11px' }} > Please Select mp4 file </Typography>
                                         </Grid>
                                         {/* <Grid item xs={12} md={12}> */}
                                         <Grid item xs={12} md={12} className={classes.marginBtn}>
