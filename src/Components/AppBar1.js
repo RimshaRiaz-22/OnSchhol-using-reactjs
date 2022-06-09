@@ -236,6 +236,11 @@ const AppBar1 = (props) => {
                 console.log(err)
             })
     };
+    const [selectedIndex, setSelectedIndex] = React.useState(0);
+    // List Selecter
+const handleListItemClick = (event,index,) => {
+setSelectedIndex(index);
+};
 
     return (
         <>
@@ -254,7 +259,7 @@ const AppBar1 = (props) => {
                     </IconButton>
                     <div>OnSchool</div>
 
-                    {/* Search  */}
+                    {/* Search 
                     <Grid container className={classes.searchinput}>
                         <Grid item >
                             <AccountCircle className={classes.account}/>
@@ -269,7 +274,7 @@ const AppBar1 = (props) => {
                                     inputProps={{ 'aria-label': 'search' }}
                                 />
                             </Search></Grid>
-                    </Grid>
+                    </Grid> */}
 
 
                 </Toolbar>
@@ -289,7 +294,9 @@ const AppBar1 = (props) => {
                 open={open}
             >
                 <DrawerHeader >
-                    <div className={classes.Header} onClick={() => {
+                    <div className={classes.Header} 
+           onClick={() => {
+            
                         setShow(false);
                         setShow1(false);
                         setShow2(false)
@@ -313,7 +320,9 @@ const AppBar1 = (props) => {
                 <List className={classes.listStyle}>
 
                     <ListItem disablePadding className={classes.ListStyle1}>
-                        <ListItemButton onClick={() => {
+                        <ListItemButton selected={selectedIndex === 0}
+           onClick={(event) => {
+            handleListItemClick(event, 0)
                             setShow(true);
                             setShow1(false);
                             setShow2(false)
@@ -333,8 +342,10 @@ const AppBar1 = (props) => {
                         </ListItemButton>
                     </ListItem>
 
-                    <ListItem disablePadding className={classes.ListStyle1}>
-                        <ListItemButton onClick={() => {
+                    {/* <ListItem disablePadding className={classes.ListStyle1}>
+                        <ListItemButton selected={selectedIndex === 1}
+           onClick={(event) => {
+            handleListItemClick(event, 1)
                             setShow(false);
                             setShow1(true);
                             setShow2(false);
@@ -354,10 +365,12 @@ const AppBar1 = (props) => {
                             </ListItemIcon>
                             <ListItemText primary="Tasks" />
                         </ListItemButton>
-                    </ListItem>
+                    </ListItem> */}
 
                     <ListItem disablePadding className={classes.ListStyle1}>
-                        <ListItemButton onClick={() => {
+                        <ListItemButton selected={selectedIndex === 2}
+           onClick={(event) => {
+            handleListItemClick(event, 2)
                             setShow(false);
                             setShow1(false);
                             setShow2(false)
@@ -381,7 +394,9 @@ const AppBar1 = (props) => {
 
 
                     <ListItem disablePadding className={classes.ListStyle1}>
-                        <ListItemButton onClick={() => {
+                        <ListItemButton selected={selectedIndex === 3}
+           onClick={(event) => {
+            handleListItemClick(event, 3)
                             setShow(false);
                             setShow1(false);
                             setShow2(true)
@@ -400,29 +415,11 @@ const AppBar1 = (props) => {
                             <ListItemText primary="Videos" />
                         </ListItemButton>
                     </ListItem>
-                    <ListItem disablePadding className={classes.ListStyle1}>
-                        <ListItemButton onClick={() => {
-                            setShow(false);
-                            setShow1(false);
-                            setShow2(false)
-                            setShow3(true);
-                            setShow4(false);
-                            setShow5(false);
-                            setShow6(false);
-                            setShow7(false);
-                            setShow8(false);
-                        setShow9(false);
-
-                        }}>
-                            <ListItemIcon>
-                                <ListAltIcon className={classes.iconColor} />
-                            </ListItemIcon>
-                            <ListItemText primary="Learning Paths" />
-                        </ListItemButton>
-                    </ListItem>
 
                     {/* <ListItem disablePadding className={classes.ListStyle1}>
-                        <ListItemButton onClick={() => {
+                        <ListItemButton selected={selectedIndex === 0}
+           onClick={(event) => {
+            handleListItemClick(event, 0)
                             setShow(false);
                             setShow1(false);
                             setShow2(false)
@@ -443,7 +440,9 @@ const AppBar1 = (props) => {
                     </ListItem> */}
 
                     <ListItem disablePadding className={classes.ListStyle1}>
-                        <ListItemButton onClick={() => {
+                        <ListItemButton selected={selectedIndex === 5}
+           onClick={(event) => {
+            handleListItemClick(event, 5)
                             setShow(false);
                             setShow1(false);
                             setShow2(false);
@@ -467,7 +466,9 @@ const AppBar1 = (props) => {
 
 
                     <ListItem disablePadding className={classes.ListStyle1}>
-                        <ListItemButton onClick={() => {
+                        <ListItemButton selected={selectedIndex === 6}
+           onClick={(event) => {
+            handleListItemClick(event, 6)
                             setShow(false);
                             setShow1(false);
                             setShow2(false)
@@ -488,7 +489,9 @@ const AppBar1 = (props) => {
                         </ListItemButton>
                     </ListItem>
                     <ListItem disablePadding className={classes.ListStyle1}>
-                        <ListItemButton onClick={() => {
+                        <ListItemButton selected={selectedIndex === 7}
+           onClick={(event) => {
+            handleListItemClick(event, 7)
                             setShow(false);
                             setShow1(false);
                             setShow2(false)

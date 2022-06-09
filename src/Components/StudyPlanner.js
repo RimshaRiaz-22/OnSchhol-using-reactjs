@@ -2,7 +2,9 @@ import React from 'react'
 
 function StudyPlanner() {
   return (
-    <div>StudyPlanner</div>
+    <div>All Assignments
+      
+    </div>
   )
 }
 

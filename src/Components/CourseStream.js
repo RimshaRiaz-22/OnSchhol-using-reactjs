@@ -9,7 +9,7 @@ function CourseStream() {
   return (
     <>
     <Box sx={{ display: 'flex' }} >
-      {console.log('corse stream')}
+      {console.log('course stream')}
       {console.log(state.post_id)}
     <AppBarStream data={state.post_id}
        />

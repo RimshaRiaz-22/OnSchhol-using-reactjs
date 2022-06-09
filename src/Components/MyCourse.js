@@ -146,6 +146,7 @@ function MyCourse(props) {
         getAllStream();
         getAllQuiz();
         getAllEnrollData();
+        getAllVideo();
 
     }, []);
 
@@ -835,16 +836,16 @@ function MyCourse(props) {
     // Stream-Get
     const [VideoData, setVideoData] = useState([]);
     const getAllVideo = () => {
-        axios.get(`${url}stream/get-class-streams`, {
+        axios.get(`${url}class-video/get-class-videos`, {
             params: {
                 _id: ClassIdData
             }
         })
             .then((response) => {
-                const allData = response.data;
-                console.log(allData);
+                // const allData = response.data;
+                // console.log(allData);
                 setVideoData(response.data);
-                console.log('assignment data');
+                console.log('Video data');
                 console.log(VideoData);
                 // setData(allData);
                 // setTitle(allData.name);
@@ -995,13 +996,13 @@ function MyCourse(props) {
     }
     const VideoUpload = () => {
 
-        axios.post(`${url}quiz-question/create`, {
+        axios.post(`${url}class-video/create`, {
             class: ClassIdData,
             path: selectedFileVideoPath,
             duration: selectedFileVideoduration,
 
         }, { headers }).then(response => {
-            console.log(response)
+            console.log(response.data)
             // setData([...data, response.data]);
 
             let timerInterval
@@ -1129,7 +1130,7 @@ function MyCourse(props) {
                                                     <TabContext value={value}>
                                                         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                                             <TabList onChange={handleChange} aria-label="lab API tabs example">
-                                                                <Tab label="Stream" value="1" />
+                                                                <Tab label="Playlist" value="1" />
                                                                 <Tab label="Assignments" value="5" />
                                                                 <Tab label="Quizes" value="6" />
                                                                 <Tab label="Classwork" value="2" />
@@ -1140,7 +1141,7 @@ function MyCourse(props) {
                                                         {/* Stream */}
                                                         <TabPanel value="1" style={GridBackground}>
                                                             {/* Assignment  api*/}
-                                                            {loading && StreamData.map((row) => (
+                                                            {/* {loading && VideoData.map((row) => ( */}
                                                                 <Card sx={{ minWidth: 275 }} className={classes.margincard}>
                                                                     <CardContent>
                                                                         <Grid container spacing={2}>
@@ -1150,11 +1151,20 @@ function MyCourse(props) {
                                                                                 <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" /> 
                                                                             </Grid> */}
                                                                                     <Grid item xs={12} md={12}>
-                                                                                        <Typography variant='h6'>Latest Stream</Typography>
+                                                                                        <Typography variant='h6'>Playlist</Typography>
                                                                                     </Grid>
 
                                                                                     <Grid item xs={10} md={10}>
-                                                                                        {row.title}
+                                                                                    {VideoData.map((datavid, idx) => (
+                                                                  <>
+                                                                        <video width="400" controls>
+                                                                            <source src={`${url}${datavid.path}`} type="video/mp4" />
+                                                                                <source src={`${url}${datavid.path}`} type="video/ogg" />
+                                                                                    Your browser does not support HTML video.
+                                                                                </video>
+                                                                                <br/>
+                                                                                </>
+                                                                                 ))}
                                                                                     </Grid>
 
                                                                                 </Grid>
@@ -1162,22 +1172,8 @@ function MyCourse(props) {
                                                                         </Grid>
 
                                                                     </CardContent>
-                                                                    <CardActions>
-                                                                        <Grid item xs={5} md={5}>
-                                                                            <Button size="small"
-                                                                                onClick={() => {
-                                                                                    viewLec()
-                                                                                }}
-                                                                            >View</Button>
-                                                                        </Grid>
-                                                                        <Grid item xs={7} md={7}>
-                                                                            Posted Date:{row.date}
-                                                                        </Grid>
-
-
-                                                                    </CardActions>
                                                                 </Card>
-                                                            ))}
+                                                            {/* // ))} */}
 
                                                         </TabPanel>
                                                         {/* Assignment  */}

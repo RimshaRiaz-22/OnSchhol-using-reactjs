@@ -69,9 +69,6 @@ const useStyles = makeStyles({
   appbtn: {
     borderRadius: '10px',
     width: '100%'
-  },
-  gridmargin: {
-
   },notification: {
     // backgroundColor: '#555',
     // color:' white',
@@ -86,6 +83,19 @@ const useStyles = makeStyles({
     right: '10px',
     padding: '5px 10px',
     borderRadius:' 50%',
+    cursor:'pointer',
+    // backgroundColor: 'red',
+    color: 'red'
+  },
+  badge1:{
+    position: 'absolute',
+    marginLeft:'-30px',
+    marginTop:'5px',
+    // top: '1px',
+    // right: '1px',
+    cursor:'pointer',
+    // padding: '5px 10px',
+    // borderRadius:' 50%',
     // backgroundColor: 'red',
     color: 'red'
   }
@@ -246,6 +256,67 @@ const deleteClass = (idData) => {
     })
 
 }
+// Delete class Join 
+// Delete Class 
+const deleteClassJoin = async(idData) => {
+  console.log(idData)
+  console.log(props.data)
+  await axios.put(`${url}class/leave`, {
+    class_id: idData,
+    user_id: props.data
+}, { headers }).then(response => {
+    console.log(response)
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: {
+                backgroundColor: '#4CAF50', /* Green */
+                border: 'none',
+                color: 'white',
+                padding: '15px 32px',
+                textAlign: 'center',
+                textDecoration: 'none',
+                display: 'inline-block',
+                fontSize: '16px'
+            }
+        })
+
+        swalWithBootstrapButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                swalWithBootstrapButtons.fire(
+                    'Deleted!',
+                    'Course has been Unenrroled.',
+                    'success'
+                )
+                //    refresh componenet 
+                getAllData();
+                getAllDataEnrolled();
+                // window.location.reload(false);
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelled',
+                )
+            }
+        })
+        // setOpen1(true);
+    }).catch(err => {
+        console.log(err)
+    })
+
+}
 const openClassJoin = (idData) => {
   console.log(idData)
   navigate('/coursestreamjoin',
@@ -375,6 +446,9 @@ const [data, setData] = useState([]);
           if (result.dismiss === Swal.DismissReason.timer) {
               console.log('I was closed by the timer')
           }
+          setjoinClassCode([])
+          getAllData();
+          getAllDataEnrolled();
           // navigate('/coursestream',
           // {
           //     state: {
@@ -445,7 +519,7 @@ const [data, setData] = useState([]);
                           <Button startIcon={
                             <Avatar className={classes.iconstyle}><StickyNote2Icon /></Avatar>
                           }>
-                            <div className={classes.headStyle}>Your Courses</div>
+                            <div className={classes.headStyle}>My Courses</div>
                             {/* <Typography variant='h6' className={classes.headStyle}> Videos</Typography> */}
 
                           </Button>
@@ -495,7 +569,7 @@ const [data, setData] = useState([]);
                           <Button startIcon={
                             <Avatar className={classes.iconstyle}><DoneAllIcon /></Avatar>
                           }>
-                            <div className={classes.headStyle}>Your Enrolled Courses</div>
+                            <div className={classes.headStyle}> Enrolled Courses</div>
                             {/* <Typography variant='h6' className={classes.headStyle}> Videos</Typography> */}
 
                           </Button>
@@ -507,7 +581,12 @@ const [data, setData] = useState([]);
                         onClick={() => {
                           openClassJoin(row._id)}}>
                                 {row.name}
+                               
                             </Button>
+                            <span className={classes.badge1} 
+                            onClick={() => {
+                          deleteClassJoin(row._id)}}><DeleteOutline/></span>
+                           
 
                         </Grid>
                         ))}
@@ -615,7 +694,7 @@ const [data, setData] = useState([]);
             </Grid>
             <Grid item xs={12} md={6}>
               <Grid container spacing={2}>
-                <Grid item xs={12} md={12}>
+                {/* <Grid item xs={12} md={12}>
                   <Card sx={{ minWidth: 275 }}>
                     <CardContent>
                       <Button startIcon={
@@ -623,7 +702,6 @@ const [data, setData] = useState([]);
                       }>
                         <div className={classes.headStyle}>Upcoming Events</div>
 
-                        {/* <Typography variant='h6'> Performance</Typography> */}
 
                       </Button>
                       <Typography variant="h5" component="div">
@@ -636,7 +714,7 @@ const [data, setData] = useState([]);
                       <Button size="small">View All</Button>
                     </CardActions>
                   </Card>
-                </Grid>
+                </Grid> */}
                 <Grid item xs={12} md={12}>
                   <Card sx={{ minWidth: 275 }}>
                     <CardContent>

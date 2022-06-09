@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react'
+import React from 'react'
 import image from './Images/logo.png'
 import MenuIcon from '@mui/icons-material/Menu';
 import MuiAppBar from '@mui/material/AppBar';
@@ -17,7 +17,6 @@ import List from '@mui/material/List';
 import { makeStyles } from '@material-ui/core/styles'
 // import {  useNavigate } from 'react-router-dom'
 import { Avatar } from '@mui/material';
-import Swal from 'sweetalert2'
 import SearchIcon from '@mui/icons-material/Search';
 import InputBase from '@mui/material/InputBase';
 import HomeIcon from '@mui/icons-material/Home';
@@ -41,10 +40,12 @@ import Performance from './Performance';
 import Videos from './Videos';
 import ClassIcon from '@mui/icons-material/Class';
 import AllCourses from './AllCourses';
-import MyCourse from './MyCourse'
-import { useNavigate } from 'react-router-dom'
-import url from './url';
-import axios from 'axios'
+import axios from 'axios';
+import Swal from 'sweetalert2'
+import url from './url'
+import { useNavigate,useLocation } from 'react-router-dom'
+import Typography from '@mui/material/Typography'
+import PerformanceStud from './PerformanceStud'
 
 const drawerWidth = 240;
 const logoStyle = {
@@ -52,6 +53,11 @@ const logoStyle = {
     height: '190%',
     marginTop: '-14px'
 }
+const heading = {
+    marginBottom: '30px',
+    marginTop:'30px',
+    marginLeft:'300px'
+  }
 const useStyles = makeStyles({
     BackGround: {
         // backgroundColor: '#181821',
@@ -59,8 +65,8 @@ const useStyles = makeStyles({
         borderBottom: ' 1px solid #262635',
         paddingLeft: '65px'
 
-    }, BackGroundMain: {
-        backgroundColor: '#f5f5f5'
+    },BackGroundMain:{
+        backgroundColor:'#f5f5f5'
 
     }, iconColor: {
         color: '#6c7073'
@@ -90,8 +96,11 @@ const useStyles = makeStyles({
         // backgroundColor: '#1f1f2b',
         // color: 'white',
         height: '100%'
-    }, account: {
-        marginTop: '10px'
+    },account:{
+        marginTop:'10px'
+    },GridStyleCard:{
+        width:'40px',
+        marginLeft:'300px'
     }
 })
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -162,8 +171,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 const MarginTop = {
     marginTop: "70px",
-    padding: '10px',
-    overflow: 'hidden'
+    padding:'10px',
+    overflow:'hidden'
 }
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
     ({ theme, open }) => ({
@@ -183,19 +192,19 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
         }),
     }),
 );
-const AppBarStream = (props) => {
+const PerformanceData = () => {
     const headers = {
         'Content-Type': 'application/json'
     }
-    let navigate = useNavigate();
     console.log('appbar session')
-    console.log(props.data);
+    // console.log(props.data);
+    let navigate = useNavigate();
+    const { state } = useLocation();
 
     const classes = useStyles();
     const theme = useTheme();
 
     const [open, setOpen] = React.useState(false);
-
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -218,11 +227,13 @@ const AppBarStream = (props) => {
     const [show9, setShow9] = React.useState(false);
     const [show10, setShow10] = React.useState(true);
 
-             // Logout Admin Profile
+    const UserId=state.userId
+
+     // Logout Admin Profile
      const logout = () => {
         console.log('Logout');
         axios.put(`${url}user/logout`, {
-            _id: props.data
+            _id: UserId
         }, { headers }).then(response => {
             console.log(response);
             console.log('Logout Successfull');
@@ -239,11 +250,11 @@ const AppBarStream = (props) => {
                 console.log(err)
             })
     };
-        const [selectedIndex, setSelectedIndex] = React.useState(2);
-            // List Selecter
-    const handleListItemClick = (event,index,) => {
-        setSelectedIndex(index);
-      };
+    const [selectedIndex, setSelectedIndex] = React.useState(6);
+    // List Selecter
+const handleListItemClick = (event,index,) => {
+setSelectedIndex(index);
+};
 
     return (
         <>
@@ -258,14 +269,14 @@ const AppBarStream = (props) => {
                         sx={{ mr: 2, ...(open && { display: 'none' }) }}
                     >
                         <MenuIcon className={classes.iconColorMenu} />
-
+                        
                     </IconButton>
                     <div>OnSchool</div>
 
                     {/* Search 
                     <Grid container className={classes.searchinput}>
                         <Grid item >
-                            <AccountCircle className={classes.account} />
+                            <AccountCircle className={classes.account}/>
                         </Grid>
                         <Grid item >
                             <Search className={classes.searchinput}>
@@ -297,9 +308,9 @@ const AppBarStream = (props) => {
                 open={open}
             >
                 <DrawerHeader >
-                    <div className={classes.Header} selected={selectedIndex === 0}
-           onClick={(event) => {
-            handleListItemClick(event, 0)
+                    <div className={classes.Header} 
+           onClick={() => {
+            
                         setShow(false);
                         setShow1(false);
                         setShow2(false)
@@ -311,6 +322,7 @@ const AppBarStream = (props) => {
                         setShow8(false);
                         setShow9(false);
                         setShow10(false);
+
                     }}>
                         <Avatar src={image} variant="square" style={logoStyle} ></Avatar>
                         {/* <img */}
@@ -336,8 +348,9 @@ const AppBarStream = (props) => {
                             setShow6(false);
                             setShow7(false);
                             setShow8(false);
-                            setShow9(false);
-                            setShow10(false);
+                        setShow9(false);
+                        setShow10(false);
+
 
                         }} >
                             <ListItemIcon>
@@ -347,7 +360,7 @@ const AppBarStream = (props) => {
                         </ListItemButton>
                     </ListItem>
 
-                    {/* <ListItem disablePadding className={classes.ListStyle1}>
+                    <ListItem disablePadding className={classes.ListStyle1}>
                         <ListItemButton selected={selectedIndex === 1}
            onClick={(event) => {
             handleListItemClick(event, 1)
@@ -359,9 +372,11 @@ const AppBarStream = (props) => {
                             setShow5(false);
                             setShow6(false);
                             setShow7(false);
+
                             setShow8(false);
-                            setShow9(false);
-                            setShow10(false);
+                        setShow9(false);
+                        setShow10(false);
+
 
 
                         }}>
@@ -371,7 +386,7 @@ const AppBarStream = (props) => {
                             </ListItemIcon>
                             <ListItemText primary="Tasks" />
                         </ListItemButton>
-                    </ListItem> */}
+                    </ListItem>
 
                     <ListItem disablePadding className={classes.ListStyle1}>
                         <ListItemButton selected={selectedIndex === 2}
@@ -386,8 +401,9 @@ const AppBarStream = (props) => {
                             setShow6(false);
                             setShow7(false);
                             setShow8(false);
-                            setShow9(true);
-                            setShow10(false);
+                        setShow9(true);
+                        setShow10(false);
+
 
                         }} >
                             <ListItemIcon>
@@ -413,8 +429,9 @@ const AppBarStream = (props) => {
                             setShow6(false);
                             setShow7(false);
                             setShow8(false);
-                            setShow9(false);
-                            setShow10(false);
+                        setShow9(false);
+                        setShow10(false);
+
 
                         }} >
                             <ListItemIcon>
@@ -437,8 +454,7 @@ const AppBarStream = (props) => {
                             setShow6(false);
                             setShow7(false);
                             setShow8(false);
-                            setShow9(false);
-                            setShow10(false);
+                        setShow9(false);
 
                         }} >
                             <ListItemIcon>
@@ -461,8 +477,9 @@ const AppBarStream = (props) => {
                             setShow6(false);
                             setShow7(false);
                             setShow8(false);
-                            setShow9(false);
-                            setShow10(false);
+                        setShow9(false);
+                        setShow10(false);
+
 
 
                         }}>
@@ -488,8 +505,9 @@ const AppBarStream = (props) => {
                             setShow6(true);
                             setShow7(false);
                             setShow8(false);
-                            setShow9(false);
-                            setShow10(false);
+                        setShow9(false);
+                        setShow10(false);
+
 
 
                         }}>
@@ -512,8 +530,8 @@ const AppBarStream = (props) => {
                             setShow6(false);
                             setShow7(true);
                             setShow8(false);
-                            setShow9(false);
-                            setShow10(false);
+                        setShow9(false);
+                        setShow10(false);
 
                         }}>
                             <ListItemIcon>
@@ -537,17 +555,41 @@ const AppBarStream = (props) => {
             </Drawer>
             <Main open={open} style={MarginTop} className={classes.BackGroundMain}>
                 {/* <ProfileData/> */}
-                {show ? <Dashboard /> : null}
-                {show1 ? <StudyPlanner /> : null}
-                {show2 ? <Videos /> : null}
-                {show3 ? <LearningPaths /> : null}
-                {show4 ? < Bookmarks /> : null}
-                {show5 ? < Notes /> : null}
-                {show6 ? <Performance /> : null}
-                {show7 ? <LegalInfo /> : null}
-                {show8 ? < Logout /> : null}
-                {show9 ? < AllCourses /> : null}
-                {show10 ? < MyCourse data={props.data} /> : null}
+                {show ? <Dashboard data={state.userId}/> : null}
+                {show1 ? <StudyPlanner data={state.userId}/> : null}
+                {show2 ? <Videos data={state.userId}/> : null}
+                {show3 ? <LearningPaths data={state.userId}/> : null}
+                {show4 ? < Bookmarks data={state.userId}/> : null}
+                {show5 ? < Notes data={state.userId}/> : null}
+                {show6 ? <Performance data={state.userId}/> : null}
+                {show7 ? <LegalInfo data={state.userId}/> : null}
+                {show9 ? < AllCourses data={state.userId}/> : null}
+                {show10 ? 
+                <>
+                   {console.log(state.courseId)}
+     {console.log(state.courseName)}
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={2}></Grid>
+        <Grid item xs={12} md={8}>
+
+          <Grid container spacing={2} className={classes.GridStyle}>
+            <Grid item xs={12} md={12}>
+              <Typography variant='h6' style={heading}>Performance Data</Typography>
+            </Grid>
+          </Grid>
+          <Grid container spacing={2} className={classes.GridStyle}>
+          <Grid item xs={12} md={12} className={classes.GridStyleCard}> 
+          <PerformanceStud data={state.courseId} data1={state.courseName} data2={state.userId}/>
+          </Grid>
+          
+          </Grid>
+        </Grid>
+        <Grid item xs={12} md={2}></Grid>
+      </Grid>
+
+                </> : null}
+
+                {/* {show9 ? < AllCourses data={props.data}/> : null} */}
 
 
             </Main>
@@ -555,4 +597,4 @@ const AppBarStream = (props) => {
     )
 }
 
-export default AppBarStream
+export default PerformanceData

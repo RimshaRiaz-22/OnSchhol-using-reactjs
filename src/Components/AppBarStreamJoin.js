@@ -218,28 +218,32 @@ const AppBarStream = (props) => {
     const [show9, setShow9] = React.useState(false);
     const [show10, setShow10] = React.useState(true);
 
-         // Logout Admin Profile
-         const logout = () => {
-            console.log('Logout');
-            axios.put(`${url}user/logout`, {
-                _id: props.data
-            }, { headers }).then(response => {
-                console.log(response);
-                console.log('Logout Successfull');
-                Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'Logout Successfull',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-                navigate('/')
+            // Logout Admin Profile
+     const logout = () => {
+        console.log('Logout');
+        axios.put(`${url}user/logout`, {
+            _id: props.data
+        }, { headers }).then(response => {
+            console.log(response);
+            console.log('Logout Successfull');
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Logout Successfull',
+                showConfirmButton: false,
+                timer: 1500
             })
-                .catch(err => {
-                    console.log(err)
-                })
-        };
-
+            navigate('/')
+        })
+            .catch(err => {
+                console.log(err)
+            })
+    };
+        const [selectedIndex, setSelectedIndex] = React.useState(2);
+        // List Selecter
+const handleListItemClick = (event,index,) => {
+    setSelectedIndex(index);
+  };
     return (
         <>
             {/* AppBar  */}
@@ -257,7 +261,7 @@ const AppBarStream = (props) => {
                     </IconButton>
                     <div>OnSchool</div>
 
-                    {/* Search  */}
+                    {/* Search 
                     <Grid container className={classes.searchinput}>
                         <Grid item >
                             <AccountCircle className={classes.account} />
@@ -272,7 +276,7 @@ const AppBarStream = (props) => {
                                     inputProps={{ 'aria-label': 'search' }}
                                 />
                             </Search></Grid>
-                    </Grid>
+                    </Grid> */}
 
 
                 </Toolbar>
@@ -292,7 +296,9 @@ const AppBarStream = (props) => {
                 open={open}
             >
                 <DrawerHeader >
-                    <div className={classes.Header} onClick={() => {
+                    <div className={classes.Header}
+           onClick={() => {
+            
                         setShow(false);
                         setShow1(false);
                         setShow2(false)
@@ -317,7 +323,9 @@ const AppBarStream = (props) => {
                 <List className={classes.listStyle}>
 
                     <ListItem disablePadding className={classes.ListStyle1}>
-                        <ListItemButton onClick={() => {
+                        <ListItemButton selected={selectedIndex === 0}
+           onClick={(event) => {
+            handleListItemClick(event, 0)
                             setShow(true);
                             setShow1(false);
                             setShow2(false)
@@ -338,8 +346,10 @@ const AppBarStream = (props) => {
                         </ListItemButton>
                     </ListItem>
 
-                    <ListItem disablePadding className={classes.ListStyle1}>
-                        <ListItemButton onClick={() => {
+                    {/* <ListItem disablePadding className={classes.ListStyle1}>
+                        <ListItemButton selected={selectedIndex === 1}
+           onClick={(event) => {
+            handleListItemClick(event, 1)
                             setShow(false);
                             setShow1(true);
                             setShow2(false);
@@ -360,10 +370,12 @@ const AppBarStream = (props) => {
                             </ListItemIcon>
                             <ListItemText primary="Study Planner" />
                         </ListItemButton>
-                    </ListItem>
+                    </ListItem> */}
 
                     <ListItem disablePadding className={classes.ListStyle1}>
-                        <ListItemButton onClick={() => {
+                        <ListItemButton selected={selectedIndex === 2}
+           onClick={(event) => {
+            handleListItemClick(event, 2)
                             setShow(false);
                             setShow1(false);
                             setShow2(false)
@@ -388,7 +400,9 @@ const AppBarStream = (props) => {
 
 
                     <ListItem disablePadding className={classes.ListStyle1}>
-                        <ListItemButton onClick={() => {
+                        <ListItemButton selected={selectedIndex === 3}
+           onClick={(event) => {
+            handleListItemClick(event, 3)
                             setShow(false);
                             setShow1(false);
                             setShow2(true)
@@ -408,30 +422,11 @@ const AppBarStream = (props) => {
                             <ListItemText primary="Videos" />
                         </ListItemButton>
                     </ListItem>
-                    <ListItem disablePadding className={classes.ListStyle1}>
-                        <ListItemButton onClick={() => {
-                            setShow(false);
-                            setShow1(false);
-                            setShow2(false)
-                            setShow3(true);
-                            setShow4(false);
-                            setShow5(false);
-                            setShow6(false);
-                            setShow7(false);
-                            setShow8(false);
-                            setShow9(false);
-                            setShow10(false);
-
-                        }}>
-                            <ListItemIcon>
-                                <ListAltIcon className={classes.iconColor} />
-                            </ListItemIcon>
-                            <ListItemText primary="Learning Paths" />
-                        </ListItemButton>
-                    </ListItem>
 
                     {/* <ListItem disablePadding className={classes.ListStyle1}>
-                        <ListItemButton onClick={() => {
+                        <ListItemButton selected={selectedIndex === 0}
+           onClick={(event) => {
+            handleListItemClick(event, 0)
                             setShow(false);
                             setShow1(false);
                             setShow2(false)
@@ -453,7 +448,9 @@ const AppBarStream = (props) => {
                     </ListItem> */}
 
                     <ListItem disablePadding className={classes.ListStyle1}>
-                        <ListItemButton onClick={() => {
+                        <ListItemButton selected={selectedIndex === 5}
+           onClick={(event) => {
+            handleListItemClick(event, 5)
                             setShow(false);
                             setShow1(false);
                             setShow2(false);
@@ -478,7 +475,9 @@ const AppBarStream = (props) => {
 
 
                     <ListItem disablePadding className={classes.ListStyle1}>
-                        <ListItemButton onClick={() => {
+                        <ListItemButton selected={selectedIndex === 6}
+           onClick={(event) => {
+            handleListItemClick(event, 6)
                             setShow(false);
                             setShow1(false);
                             setShow2(false)
@@ -500,7 +499,9 @@ const AppBarStream = (props) => {
                         </ListItemButton>
                     </ListItem>
                     <ListItem disablePadding className={classes.ListStyle1}>
-                        <ListItemButton onClick={() => {
+                        <ListItemButton selected={selectedIndex === 7}
+           onClick={(event) => {
+            handleListItemClick(event, 7)
                             setShow(false);
                             setShow1(false);
                             setShow2(false)
@@ -522,20 +523,8 @@ const AppBarStream = (props) => {
                     </ListItem>
 
                     <ListItem disablePadding className={classes.ListStyle1}>
-                        <ListItemButton onClick={() => {
-                            setShow(false);
-                            setShow1(false);
-                            setShow2(false)
-                            setShow3(false);
-                            setShow4(false);
-                            setShow5(false);
-                            setShow6(false);
-                            setShow7(false);
-                            setShow8(true);
-                            setShow9(false);
-                            setShow10(false);
-
-                        }}>
+                        <ListItemButton selected={selectedIndex === 0}
+           onClick={logout}>
                             <ListItemIcon>
                                 <LogoutIcon className={classes.iconColor} />
                             </ListItemIcon>

@@ -11,6 +11,7 @@ import ForgetPassword from './Pages/ForgetPassword';
 import CourseStream from './Components/CourseStream';
 import CourseStreamJoin from './Components/CourseStreamJoin'
 import ReactPdfViewer from './Components/ReactPdfViewer';
+import PerformanceData from './Components/PerformanceData';
 
 
 function App() {
@@ -37,6 +38,9 @@ function App() {
           </Routes>
           <Routes>
             <Route exact path="/pdf" element={<ReactPdfViewer />}></Route>
+          </Routes>
+          <Routes>
+            <Route exact path="/performance" element={<PerformanceData />}></Route>
           </Routes>
           
         </Router>
