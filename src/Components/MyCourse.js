@@ -16,6 +16,8 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import pdfImg from './Images/download.png'
+
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import { styled } from '@mui/material/styles';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
@@ -43,6 +45,12 @@ import AssignmentLateIcon from '@mui/icons-material/AssignmentLate';
 import ListItemButton from '@mui/material/ListItemButton';
 import StickyNote2Icon from '@mui/icons-material/StickyNote2';
 import { Document, Page } from 'react-pdf';
+import PropTypes from 'prop-types';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import CloseIcon from '@mui/icons-material/Close';
 
 const useStyles = makeStyles({
     cardCenter: {
@@ -71,9 +79,52 @@ const useStyles = makeStyles({
         width: '100%'
     }, marginstyle: {
         marginTop: '20px'
+    }, ImgStyle: {
+        width: '70px',
+        // height:'50px',
+        borderRadius: '10px'
+
     }
 
 })
+// Dialog 
+const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+    '& .MuiDialogContent-root': {
+      padding: theme.spacing(2),
+    },
+    '& .MuiDialogActions-root': {
+      padding: theme.spacing(1),
+    },
+  }));
+  
+  const BootstrapDialogTitle = (props) => {
+    const { children, onClose, ...other } = props;
+  
+    return (
+      <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+        {children}
+        {onClose ? (
+          <IconButton
+            aria-label="close"
+            onClick={onClose}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        ) : null}
+      </DialogTitle>
+    );
+  };
+  
+  BootstrapDialogTitle.propTypes = {
+    children: PropTypes.node,
+    onClose: PropTypes.func.isRequired,
+  };
 
 const welcomeStyle = {
     width: '100%',
@@ -157,6 +208,8 @@ function MyCourse(props) {
     const [show, setShow] = React.useState(true);
     const [showUpload, setShowUpload] = React.useState(false);
     const [showNews, setShowNews] = React.useState(true);
+    const [showSol, setShowSol] = React.useState(false);
+
     const [showUploadAssign, setshowUploadAssign] = React.useState(false);
     const [showUploadQuiz, setshowUploadQuiz] = React.useState(false);
     const [showUploadLink, setshowUploadLink] = React.useState(false);
@@ -420,6 +473,9 @@ function MyCourse(props) {
         }, { headers }).then(response => {
             console.log(response)
             // setData([...data, response.data]);
+            setstreamTitle("")
+            setstreamDetails("")
+
 
             let timerInterval
             Swal.fire({
@@ -469,6 +525,32 @@ function MyCourse(props) {
                 // setDescription(allData.description);
 
                 // setEnrolledStud(allData.enrolledStudents.length);
+                setLoading(true)
+
+            })
+            .catch(error => console.error(`Error:${error}`));
+    }
+       // Sol Assignment 
+    // Sol 
+    // Alert 
+    const [AssignDataSol, setAssignDataSol] = useState([]);
+
+    const solAssignData = (id) => {
+        console.log(id)
+        axios.get(`${url}assignment-solution/get-assignment-sols`, {
+            params: {
+                assignment: id
+            }
+        })
+            .then((response) => {
+                const allData = response.data;
+                console.log(allData);
+                // setAssignData(response.data);
+                setAssignDataSol(response.data)
+                console.log(AssignDataSol)
+                console.log('assignment data Sol');
+                setShowSol(true);
+
                 setLoading(true)
 
             })
@@ -654,6 +736,100 @@ function MyCourse(props) {
                 }
             }
         );
+    }
+// Dialog 
+const [openAssignSol, setOpenAssignSol] = React.useState(false);
+
+const handleClickOpenAssignSol = () => {
+    setOpenAssignSol(true);
+};
+const handleCloseAssignSol = () => {
+   // POst Request 
+   axios.put(`${url}assignment-solution/grade`, {
+    marks: studDataMarks,
+    _id: studDataAssignSolId,
+}, { headers }).then(response => {
+    console.log(response)
+    setstudDataMarks(response.data.marks)
+    setOpenAssignSol(false);
+    // Clear Dta 
+
+
+    let timerInterval
+    Swal.fire({
+        title: 'Saved Successfully',
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: () => {
+            Swal.showLoading()
+            const b = Swal.getHtmlContainer().querySelector('b')
+            timerInterval = setInterval(() => {
+                b.textContent = Swal.getTimerLeft()
+            }, 100)
+        },
+        willClose: () => {
+            clearInterval(timerInterval)
+        }
+    }).then((result) => {
+        /* Read more about handling dismissals below */
+        if (result.dismiss === Swal.DismissReason.timer) {
+            console.log('I was closed by the timer')
+        }
+    
+})
+  
+})
+    .catch(err => {
+        console.log(err)
+    })
+    setOpenAssignSol(false);
+};
+const [studData, setstudData] = useState([]);
+const [studDataPath, setstudDataPath] = useState([]);
+const [studDataSubDate, setstudDataSubDate] = useState([]);
+const [studDataMarks, setstudDataMarks] = useState([]);
+const [studDataAssignName, setstudDataAssignName] = useState([]);
+const [studDataAssignSolId, setstudDataAssignSolId] = useState([]);
+
+
+
+
+    // >getAssignmentSol(row.path,row.submissionTime,row.marks,row.marks,row.submittedBy)
+    const getAssignmentSol = async (solId,assignment,path,submissionTime,marks,submittedBy) => {
+        setstudDataPath(path);
+        setstudDataSubDate(submissionTime);
+        setstudDataMarks(marks)
+        setstudDataAssignSolId(solId)
+        // Get Assignment 
+        await axios.get(`${url}assignment-question/get`, {
+            params: {
+                _id: assignment
+            }
+        }, { headers }).then(response => {
+            console.log('response')
+            console.log(response.data);
+            setstudDataAssignName(response.data.name)
+         
+        })
+            .catch(err => {
+                console.log(err)
+            })
+// Get User 
+
+        await  axios.get(`${url}user/get`, {
+            params: {
+                _id: submittedBy
+            }
+        })
+            .then((response) => {
+            console.log(response);
+            setstudData(response.data.name)
+            setOpenAssignSol(true);
+
+
+          
+                
+        }).catch(error => console.error(`Error:${error}`));
     }
     //  Update Assignment 
     const assignUpdate = async () => {
@@ -1069,10 +1245,10 @@ function MyCourse(props) {
                                     Course Code:{classId}
                                 </span>
                             </Grid>
-                            <Grid item xs={12} md={12}>
+                            {/* <Grid item xs={12} md={12}>
                                 <BookmarkBorderIcon />
                                 <ArchiveIcon />
-                            </Grid>
+                            </Grid> */}
                             <hr style={hrStyle}></hr>
                             <Grid item xs={12} md={12}>
                                 <Typography variant='h6'>Description</Typography>
@@ -1214,13 +1390,21 @@ function MyCourse(props) {
                                                                                 }}
                                                                             >View</Button>
                                                                         </Grid>
-                                                                        <Grid item xs={4} md={4}>
+                                                                        <Grid item xs={2} md={2}>
                                                                             <Button size="small"
                                                                                 onClick={() => {
                                                                                     console.log(row._id)
                                                                                     deleteData(row._id)
                                                                                 }}
                                                                             >Delete</Button>
+                                                                        </Grid>
+                                                                        <Grid item xs={2} md={2}>
+                                                                            <Button size="small"
+                                                                                onClick={() => {
+                                                                                    console.log(row._id)
+                                                                                    solAssignData(row._id)
+                                                                                }}
+                                                                            >Solutions</Button>
                                                                         </Grid>
                                                                         <Grid item xs={6} md={6}>
                                                                             Due Date:{row.dueDate}
@@ -1311,6 +1495,9 @@ function MyCourse(props) {
                                                                                                 setshowUploadLink(false);
                                                                                                 setshowUploadUpdate(false);
                                                                                                 setShowNews(false)
+                                                                                                setShowSol(false)
+                                                                                                setOpenAssignSol(false);
+
                                                                                             }}>Stream</Button>
                                                                                         </Grid>
                                                                                         <Grid item xs={4} md={4}>
@@ -1321,6 +1508,9 @@ function MyCourse(props) {
                                                                                                 setshowUploadLink(false);
                                                                                                 setshowUploadUpdate(false);
                                                                                                 setShowNews(false)
+                                                                                                setShowSol(false)
+                                                                                                setOpenAssignSol(false);
+
                                                                                             }}>Assignment</Button>
                                                                                         </Grid>
                                                                                         <Grid item xs={4} md={4}>
@@ -1331,6 +1521,9 @@ function MyCourse(props) {
                                                                                                 setshowUploadLink(false);
                                                                                                 setshowUploadUpdate(false);
                                                                                                 setShowNews(false)
+                                                                                                setShowSol(false)
+                                                                                                setOpenAssignSol(false);
+
                                                                                             }}>Quiz</Button>
 
                                                                                         </Grid>
@@ -1342,6 +1535,9 @@ function MyCourse(props) {
                                                                                                 setshowUploadLink(true);
                                                                                                 setshowUploadUpdate(false);
                                                                                                 setShowNews(false)
+                                                                                                setShowSol(false)
+                                                                                                setOpenAssignSol(false);
+
                                                                                             }}>Video</Button>
                                                                                         </Grid>
 
@@ -1562,7 +1758,7 @@ function MyCourse(props) {
                                                 {loading && StreamData.map((row) => (
                                                     <>
                                                         <ListItem>
-                                                            <ListItemText primary={row.title} secondary={row.date} />
+                                                            <ListItemText primary={row.title} secondary={row.details} />
 
                                                         </ListItem>
 
@@ -1694,6 +1890,73 @@ function MyCourse(props) {
                             </Card>
                             {/* </Grid> */}
                             {/* </Grid> */}
+
+                        </>
+
+                        :
+                        null}
+                        {/* Comemnt  */}
+                          {showSol ?
+                        <>
+                              <Card sx={{ minWidth: 275 }} className={classes.cardCenter1}>
+                                <CardContent>
+                                    {/* {loading && viewAssign.map((row) => ( */}
+                                    <Grid container >
+                                    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                                    {loading && AssignDataSol.map((row) => (
+                                        <>
+
+<ListItem disablePadding>
+            <ListItemButton onClick={()=>getAssignmentSol(row._id,row.assignment,row.path,row.submissionTime,row.marks,row.submittedBy)}>
+              <ListItemText primary={row.path} />
+            </ListItemButton>
+          </ListItem>
+      <Divider variant="inset" component="li" />
+      </>
+      ))}
+
+      
+    </List>
+    {/* Dialog  */}
+    <BootstrapDialog
+        onClose={()=> setOpenAssignSol(false)}
+        aria-labelledby="customized-dialog-title"
+        open={openAssignSol}
+      >
+        <BootstrapDialogTitle id="customized-dialog-title" onClose={handleCloseAssignSol}>
+        Title:{studDataAssignName}
+        </BootstrapDialogTitle>
+        <DialogContent dividers>
+        <Button className={classes.btnAssign} component="span"
+        // studDataPath
+                                                onClick={viewPdf} >
+                                                {/* <img src=<pdfImg/> */}
+                                                <img className={classes.ImgStyle} src={pdfImg} />
+                                            </Button>
+         
+          <Typography gutterBottom>
+            Submitted By: {studData}
+          </Typography>
+          <Typography gutterBottom>
+            Submission Date/Time: {studDataSubDate}
+          </Typography>
+          <TextField id="outlined-basic" label="Marks" value={studDataMarks} onChange={
+                            (e) => setstudDataMarks(e.target.value)
+                        } variant="outlined" />
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus onClick={handleCloseAssignSol}>
+            Save changes
+          </Button>
+        </DialogActions>
+      </BootstrapDialog>
+
+
+
+                                    </Grid>
+
+                                </CardContent>
+                            </Card>
 
                         </>
 

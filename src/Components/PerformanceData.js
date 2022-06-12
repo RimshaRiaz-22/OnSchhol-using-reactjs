@@ -361,34 +361,6 @@ setSelectedIndex(index);
                     </ListItem>
 
                     <ListItem disablePadding className={classes.ListStyle1}>
-                        <ListItemButton selected={selectedIndex === 1}
-           onClick={(event) => {
-            handleListItemClick(event, 1)
-                            setShow(false);
-                            setShow1(true);
-                            setShow2(false);
-                            setShow3(false);
-                            setShow4(false);
-                            setShow5(false);
-                            setShow6(false);
-                            setShow7(false);
-
-                            setShow8(false);
-                        setShow9(false);
-                        setShow10(false);
-
-
-
-                        }}>
-                            <ListItemIcon>
-                                <AssignmentIcon className={classes.iconColor} />
-
-                            </ListItemIcon>
-                            <ListItemText primary="Tasks" />
-                        </ListItemButton>
-                    </ListItem>
-
-                    <ListItem disablePadding className={classes.ListStyle1}>
                         <ListItemButton selected={selectedIndex === 2}
            onClick={(event) => {
             handleListItemClick(event, 2)

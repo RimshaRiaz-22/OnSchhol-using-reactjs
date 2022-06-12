@@ -293,7 +293,7 @@ function Dashboard(props) {
                                                                         <StickyNote2Icon />
                                                                     </Avatar>
                                                                 </ListItemAvatar>
-                                                                <ListItemText primary={row.name} secondary={row.description} />
+                                                                <ListItemText primary={row.name} />
                                                             </ListItem>
 
                                                             <Divider variant="inset" component="li" />

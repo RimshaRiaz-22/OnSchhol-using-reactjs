@@ -445,7 +445,7 @@ useEffect(() => {
                                     {/* Form  */}
                                     <form onSubmit={submitUpdate}>
                                         <Grid container spacing={2} className={classes.gridS}>
-                                            <Grid item xs={12} md={6}>
+                                            <Grid item xs={12} md={12}>
                                               
                                                   <TextareaAutosize
                       aria-label="minimum height"
@@ -457,7 +457,7 @@ useEffect(() => {
                     />
                                             </Grid>
                                        <br />
-                                            <Grid item xs={6} md={6} >
+                                            <Grid item xs={12} md={12} >
                                                 <button className={classes.btnSubmit} type='submit'>Submit</button>
                                             </Grid>
                                         </Grid>

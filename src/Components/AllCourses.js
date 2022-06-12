@@ -12,6 +12,7 @@ import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
+import TextareaAutosize from '@mui/material/TextareaAutosize';
 // List 
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -629,10 +630,20 @@ const [data, setData] = useState([]);
 
                         </Grid>
                         <Grid item xs={12} md={12}>
-                          <TextField className={classes.btn} value={createDescription} id="filled-basic" label="Enter Description" variant="filled"
+                          {/* <TextField className={classes.btn} value={createDescription} id="filled-basic" label="Enter Description" variant="filled"
                           onChange={
                             (e) => setcreateDescription(e.target.value)
-                        } />
+                        } /> */}
+                         <TextareaAutosize
+      aria-label="minimum height"
+      minRows={3}
+      value={createDescription}
+      onChange={
+        (e) => setcreateDescription(e.target.value)
+    }
+      placeholder="Enter Description"
+      style={{ width: 200 }}
+    />
 
                         </Grid>
                         <Grid item xs={12} md={12}>
@@ -650,7 +661,17 @@ const [data, setData] = useState([]);
                   </Card>
                 </Grid>
 
-                <Grid item xs={12} md={12}>
+                
+               
+                
+              </Grid>
+              {/* Second Card  */}
+
+
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Grid container spacing={2}>
+              <Grid item xs={12} md={12}>
                   <Card sx={{ minWidth: 275 }}>
                     <CardContent>
                       <Grid container spacing={2}>
@@ -685,15 +706,6 @@ const [data, setData] = useState([]);
 
                   </Card>
                 </Grid>
-               
-                
-              </Grid>
-              {/* Second Card  */}
-
-
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Grid container spacing={2}>
                 {/* <Grid item xs={12} md={12}>
                   <Card sx={{ minWidth: 275 }}>
                     <CardContent>
@@ -715,7 +727,7 @@ const [data, setData] = useState([]);
                     </CardActions>
                   </Card>
                 </Grid> */}
-                <Grid item xs={12} md={12}>
+                {/* <Grid item xs={12} md={12}>
                   <Card sx={{ minWidth: 275 }}>
                     <CardContent>
                       <Button startIcon={
@@ -723,7 +735,6 @@ const [data, setData] = useState([]);
                       }>
                         <div className={classes.headStyle}> Study Planner</div>
 
-                        {/* <Typography variant='h6'> Study Planner</Typography> */}
 
                       </Button>
                       <Typography variant="h5" component="div">
@@ -756,7 +767,7 @@ const [data, setData] = useState([]);
                     </CardActions>
                   </Card>
 
-                </Grid>
+                </Grid> */}
 
 
               </Grid>

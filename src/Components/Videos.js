@@ -106,13 +106,28 @@ const Videos = (props) => {
     'Content-Type': 'application/json'
   }
   const [data, setData] = useState([]);
+  const [classUser, setClassUser] = useState([]);
+
 
   const getAllData = () => {
     axios.get(`${url}class-video/get-all`)
       .then((response) => {
         const allData = response.data;
         console.log(allData);
+        console.log('allData');
         setData(response.data);
+      //   axios.get(`${url}user/get`, {
+      //     params: {
+      //         _id: response.class
+      //     }
+      // })
+      //       .then((response) => {
+      //           const allData = response.data;
+      //           console.log(allData);
+      //           setClassUser(response.data);
+                 
+      //       })
+      //       .catch(error => console.error(`Error:${error}`));
         setLoading(true)
 
       })
@@ -199,25 +214,39 @@ const OpenPlaylistDialog = (CourseId) => {
         <TabPanel value="1">
            {data.map((datavid, idx) => (
 
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={12}>
 
-              {/* <Card variant="outlined">
+              <Card variant="outlined">
                 <>
-                  <CardContent> */}
-                    {/* {data.map((datavid, idx) => ( */}
+                  <CardContent>
+                    <Grid container>
+                      <Grid item xs={12} md={8}>
                       <>
-                        <video   controls>
+                        <video width='100%'  controls>
                           <source src={`${url}${datavid.path}`} type="video/mp4" />
                           <source src={`${url}${datavid.path}`} type="video/ogg" />
                           Your browser does not support HTML video.
                         </video>
                         <br />
                       </>
+                      </Grid>
+                      <Grid item xs={12} md={4}>
+                        <Grid conatiner >
+                          <Grid item xs={12} md={12}>
+                        <Typography variant='h6' style={heading}>Class Code:{ }</Typography>
+
+                        </Grid>
+
+                      </Grid>
+                      </Grid>
+                    </Grid>
+                    {/* {data.map((datavid, idx) => ( */}
+                     
                     {/* ))} */}
-                  {/* </CardContent>
+                  </CardContent>
 
                 </>
-              </Card> */}
+              </Card>
 
             </Grid>
                     ))}
