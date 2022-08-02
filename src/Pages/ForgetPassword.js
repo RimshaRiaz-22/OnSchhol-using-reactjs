@@ -7,9 +7,6 @@ import url from '../Components/url'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
-
-
-
 const useStyles = makeStyles({
     logoStyle:{
         width: '60%',

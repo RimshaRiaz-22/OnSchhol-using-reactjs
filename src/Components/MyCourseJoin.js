@@ -204,10 +204,6 @@ function MyCourseJoin(props) {
     const [showViewAssignment, setshowViewAssignment] = React.useState(false);
     const [showViewQuiz, setshowViewQuiz] = React.useState(false);
 
-
-
-
-
     const classes = useStyles();
     const [value, setValue] = React.useState('1');
 
@@ -402,6 +398,70 @@ function MyCourseJoin(props) {
             })
         }
     }
+    // Quiz sol 
+        // submit Asign Sol
+        const [quizId, setquizId] = useState();
+        const [quizsolDate, setquizsolDate] = useState(new Date());
+    const submitHandlerSolQuiz = async (e) => {
+        e.preventDefault()
+        if (selectedFileSolQuiz == "") {
+            setOpen4(true)
+            // window.alert("Please Select File");
+          } else {
+            setOpen4(false)
+
+               // Loader 
+               setLoading2(true)
+               setTimeout(() => {
+                   setLoading2(false)
+       
+               }, 3000)
+        // POst Request Add File
+        axios.post(`${url}quiz-solution/create`, {
+            submittedBy:OwnerIdData ,
+            assignment: quizId ,
+            path:selectedFileSolQuiz ,
+            submissionTime:quizsolDate ,
+            class: StudClassIdData 
+        }, { headers }).then(response => {
+            console.log(response)
+            // setData([...data, response.data]);
+            // Clear Dta 
+            setSelectedFileSolQuiz([])
+
+
+            let timerInterval
+            Swal.fire({
+                title: 'Solution Uploaded Successfully',
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading()
+                    const b = Swal.getHtmlContainer().querySelector('b')
+                    timerInterval = setInterval(() => {
+                        b.textContent = Swal.getTimerLeft()
+                    }, 100)
+                },
+                willClose: () => {
+                    clearInterval(timerInterval)
+                }
+            }).then((result) => {
+                /* Read more about handling dismissals below */
+                if (result.dismiss === Swal.DismissReason.timer) {
+                    console.log('I was closed by the timer')
+                    setSolUpload(false)
+                    getAllData();
+
+                   
+
+                }
+            })
+        })
+            .catch(err => {
+                console.log(err)
+            })
+        }
+    }
     const assignUpload = () => {
 
         axios.post(`${url}assignment-question/create`, {
@@ -453,7 +513,11 @@ function MyCourseJoin(props) {
 
     }
     const [open3, setOpen3] = React.useState(false);
+    const [open4, setOpen4] = React.useState(false);
+
     const [loading1, setLoading1] = useState(false);
+    const [loading2, setLoading2] = useState(false);
+
 
     const QuizUpload = () => {
         // const formData = new FormData();
@@ -558,149 +622,13 @@ function MyCourseJoin(props) {
                 setAssignData(response.data);
                 console.log('assignment data');
                 console.log(AssignData);
-                // setData(allData);
-                // setTitle(allData.name);
-                // setClassId(allData.classId);
-                // setDescription(allData.description);
-
-                // setEnrolledStud(allData.enrolledStudents.length);
                 setLoading(true)
 
             })
             .catch(error => console.error(`Error:${error}`));
     }
-    // Delete Assignment 
-    // Delete 
-    // Alert 
-    const deleteData = (id) => {
-        console.log('deleting phone no')
-        console.log(id);
-        axios.delete(`${url}assignment-question/delete`, {
-            data: {
-                _id: id
-            }
-        }, { headers })
-            .then(res => {
-                console.log(res);
-                console.log(res.data);
-                const swalWithBootstrapButtons = Swal.mixin({
-                    customClass: {
-                        confirmButton: 'btn btn-success',
-                        cancelButton: 'btn btn-danger'
-                    },
-                    buttonsStyling: {
-                        backgroundColor: '#4CAF50', /* Green */
-                        border: 'none',
-                        color: 'white',
-                        padding: '15px 32px',
-                        textAlign: 'center',
-                        textDecoration: 'none',
-                        display: 'inline-block',
-                        fontSize: '16px'
-                    }
-                })
 
-                swalWithBootstrapButtons.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Yes, delete it!',
-                    cancelButtonText: 'No, cancel!',
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        swalWithBootstrapButtons.fire(
-                            'Deleted!',
-                            'Assignment has been deleted.',
-                            'success'
-                        )
-                        //    refresh componenet 
-                        getAllAssignment();
 
-                        // window.location.reload(false);
-                    } else if (
-                        /* Read more about handling dismissals below */
-                        result.dismiss === Swal.DismissReason.cancel
-                    ) {
-                        swalWithBootstrapButtons.fire(
-                            'Cancelled',
-                            'Assignment is safe :)',
-                            'error'
-                        )
-                    }
-                })
-                // setOpen1(true);
-            }).catch(err => {
-                console.log(err)
-            })
-    }
-    // Delete Quiz 
-    // Delete 
-    // Alert 
-    const deleteDataQuiz = (id) => {
-        console.log('deleting phone no')
-        console.log(id);
-        axios.delete(`${url}quiz-question/delete`, {
-            data: {
-                _id: id
-            }
-        }, { headers })
-            .then(res => {
-                console.log(res);
-                console.log(res.data);
-                const swalWithBootstrapButtons = Swal.mixin({
-                    customClass: {
-                        confirmButton: 'btn btn-success',
-                        cancelButton: 'btn btn-danger'
-                    },
-                    buttonsStyling: {
-                        backgroundColor: '#4CAF50', /* Green */
-                        border: 'none',
-                        color: 'white',
-                        padding: '15px 32px',
-                        textAlign: 'center',
-                        textDecoration: 'none',
-                        display: 'inline-block',
-                        fontSize: '16px'
-                    }
-                })
-
-                swalWithBootstrapButtons.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Yes, delete it!',
-                    cancelButtonText: 'No, cancel!',
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        swalWithBootstrapButtons.fire(
-                            'Deleted!',
-                            'Quiz has been deleted.',
-                            'success'
-                        )
-                        //    refresh componenet 
-                        getAllQuiz();
-
-                        // window.location.reload(false);
-                    } else if (
-                        /* Read more about handling dismissals below */
-                        result.dismiss === Swal.DismissReason.cancel
-                    ) {
-                        swalWithBootstrapButtons.fire(
-                            'Cancelled',
-                            'Quiz is safe :)',
-                            'error'
-                        )
-                    }
-                })
-                // setOpen1(true);
-            }).catch(err => {
-                console.log(err)
-            })
-    }
     let navigate = useNavigate();
 
     // View Update Assignment 
@@ -777,6 +705,12 @@ function MyCourseJoin(props) {
             })
 
     }
+    // Quiz File sol 
+    const [solUploadQuiz, setSolUploadQuiz] = useState(false);
+    const handleCloseQuiz = () => {
+        setSolUploadQuiz(false);
+    };
+    // Upload File 
     // Get Assignment 
     const getAssignment = async (idData) => {
         await axios.get(`${url}assignment-question/get`, {
@@ -973,6 +907,28 @@ function MyCourseJoin(props) {
             { headers }).then(response => {
                 console.log(response.data.file)
                 setSelectedFileSol(response.data.file)
+
+            })
+
+    }
+    const [selectedFileSolQuiz, setSelectedFileSolQuiz] = useState([])
+    const onFileChangeSolQuiz = (e) => {
+        console.log(e)
+        const formData = new FormData();
+        formData.append(
+            "file",
+            e,
+        );
+
+        // Details of the uploaded file 
+        //   console.log(selectedFile1); 
+
+        // Request made to the backend api 
+        // Send formData object 
+        axios.post(`${url}upload-file`, formData,
+            { headers }).then(response => {
+                console.log(response.data.file)
+                setSelectedFileSolQuiz(response.data.file)
 
             })
 
@@ -1338,14 +1294,6 @@ function MyCourseJoin(props) {
                                                                                 }}
                                                                             >View</Button>
                                                                         </Grid>
-                                                                        <Grid item xs={4} md={4}>
-                                                                            <Button size="small"
-                                                                                onClick={() => {
-                                                                                    console.log(row._id)
-                                                                                    deleteDataQuiz(row._id)
-                                                                                }}
-                                                                            >Delete</Button>
-                                                                        </Grid>
                                                                         <Grid item xs={6} md={6}>
                                                                             Due Date:{row.dueDate}
                                                                         </Grid>
@@ -1356,72 +1304,6 @@ function MyCourseJoin(props) {
                                                             ))}
 
                                                         </TabPanel>
-                                                        {/* Classwork  */}
-
-                                                        {/* <TabPanel value="2" style={GridBackground}>
-                                                            <Card sx={{ minWidth: 275 }} className={classes.margincard}>
-                                                                <CardContent>
-                                                                    <Grid container spacing={2}>
-                                                                        <Grid item xs={12} md={12}>
-                                                                            <Grid container spacing={2}>
-                                                                                <Grid item xs={12} md={12}>
-                                                                                    <Typography variant='h5'>
-                                                                                        Upload Classwork
-                                                                                    </Typography>
-                                                                                </Grid>
-                                                                                <Grid item xs={12} md={12}>
-                                                                                    <Grid container spacing={2}>
-                                                                                        <Grid item xs={4} md={4}>
-                                                                                            <Button variant="contained" className={classes.btnB} onClick={() => {
-                                                                                                setShowUpload(true);
-                                                                                                setshowUploadAssign(false);
-                                                                                                setshowUploadQuiz(false);
-                                                                                                setshowUploadLink(false);
-                                                                                                setshowUploadUpdate(false);
-                                                                                                setShowNews(false)
-                                                                                            }}>Stream</Button>
-                                                                                        </Grid>
-                                                                                        <Grid item xs={4} md={4}>
-                                                                                            <Button variant="contained" className={classes.btnB} onClick={() => {
-                                                                                                setShowUpload(false);
-                                                                                                setshowUploadAssign(true);
-                                                                                                setshowUploadQuiz(false);
-                                                                                                setshowUploadLink(false);
-                                                                                                setshowUploadUpdate(false);
-                                                                                                setShowNews(false)
-                                                                                            }}>Assignment</Button>
-                                                                                        </Grid>
-                                                                                        <Grid item xs={4} md={4}>
-                                                                                            <Button variant="contained" className={classes.btnB} onClick={() => {
-                                                                                                setShowUpload(false);
-                                                                                                setshowUploadAssign(false);
-                                                                                                setshowUploadQuiz(true);
-                                                                                                setshowUploadLink(false);
-                                                                                                setshowUploadUpdate(false);
-                                                                                                setShowNews(false)
-                                                                                            }}>Quiz</Button>
-
-                                                                                        </Grid>
-                                                                                        <Grid item xs={4} md={4}>
-                                                                                            <Button variant="contained" className={classes.btnB} onClick={() => {
-                                                                                                setShowUpload(false);
-                                                                                                setshowUploadAssign(false);
-                                                                                                setshowUploadQuiz(false);
-                                                                                                setshowUploadLink(true);
-                                                                                                setshowUploadUpdate(false);
-                                                                                                setShowNews(false)
-                                                                                            }}>Video</Button>
-                                                                                        </Grid>
-
-                                                                                    </Grid>
-                                                                                </Grid>
-                                                                            </Grid>
-                                                                        </Grid>
-                                                                    </Grid>
-                                                                </CardContent>
-                                                            </Card>
-
-                                                        </TabPanel> */}
                                                         {/* Enrolled students  */}
                                                         <TabPanel value="3">
                                                             <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
@@ -1442,70 +1324,11 @@ function MyCourseJoin(props) {
                                                             </List>
 
                                                         </TabPanel>
-                                                        {/* <TabPanel value="4">
-                                                            <Card sx={{ minWidth: 275 }} className={classes.margincard}>
-                                                                <CardContent>
-                                                                    <Grid container spacing={2}>
-                                                                        <Grid item xs={12} md={12}>
-                                                                            <Grid container spacing={2}>
-                                                                                <Grid item xs={12} md={12}>
-                                                                                    <Typography variant='h5'>
-                                                                                        Update Class
-                                                                                    </Typography>
-                                                                                </Grid>
-                                                                                <Grid item xs={12} md={12}>
-                                                                                    <Grid container spacing={2}>
-                                                                                        <Grid item xs={12} md={12}>
-                                                                                            <TextField className={classes.btn} id="filled-basic" label="Enter Title" variant="filled"
-                                                                                                value={classTitleUpdate} onChange={
-                                                                                                    (e) => setclassTitleUpdate(e.target.value)
-                                                                                                } />
-                                                                                        </Grid>
-                                                                                        <Grid item xs={12} md={12}>
-
-                                                                                            <TextareaAutosize
-                                                                                                className={classes.btn}
-                                                                                                aria-label="minimum height"
-                                                                                                minRows={3}
-                                                                                                placeholder="Enter Description"
-                                                                                                value={classDescriptionUpdate}
-                                                                                                onChange={
-                                                                                                    (e) => setclassDescriptionUpdate(e.target.value)
-                                                                                                }
-
-                                                                                            />
-                                                                                        </Grid>
-                                                                                        <Grid item xs={12} md={12}>
-                                                                                            <Button variant="contained" className={classes.btn} color='primary' component="span"
-                                                                                                onClick={classUpdate} >
-                                                                                                Submit
-                                                                                            </Button>
-                                                                                        </Grid>
-                                                                                    </Grid>
-
-
-
-
-
-                                                                                </Grid>
-
-                                                                            </Grid>
-                                                                        </Grid>
-                                                                    </Grid>
-
-                                                                </CardContent>
-
-                                                            </Card>
-                                                        </TabPanel> */}
+                                                       
                                                     </TabContext>
 
                                                 </Grid>
                                             </Grid>
-
-
-
-
-
 
                                         </CardContent>
 
@@ -1716,37 +1539,7 @@ function MyCourseJoin(props) {
                                                     (e) => setNumber(e.target.value)
                                                 } />
                                         </Grid>
-                                        {/* <Grid item xs={12} md={12}>
-                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                                <DatePicker
-                                                    label="Basic example"
-                                                    value={value1}
-                                                    onChange={(newValue) => {
-                                                        setValue1(newValue);
-                                                    }}
-                                                    renderInput={(params) => <TextField {...params} />}
-                                                />
-                                            </LocalizationProvider>
-                                        </Grid>
-                                        <Grid item xs={12} md={12}>
-                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                                <TimePicker
-                                                    value={value2}
-                                                    onChange={setValue2}
-                                                    renderInput={(params) => <TextField {...params} />}
-                                                />
-                                            </LocalizationProvider>
-                                        </Grid>
-
-                                        <Grid item xs={12} md={12}>
-                                            <label htmlFor="contained-button-file">
-                                                <Input accept="file/*" id="icon-button-file" type="file" />
-                                                <IconButton color="primary" aria-label="upload picture" component="span">
-                                                    <AttachFileIcon /><Typography>Attach File</Typography>
-                                                </IconButton>
-
-                                            </label>
-                                        </Grid> */}
+                                      
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
                                             <Button variant="contained" className={classes.btn} color='primary' onClick={assignUpload} component="span" >
                                                 Upload
@@ -1849,7 +1642,7 @@ function MyCourseJoin(props) {
 
                     {showViewQuiz ?
                         <>
-                            {/* <Grid container spacing={2}> */}
+                          {/* <Grid container spacing={2}> */}
 
 
                             {/* <Grid item xs={12} md={12}> */}
@@ -1861,59 +1654,55 @@ function MyCourseJoin(props) {
                                             <Typography variant='h6' > Quiz</Typography>
                                         </Grid>
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
-                                            <TextField className={classes.btn} id="filled-basic" label="Enter Title" variant="filled"
-                                                value={viewQuizName} onChange={
-                                                    (e) => setViewQuizName(e.target.value)
-                                                } />
+                                            {/* <TextField className={classes.btn} id="filled-basic" label="Enter Title" variant="filled"
+                                                value={viewAssignName} onChange={
+                                                    (e) => setViewAssignName(e.target.value)
+                                                } /> */}
+                                            <Typography variant='h6' className={classes.texthead} > {viewQuizName}</Typography>
+
                                         </Grid>
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
-                                            Quiz File
+                                            Quiz File(click to view)
                                         </Grid>
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
 
                                             {/* <iframe src="https://people.engr.tamu.edu/choe/choe/courses/12summer/315/lectures/kwon-android01.pdf" width="100%" height="500px">
                                         </iframe> */}
-                                            <Button variant="contained" className={classes.btn} color='primary' component="span"
+                                            <Button className={classes.btnAssign} component="span"
                                                 onClick={viewPdf} >
-                                                Open Pdf
+                                                {/* <img src=<pdfImg/> */}
+                                                <img className={classes.ImgStyle} src={pdfImg} />
                                             </Button>
-                                            <input type="file" onChange={(e) => onFileChangeQuizUpdate(e.target.files[0])} />
+                                            {/* <input type="file" onChange={(e) => onFileChangeUpdate(e.target.files[0])} /> */}
 
                                         </Grid>
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
-                                            Select Due Date
+                                            Due Date:
+
                                         </Grid>
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
-                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                                <DateTimePicker
-                                                    renderInput={(props) => <TextField {...props} />}
-                                                    label="Due Date"
-                                                    value={viewQuizDue}
-                                                    onChange={(newValue) => {
-                                                        setViewQuizDue(newValue);
-                                                    }}
-                                                />
-                                            </LocalizationProvider>
+                                            <Typography variant='h6' className={classes.texthead} > {viewQuizDue}</Typography>
+
                                         </Grid>
 
 
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
                                             <div className={classes.TextStyle}>
-                                                Enter Total Marks:
+                                                Total Marks:
                                             </div>
 
                                         </Grid>
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
+                                            <Typography variant='h6' className={classes.texthead} > {viewQuizNumbers}</Typography>
 
-                                            <TextField className={classes.btn} id="filled-basic" label="Enter Marks" variant="filled"
-                                                value={viewQuizNumbers} onChange={
-                                                    (e) => setViewQuizNumbers(e.target.value)
-                                                } />
                                         </Grid>
 
+
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
-                                            <Button variant="contained" className={classes.btn} color='primary' onClick={QuizUpdate} component="span" >
-                                                Update
+                                            <Button variant="contained" className={classes.btn} color='primary' onClick={()=>{
+                                                  setSolUpload(true)
+                                            }} component="span" >
+                                                Upload Solution
                                             </Button>
                                         </Grid>
 
@@ -1926,7 +1715,6 @@ function MyCourseJoin(props) {
                             </Card>
                             {/* </Grid> */}
                             {/* </Grid> */}
-
                         </>
 
                         : null}
@@ -2158,6 +1946,67 @@ function MyCourseJoin(props) {
                                     <Grid item xs={6} md={6} >
                                         <button className={classes.btnSubmit} onClick={submitHandlerSol} type='submit'>
                                             {loading1 ? <ClipLoader color={color} loading={loading1} css={override} size={30} /> : <h3>Submit</h3>}
+                                        </button>
+                                    </Grid>
+
+                                </Grid>
+                            </form>
+                        </DialogContent>
+                        <DialogActions>
+                            {/* <Button onClick={handleClose}>Disagree</Button>
+          <Button onClick={handleClose}>Agree</Button> */}
+                        </DialogActions>
+                    </Dialog>
+                    {/* Quiz  */}
+                    <Dialog
+                        open={solUploadQuiz}
+                        // TransitionComponent={Transition}
+                        keepMounted
+                        onClose={handleCloseQuiz}
+                        aria-describedby="alert-dialog-slide-description"
+                    >
+                        <DialogTitle>{"Upload Quiz Solution"}</DialogTitle>
+                        <DialogContent>
+                            <form >
+                                <Grid container spacing={2} className={classes.gridS}>
+                                    <Grid item xs={12} md={12}>
+                                        <Collapse in={open4}>
+                                            <Alert severity="error"
+                                                action={
+                                                    <IconButton
+                                                        aria-label="close"
+                                                        color="inherit"
+                                                        size="small"
+                                                        onClick={() => {
+                                                            setOpen4(false);
+                                                        }}
+                                                    >
+                                                        <CloseIcon fontSize="inherit" />
+                                                    </IconButton>
+                                                }
+                                                sx={{ mb: 2 }}
+                                            >
+                                                Please Select File
+                                            </Alert>
+                                        </Collapse>
+                                    </Grid>
+
+                                    <Grid item xs={12} md={6}>
+                                        <div className={classes.TextStyle}>
+                                            Select File
+                                        </div>
+
+                                    </Grid>
+                                    <Grid item xs={12} md={6}>
+                                        {/* <input type="file" name="file" placeholder="File"
+                                                            onChange={uploadFile} /> */}
+                                        {/* <input type="file" onChange={(e) => uploadFile(e.target.files[0])}></input> */}
+                                        {/* <button onClick={uploadFile}>Upload</button> */}
+                                        <input type="file" onChange={(e) => onFileChangeSolQuiz(e.target.files[0])} />
+                                    </Grid>
+                                    <Grid item xs={6} md={6} >
+                                        <button className={classes.btnSubmit} onClick={submitHandlerSolQuiz} type='submit'>
+                                            {loading2 ? <ClipLoader color={color} loading={loading2} css={override} size={30} /> : <h3>Submit</h3>}
                                         </button>
                                     </Grid>
 

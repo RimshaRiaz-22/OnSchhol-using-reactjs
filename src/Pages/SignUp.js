@@ -1,12 +1,10 @@
 import { Grid, Button, Avatar, Typography } from '@material-ui/core'
 import React, { useState, useEffect } from 'react'
 import image from './logo.png'
-import GoogleIcon from '@mui/icons-material/Google';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import { makeStyles } from '@material-ui/core/styles';
 import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2';
+import ClipLoader from "react-spinners/ClipLoader";
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
@@ -28,6 +26,7 @@ const useStyles = makeStyles({
         marginBottom: '20px',
         borderColor: ' #1379C8',
         color: '#fff',
+        height:'48px',
         border: '1px solid #1379C8',
         backgroundColor: '#1379C8',
         padding: '10px'
@@ -64,16 +63,20 @@ const useStyles = makeStyles({
     }, checkbox: {
         color: 'black',
         fontSize: '12px'
-
     }
 })
-
-const heading = "------------ OR ------------";
+const override = {
+    display: ' block',
+    margin: '0 auto',
+}
+const color = "black"
 
 function SignUp() {
     const [inputUsername, setInputUsername] = useState('');
     const [inputEmail, setInputEmail] = useState('');
     const [inputPassword, setInputPassword] = useState('');
+    const [loading1, setLoading1] = useState(false);
+
     const [session, setSession] = useState("");
     const [error, setError] = useState([]);
     const classes = useStyles();
@@ -93,54 +96,94 @@ function SignUp() {
     // Submit handler 
     const submitHandler = async (e) => {
         e.preventDefault()
-        // POst Request 
-        await axios.post(`${url}user/create`, {
-            name:inputUsername,
-            email: inputEmail,
-            password: inputPassword
-        }, { headers }).then(response => {
-            console.log(response)
-            const session1 = response.data.session;
-
-            setSession(response.data.session);
-            console.log(session1);
-
-            let timerInterval
+        setLoading1(true)
+        setTimeout(() => {
+            setLoading1(false)
+        }, 3000)
+        if (inputUsername == "") {
             Swal.fire({
-                title: 'SignUp Successfull',
-                html: 'Please wait !',
-                timer: 2000,
-                timerProgressBar: true,
-                didOpen: () => {
-                    Swal.showLoading()
-                    const b = Swal.getHtmlContainer().querySelector('b')
-                    timerInterval = setInterval(() => {
-                        b.textContent = Swal.getTimerLeft()
-                    }, 100)
+                title: 'Fill All Fields',
+                showClass: {
+                    popup: 'animate__animated animate__fadeInDown'
                 },
-                willClose: () => {
-                    clearInterval(timerInterval)
-                }
-            }).then((result) => {
-                /* Read more about handling dismissals below */
-                if (result.dismiss === Swal.DismissReason.timer) {
-                    console.log('I was closed by the timer')
+                hideClass: {
+                    popup: 'animate__animated animate__fadeOutUp'
                 }
             })
-            navigate('/');
-        })
-            .catch(err => {
-                console.log(err)
+
+        } else if (inputEmail == "") {
+            Swal.fire({
+                title: 'Fill All Fields',
+                showClass: {
+                    popup: 'animate__animated animate__fadeInDown'
+                },
+                hideClass: {
+                    popup: 'animate__animated animate__fadeOutUp'
+                }
+            })
+
+        } else if (inputPassword == "") {
+            Swal.fire({
+                title: 'Fill All Fields',
+                showClass: {
+                    popup: 'animate__animated animate__fadeInDown'
+                },
+                hideClass: {
+                    popup: 'animate__animated animate__fadeOutUp'
+                }
+            })
+
+        } else {
+            // POst Request 
+            await axios.post(`${url}user/create`, {
+                name: inputUsername,
+                email: inputEmail,
+                password: inputPassword
+            }, { headers }).then(response => {
+                console.log(response)
+                const session1 = response.data.session;
+
+                setSession(response.data.session);
+                console.log(session1);
+
+                let timerInterval
                 Swal.fire({
-                    title: 'Invalid Credentials',
-                    showClass: {
-                        popup: 'animate__animated animate__fadeInDown'
+                    title: 'SignUp Successfull',
+                    html: 'Please wait !',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading()
+                        const b = Swal.getHtmlContainer().querySelector('b')
+                        timerInterval = setInterval(() => {
+                            b.textContent = Swal.getTimerLeft()
+                        }, 100)
                     },
-                    hideClass: {
-                        popup: 'animate__animated animate__fadeOutUp'
+                    willClose: () => {
+                        clearInterval(timerInterval)
+                    }
+                }).then((result) => {
+                    /* Read more about handling dismissals below */
+                    if (result.dismiss === Swal.DismissReason.timer) {
+                        console.log('I was closed by the timer')
                     }
                 })
+                navigate('/');
             })
+                .catch(err => {
+                    console.log(err)
+                    Swal.fire({
+                        title: 'Invalid Credentials',
+                        showClass: {
+                            popup: 'animate__animated animate__fadeInDown'
+                        },
+                        hideClass: {
+                            popup: 'animate__animated animate__fadeOutUp'
+                        }
+                    })
+                })
+        }
+
     }
     return (
         <div>
@@ -151,16 +194,6 @@ function SignUp() {
 
                         <Avatar src={image} variant="square" className={classes.logoStyle} />
                         <Typography variant='h6'>Create your free account now</Typography>
-                        {/* <Button variant="outlined" className={classes.btnsocial} startIcon={<GoogleIcon />}>
-                            CONTINUE WITH GOOGLE
-                        </Button>
-                        <Button variant="outlined" className={classes.btnsocial} startIcon={<FacebookIcon />}>
-                            CONTINUE WITH FACEBOOK
-                        </Button>
-                        <Button variant="outlined" className={classes.btnsocial} startIcon={<LinkedInIcon />}>
-                            CONTINUE WITH LIKEDIN
-                        </Button> */}
-                        {/* <h6 className={classes.headingStyle}>{heading}</h6> */}
                         <input className={classes.InputStyle} name="username"
                             value={inputUsername}
                             type="text" placeholder="Enter UserName"
@@ -195,7 +228,9 @@ function SignUp() {
                                 submitHandler
 
                             }
-                            className={classes.btn} >SignUp</Button>
+                            className={classes.btn} >
+                            {loading1 ? <ClipLoader color={color} loading={loading1} css={override} size={10} /> : <h3>Login</h3>}
+                        </Button>
 
                         <h6 className={classes.headingStyle1}>You are already registered? <span className={classes.link}
                             onClick={

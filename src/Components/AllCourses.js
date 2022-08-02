@@ -1,5 +1,5 @@
 import { Grid, Typography } from '@material-ui/core'
-import React,{useState,useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import Box from '@mui/material/Box';
 import { makeStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types';
@@ -37,6 +37,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+import ClipLoader from "react-spinners/ClipLoader";
 import axios from 'axios'
 import url from './url'
 import { DeleteOutline } from '@material-ui/icons';
@@ -45,6 +46,7 @@ import { DeleteOutline } from '@material-ui/icons';
 const useStyles = makeStyles({
   btn: {
     width: '100%',
+    height:'50px'
   }, marginT: {
     marginTop: '20px'
   }, iconstyle: {
@@ -61,7 +63,6 @@ const useStyles = makeStyles({
   }, textStyle: {
     fontSize: '12px'
   }, headStyle: {
-    // fontSize:'20px',
     color: 'black',
     fontSize: ' 1.25rem',
     fontWeight: '200',
@@ -70,47 +71,35 @@ const useStyles = makeStyles({
   appbtn: {
     borderRadius: '10px',
     width: '100%'
-  },notification: {
-    // backgroundColor: '#555',
-    // color:' white',
+  }, notification: {
     textDecoration: 'none',
-    // padding:' 15px 26px',
     position: 'relative',
     display: 'inline-block',
     borderRadius: '2px'
-  },badge :{
+  }, badge: {
     position: 'absolute',
     top: '10px',
     right: '10px',
     padding: '5px 10px',
-    borderRadius:' 50%',
-    cursor:'pointer',
-    // backgroundColor: 'red',
+    borderRadius: ' 50%',
+    cursor: 'pointer',
     color: 'red'
   },
-  badge1:{
+  badge1: {
     position: 'absolute',
-    marginLeft:'-30px',
-    marginTop:'5px',
-    // top: '1px',
-    // right: '1px',
-    cursor:'pointer',
-    // padding: '5px 10px',
-    // borderRadius:' 50%',
-    // backgroundColor: 'red',
+    marginLeft: '-30px',
+    marginTop: '5px',
+    cursor: 'pointer',
     color: 'red'
   }
 
 })
-const styleBtn = {
-  border: ' none',
-  width: '70px',
-  height: '70px',
-  fontSize: ' 32px',
-  cursor: 'pointer',
-  borderRadius: '24px',
-
+const override = {
+  display: ' block',
+  margin: '0 auto',
+  //   borderColor: 'red',
 }
+const color = "black"
 
 
 export const data = {
@@ -140,470 +129,367 @@ export const data = {
   ],
 };
 function AllCourses(props) {
+  const [loading1, setLoading1] = useState(false);
+
   const headers = {
     'Content-Type': 'application/json'
-}
-// Get all Enrolled Courses
-const [dataEnrolled, setDataEnrolled] = useState([]);
-const [loadingEnroll, setLoadingEnroll] = useState(false);
-const getAllDataEnrolled = () => {
+  }
+  // Get all Enrolled Courses
+  const [dataEnrolled, setDataEnrolled] = useState([]);
+  const [loadingEnroll, setLoadingEnroll] = useState(false);
+  const getAllDataEnrolled = () => {
     axios.get(`${url}class/get-enrolled-classes`, {
       params: {
-          _id: props.data
+        _id: props.data
       }
-  })
-        .then((response) => {
-            const allData = response.data;
-            console.log(allData);
-            setDataEnrolled(response.data);
-            setLoadingEnroll(true)
-             
-        })
-        .catch(error => console.error(`Error:${error}`));
-}
-// Get all Courses
-const [loading, setLoading] = useState(false);
-const getAllData = () => {
+    })
+      .then((response) => {
+        const allData = response.data;
+        console.log(allData);
+        setDataEnrolled(response.data);
+        setLoadingEnroll(true)
+
+      })
+      .catch(error => console.error(`Error:${error}`));
+  }
+  // Get all Courses
+  const [loading, setLoading] = useState(false);
+  const getAllData = () => {
     axios.get(`${url}class/get-owner-classes`, {
       params: {
-          _id: props.data
+        _id: props.data
       }
-  })
-        .then((response) => {
-            const allData = response.data;
-            console.log(allData);
-            setData(response.data);
-            setLoading(true)
-             
-        })
-        .catch(error => console.error(`Error:${error}`));
-}
-useEffect(() => {
+    })
+      .then((response) => {
+        const allData = response.data;
+        console.log(allData);
+        setData(response.data);
+        setLoading(true)
+
+      })
+      .catch(error => console.error(`Error:${error}`));
+  }
+  useEffect(() => {
     getAllData();
     getAllDataEnrolled();
 
-}, []);
+  }, []);
 
-const openClass = (idData) => {
-  console.log(idData)
-  navigate('/coursestream',
-  {
-      state: {
+  const openClass = (idData) => {
+    console.log(idData)
+    navigate('/coursestream',
+      {
+        state: {
           post_id: idData,
-      }
-  });
+        }
+      });
 
-}
-// Delete Class 
-const deleteClass = (idData) => {
-  console.log(idData)
-  axios.delete(`${url}class/delete`, {
-    data: {
+  }
+  // Delete Class 
+  const deleteClass = (idData) => {
+    console.log(idData)
+    axios.delete(`${url}class/delete`, {
+      data: {
         _id: idData
-    }
-}, { headers })
-    .then(res => {
+      }
+    }, { headers })
+      .then(res => {
         console.log(res);
         console.log(res.data);
         const swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: 'btn btn-success',
-                cancelButton: 'btn btn-danger'
-            },
-            buttonsStyling: {
-                backgroundColor: '#4CAF50', /* Green */
-                border: 'none',
-                color: 'white',
-                padding: '15px 32px',
-                textAlign: 'center',
-                textDecoration: 'none',
-                display: 'inline-block',
-                fontSize: '16px'
-            }
+          customClass: {
+            confirmButton: 'btn btn-success',
+            cancelButton: 'btn btn-danger'
+          },
+          buttonsStyling: {
+            backgroundColor: '#4CAF50', /* Green */
+            border: 'none',
+            color: 'white',
+            padding: '15px 32px',
+            textAlign: 'center',
+            textDecoration: 'none',
+            display: 'inline-block',
+            fontSize: '16px'
+          }
         })
 
         swalWithBootstrapButtons.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'No, cancel!',
-            reverseButtons: true
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, delete it!',
+          cancelButtonText: 'No, cancel!',
+          reverseButtons: true
         }).then((result) => {
-            if (result.isConfirmed) {
-                swalWithBootstrapButtons.fire(
-                    'Deleted!',
-                    'Course has been deleted.',
-                    'success'
-                )
-                //    refresh componenet 
+          if (result.isConfirmed) {
+            swalWithBootstrapButtons.fire(
+              'Deleted!',
+              'Course has been deleted.',
+              'success'
+            )
+            //    refresh componenet 
             getAllData();
-                // window.location.reload(false);
-            } else if (
-                /* Read more about handling dismissals below */
-                result.dismiss === Swal.DismissReason.cancel
-            ) {
-                swalWithBootstrapButtons.fire(
-                    'Cancelled',
-                    'Course is safe :)',
-                    'error'
-                )
-            }
+            // window.location.reload(false);
+          } else if (
+            /* Read more about handling dismissals below */
+            result.dismiss === Swal.DismissReason.cancel
+          ) {
+            swalWithBootstrapButtons.fire(
+              'Cancelled',
+              'Course is safe :)',
+              'error'
+            )
+          }
         })
         // setOpen1(true);
-    }).catch(err => {
+      }).catch(err => {
         console.log(err)
+      })
+
+  }
+  // Delete class Join 
+  // Delete Class 
+  const deleteClassJoin = async (idData) => {
+    console.log(idData)
+    console.log(props.data)
+    await axios.put(`${url}class/leave`, {
+      class_id: idData,
+      user_id: props.data
+    }, { headers }).then(response => {
+      console.log(response)
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: {
+          backgroundColor: '#4CAF50', /* Green */
+          border: 'none',
+          color: 'white',
+          padding: '15px 32px',
+          textAlign: 'center',
+          textDecoration: 'none',
+          display: 'inline-block',
+          fontSize: '16px'
+        }
+      })
+
+      swalWithBootstrapButtons.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          swalWithBootstrapButtons.fire(
+            'Deleted!',
+            'Course has been Unenrroled.',
+            'success'
+          )
+          //    refresh componenet 
+          getAllData();
+          getAllDataEnrolled();
+          // window.location.reload(false);
+        } else if (
+          /* Read more about handling dismissals below */
+          result.dismiss === Swal.DismissReason.cancel
+        ) {
+          swalWithBootstrapButtons.fire(
+            'Cancelled',
+          )
+        }
+      })
+      // setOpen1(true);
+    }).catch(err => {
+      console.log(err)
     })
 
-}
-// Delete class Join 
-// Delete Class 
-const deleteClassJoin = async(idData) => {
-  console.log(idData)
-  console.log(props.data)
-  await axios.put(`${url}class/leave`, {
-    class_id: idData,
-    user_id: props.data
-}, { headers }).then(response => {
-    console.log(response)
-        const swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: 'btn btn-success',
-                cancelButton: 'btn btn-danger'
-            },
-            buttonsStyling: {
-                backgroundColor: '#4CAF50', /* Green */
-                border: 'none',
-                color: 'white',
-                padding: '15px 32px',
-                textAlign: 'center',
-                textDecoration: 'none',
-                display: 'inline-block',
-                fontSize: '16px'
-            }
-        })
-
-        swalWithBootstrapButtons.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'No, cancel!',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.isConfirmed) {
-                swalWithBootstrapButtons.fire(
-                    'Deleted!',
-                    'Course has been Unenrroled.',
-                    'success'
-                )
-                //    refresh componenet 
-                getAllData();
-                getAllDataEnrolled();
-                // window.location.reload(false);
-            } else if (
-                /* Read more about handling dismissals below */
-                result.dismiss === Swal.DismissReason.cancel
-            ) {
-                swalWithBootstrapButtons.fire(
-                    'Cancelled',
-                )
-            }
-        })
-        // setOpen1(true);
-    }).catch(err => {
-        console.log(err)
-    })
-
-}
-const openClassJoin = (idData) => {
-  console.log(idData)
-  navigate('/coursestreamjoin',
-  {
-      state: {
+  }
+  const openClassJoin = (idData) => {
+    console.log(idData)
+    navigate('/coursestreamjoin',
+      {
+        state: {
           post_id: idData,
-      }
-  });
+        }
+      });
 
-}
-const [data, setData] = useState([]);
+  }
+  const [data, setData] = useState([]);
   const classes = useStyles();
   const navigate = useNavigate();
-  const userId=props.data
+  const userId = props.data
   // calender 
   const [value, onChange] = useState(new Date());
   // chart 
   ChartJS.register(ArcElement, Tooltip, Legend);
-
-  // const [classId,setclassId]=useState("");
-  // const [userId,setuserId]=useState("");
-  const [createTitle,setcreateTitle]=useState("");
-  const [createDescription,setcreateDescription]=useState("");
+  const [createTitle, setcreateTitle] = useState("");
+  const [createDescription, setcreateDescription] = useState("");
   const Create = () => {
+    setLoading1(true)
+    setTimeout(() => {
+      setLoading1(false)
+    }, 3000)
     axios.post(`${url}class/create`, {
       name: createTitle,
       description: createDescription,
-      owner:props.data
-  }, { headers }).then(response => {
+      owner: props.data
+    }, { headers }).then(response => {
       console.log(response)
-      const classId =response.data._id
+      const classId = response.data._id
       // setuserId(response.data._id)
       let timerInterval
       Swal.fire({
-          title: 'Created Class Successfully',
-          timer: 2000,
-          timerProgressBar: true,
-          didOpen: () => {
-              Swal.showLoading()
-              const b = Swal.getHtmlContainer().querySelector('b')
-              timerInterval = setInterval(() => {
-                  b.textContent = Swal.getTimerLeft()
-              }, 100)
-          },
-          willClose: () => {
-              clearInterval(timerInterval)
-          }
+        title: 'Created Class Successfully',
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading()
+          const b = Swal.getHtmlContainer().querySelector('b')
+          timerInterval = setInterval(() => {
+            b.textContent = Swal.getTimerLeft()
+          }, 100)
+        },
+        willClose: () => {
+          clearInterval(timerInterval)
+        }
       }).then((result) => {
-          /* Read more about handling dismissals below */
-          if (result.dismiss === Swal.DismissReason.timer) {
-              console.log('I was closed by the timer')
-          }
-          navigate('/coursestream',
+        /* Read more about handling dismissals below */
+        if (result.dismiss === Swal.DismissReason.timer) {
+          console.log('I was closed by the timer')
+        }
+        navigate('/coursestream',
           {
-              state: {
-                  post_id: classId,
-              }
+            state: {
+              post_id: classId,
+            }
           });
       })
-  })
+    })
       .catch(err => {
-          console.log(err)
+        console.log(err)
       })
-
-    // POst Request 
-        //   navigate('/home');
-    // let timerInterval
-    // Swal.fire({
-    //     title: 'Course Created Successfully',
-    //     html: 'Please wait !',
-    //     timer: 2000,
-    //     timerProgressBar: true,
-    //     didOpen: () => {
-    //         Swal.showLoading()
-    //         const b = Swal.getHtmlContainer().querySelector('b')
-    //         timerInterval = setInterval(() => {
-    //             b.textContent = Swal.getTimerLeft()
-    //         }, 100)
-    //     },
-    //     willClose: () => {
-    //         clearInterval(timerInterval)
-    //     }
-    // }).then((result) => {
-    //     /* Read more about handling dismissals below */
-    //     if (result.dismiss === Swal.DismissReason.timer) {
-    //         console.log('I was closed by the timer')
-    //     }
-    // })
-
-    // navigate('/coursestream',
-    // {
-    //     // state: {
-    //     //     post_id: idData,
-    //     //     data: props.data
-    //     // }
-    // });
-    
 
   }
   // Join Class 
-  const [joinClassCode,setjoinClassCode]=useState("");
+  const [joinClassCode, setjoinClassCode] = useState("");
   const Join = () => {
     axios.put(`${url}class/join`, {
       classId: joinClassCode,
       user_id: props.data,
-  }, { headers }).then(response => {
+    }, { headers }).then(response => {
       console.log(response)
-      // const classId =response.data._id
-      // setuserId(response.data._id)
+
       let timerInterval
       Swal.fire({
-          title: 'Joined Class Successfully',
-          timer: 2000,
-          timerProgressBar: true,
-          didOpen: () => {
-              Swal.showLoading()
-              const b = Swal.getHtmlContainer().querySelector('b')
-              timerInterval = setInterval(() => {
-                  b.textContent = Swal.getTimerLeft()
-              }, 100)
-          },
-          willClose: () => {
-              clearInterval(timerInterval)
-          }
+        title: 'Joined Class Successfully',
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading()
+          const b = Swal.getHtmlContainer().querySelector('b')
+          timerInterval = setInterval(() => {
+            b.textContent = Swal.getTimerLeft()
+          }, 100)
+        },
+        willClose: () => {
+          clearInterval(timerInterval)
+        }
       }).then((result) => {
-          /* Read more about handling dismissals below */
-          if (result.dismiss === Swal.DismissReason.timer) {
-              console.log('I was closed by the timer')
-          }
-          setjoinClassCode([])
-          getAllData();
-          getAllDataEnrolled();
-          // navigate('/coursestream',
-          // {
-          //     state: {
-          //         post_id: classId,
-          //     }
-          // });
+        /* Read more about handling dismissals below */
+        if (result.dismiss === Swal.DismissReason.timer) {
+          console.log('I was closed by the timer')
+        }
+        setjoinClassCode([])
+        getAllData();
+        getAllDataEnrolled();
       })
-  })
+    })
       .catch(err => {
-          console.log(err)
+        console.log(err)
       })
-
-    // POst Request 
-        //   navigate('/home');
-    // let timerInterval
-    // Swal.fire({
-    //     title: 'Course Created Successfully',
-    //     html: 'Please wait !',
-    //     timer: 2000,
-    //     timerProgressBar: true,
-    //     didOpen: () => {
-    //         Swal.showLoading()
-    //         const b = Swal.getHtmlContainer().querySelector('b')
-    //         timerInterval = setInterval(() => {
-    //             b.textContent = Swal.getTimerLeft()
-    //         }, 100)
-    //     },
-    //     willClose: () => {
-    //         clearInterval(timerInterval)
-    //     }
-    // }).then((result) => {
-    //     /* Read more about handling dismissals below */
-    //     if (result.dismiss === Swal.DismissReason.timer) {
-    //         console.log('I was closed by the timer')
-    //     }
-    // })
-
-    // navigate('/coursestream',
-    // {
-    //     // state: {
-    //     //     post_id: idData,
-    //     //     data: props.data
-    //     // }
-    // });
-    
 
   }
 
   return (
     <div>
       <Grid container spacing={2}>
-        <Grid item  xs={12}  md={2}></Grid>
+        <Grid item xs={12} md={2}></Grid>
         <Grid item xs={12} md={8}>
-          {/* Heading  */}
-
-          {/* Cards */}
-
           {/* Heading  */}
           <Grid container spacing={2} className={classes.marginT}>
             <Grid item xs={12} md={12}>
               <Typography variant='h5'>Courses</Typography>
             </Grid>
             <Grid item xs={12} md={12}>
-            <Card sx={{ minWidth: 275 }}>
-                    <CardContent>
-                      <Grid container spacing={2}>
-                        <Grid item xs={12} md={12}>
-                          <Button startIcon={
-                            <Avatar className={classes.iconstyle}><StickyNote2Icon /></Avatar>
-                          }>
-                            <div className={classes.headStyle}>My Courses</div>
-                            {/* <Typography variant='h6' className={classes.headStyle}> Videos</Typography> */}
+              <Card sx={{ minWidth: 275 }}>
+                <CardContent>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} md={12}>
+                      <Button startIcon={
+                        <Avatar className={classes.iconstyle}><StickyNote2Icon /></Avatar>
+                      }>
+                        <div className={classes.headStyle}>My Courses</div>
 
-                          </Button>
+                      </Button>
 
-                        </Grid>
-                        {loading && data.map((row) => (
-                        <Grid item xs={12} md={4} className={classes.notification}>
-                        <Button variant="outlined" className={classes.btn} 
-                        onClick={() => {
-                          openClass(row._id)}}>
-                                {row.name}
-                            </Button>
-                            <span className={classes.badge} 
-                            onClick={() => {
-                          deleteClass(row._id)}}><DeleteOutline/></span>
-
-                        </Grid>
-                        ))}
-
-
-
-                        {/* <Grid item xs={12} md={4}>
-                        <Button variant="outlined" className={classes.btn} >
-                                Course Name
-                            </Button>
-
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                        <Button variant="outlined" className={classes.btn} >
-                                Course Name
-                            </Button>
-                        </Grid> */}
+                    </Grid>
+                    {loading && data.map((row) => (
+                      <Grid item xs={12} md={4} className={classes.notification}>
+                        <Button variant="outlined" className={classes.btn}
+                          onClick={() => {
+                            openClass(row._id)
+                          }}>
+                          {row.name}
+                        </Button>
+                        <span className={classes.badge}
+                          onClick={() => {
+                            deleteClass(row._id)
+                          }}><DeleteOutline /></span>
 
                       </Grid>
-
-                    </CardContent>
-
-                  </Card>
-
+                    ))}
+                  </Grid>
+                </CardContent>
+              </Card>
             </Grid>
 
             <Grid item xs={12} md={12}>
-            <Card sx={{ minWidth: 275 }}>
-                    <CardContent>
-                      <Grid container spacing={2}>
-                        <Grid item xs={12} md={12}>
-                          <Button startIcon={
-                            <Avatar className={classes.iconstyle}><DoneAllIcon /></Avatar>
-                          }>
-                            <div className={classes.headStyle}> Enrolled Courses</div>
-                            {/* <Typography variant='h6' className={classes.headStyle}> Videos</Typography> */}
+              <Card sx={{ minWidth: 275 }}>
+                <CardContent>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} md={12}>
+                      <Button startIcon={
+                        <Avatar className={classes.iconstyle}><DoneAllIcon /></Avatar>
+                      }>
+                        <div className={classes.headStyle}> Enrolled Courses</div>
+                      </Button>
 
-                          </Button>
+                    </Grid>
+                    {loading && dataEnrolled.map((row) => (
+                      <Grid item xs={12} md={4}>
+                        <Button variant="outlined" className={classes.btn}
+                          onClick={() => {
+                            openClassJoin(row._id)
+                          }}>
+                          {row.name}
 
-                        </Grid>
-                        {loading && dataEnrolled.map((row) => (
-                        <Grid item xs={12} md={4}>
-                        <Button variant="outlined" className={classes.btn} 
-                        onClick={() => {
-                          openClassJoin(row._id)}}>
-                                {row.name}
-                               
-                            </Button>
-                            <span className={classes.badge1} 
-                            onClick={() => {
-                          deleteClassJoin(row._id)}}><DeleteOutline/></span>
-                           
-
-                        </Grid>
-                        ))}
-                       
-
+                        </Button>
+                        <span className={classes.badge1}
+                          onClick={() => {
+                            deleteClassJoin(row._id)
+                          }}><DeleteOutline /></span>
                       </Grid>
+                    ))}
 
 
-
-
-
-
-                    </CardContent>
-
-                  </Card>
-
+                  </Grid>
+                </CardContent>
+              </Card>
             </Grid>
             <Grid item xs={12} md={6}>
               {/* First Cards  */}
@@ -617,41 +503,36 @@ const [data, setData] = useState([]);
                             <Avatar className={classes.iconstyle}><AddIcon /></Avatar>
                           }>
                             <div className={classes.headStyle}>Create Course</div>
-                            {/* <Typography variant='h6' className={classes.headStyle}> Videos</Typography> */}
 
                           </Button>
 
                         </Grid>
                         <Grid item xs={12} md={12}>
-                          <TextField className={classes.btn} id="filled-basic" label="Enter Title" variant="filled" 
-                           value={createTitle} onChange={
-                            (e) => setcreateTitle(e.target.value)
-                        } />
+                          <TextField className={classes.btn} id="filled-basic" label="Enter Title" variant="filled"
+                            value={createTitle} onChange={
+                              (e) => setcreateTitle(e.target.value)
+                            } />
 
                         </Grid>
                         <Grid item xs={12} md={12}>
-                          {/* <TextField className={classes.btn} value={createDescription} id="filled-basic" label="Enter Description" variant="filled"
-                          onChange={
-                            (e) => setcreateDescription(e.target.value)
-                        } /> */}
-                         <TextareaAutosize
-      aria-label="minimum height"
-      minRows={3}
-      value={createDescription}
-      onChange={
-        (e) => setcreateDescription(e.target.value)
-    }
-      placeholder="Enter Description"
-      style={{ width: 200 }}
-    />
 
+                          <TextareaAutosize
+                            aria-label="minimum height"
+                            minRows={3}
+                            value={createDescription}
+                            onChange={
+                              (e) => setcreateDescription(e.target.value)
+                            }
+                            placeholder="Enter Description"
+                            style={{ width: 200 }}
+                          />
                         </Grid>
                         <Grid item xs={12} md={12}>
-                          <Button onClick={()=>{
+                          <Button onClick={() => {
                             Create()
                           }}
-                           className={classes.btn} variant="contained" endIcon={<AddIcon />}>
-                            Create
+                            className={classes.btn} variant="contained" endIcon={<AddIcon />}>
+                            {loading1 ? <ClipLoader color={color} loading={loading1} css={override} size={10} /> : <h3>Create</h3>}
                           </Button>
                         </Grid>
 
@@ -660,10 +541,6 @@ const [data, setData] = useState([]);
 
                   </Card>
                 </Grid>
-
-                
-               
-                
               </Grid>
               {/* Second Card  */}
 
@@ -671,7 +548,7 @@ const [data, setData] = useState([]);
             </Grid>
             <Grid item xs={12} md={6}>
               <Grid container spacing={2}>
-              <Grid item xs={12} md={12}>
+                <Grid item xs={12} md={12}>
                   <Card sx={{ minWidth: 275 }}>
                     <CardContent>
                       <Grid container spacing={2}>
@@ -680,23 +557,22 @@ const [data, setData] = useState([]);
                             <Avatar className={classes.iconstyle}><AddIcon /></Avatar>
                           }>
                             <div className={classes.headStyle}>Join Course</div>
-                            {/* <Typography variant='h6' className={classes.headStyle}> Videos</Typography> */}
 
                           </Button>
 
                         </Grid>
                         <Grid item xs={12} md={12}>
                           <TextField className={classes.btn} id="filled-basic" label="Enter Class Code" variant="filled"
-                          value={joinClassCode} onChange={
-                            (e) => setjoinClassCode(e.target.value)
-                        } />
+                            value={joinClassCode} onChange={
+                              (e) => setjoinClassCode(e.target.value)
+                            } />
 
                         </Grid>
                         <Grid item xs={12} md={12}>
                           <Button className={classes.btn} variant="contained" endIcon={<AddIcon />}
-                          onClick={()=>{
-                            Join()
-                          }}>
+                            onClick={() => {
+                              Join()
+                            }}>
                             Join
                           </Button>
                         </Grid>
@@ -706,77 +582,11 @@ const [data, setData] = useState([]);
 
                   </Card>
                 </Grid>
-                {/* <Grid item xs={12} md={12}>
-                  <Card sx={{ minWidth: 275 }}>
-                    <CardContent>
-                      <Button startIcon={
-                        <Avatar className={classes.iconstyle}><AssignmentIcon /></Avatar>
-                      }>
-                        <div className={classes.headStyle}>Upcoming Events</div>
-
-
-                      </Button>
-                      <Typography variant="h5" component="div">
-                      <Calendar onChange={onChange} value={value} />
-
-                      </Typography>
-
-                    </CardContent>
-                    <CardActions>
-                      <Button size="small">View All</Button>
-                    </CardActions>
-                  </Card>
-                </Grid> */}
-                {/* <Grid item xs={12} md={12}>
-                  <Card sx={{ minWidth: 275 }}>
-                    <CardContent>
-                      <Button startIcon={
-                        <Avatar className={classes.iconstyle}><AssignmentIcon /></Avatar>
-                      }>
-                        <div className={classes.headStyle}> Study Planner</div>
-
-
-                      </Button>
-                      <Typography variant="h5" component="div">
-                        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                          <ListItem>
-                            <ListItemAvatar>
-                              <Avatar>
-                                <AssignmentLateIcon />
-                              </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="Assignment 1" secondary="Due Date:Jan 9, 2014" />
-                          </ListItem>
-                          <Divider variant="inset" component="li" />
-                          <ListItem>
-                            <ListItemAvatar>
-                              <Avatar>
-                                <AssignmentLateIcon />
-                              </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary="Assignment 2" secondary="Due Date:Jan 7, 2014" />
-                          </ListItem>
-                          <Divider variant="inset" component="li" />
-
-                        </List>
-                      </Typography>
-
-                    </CardContent>
-                    <CardActions>
-                      <Button size="small">View All</Button>
-                    </CardActions>
-                  </Card>
-
-                </Grid> */}
-
-
               </Grid>
-
             </Grid>
-
           </Grid>
         </Grid>
-        <Grid item  xs={12}  md={2}></Grid>
+        <Grid item xs={12} md={2}></Grid>
       </Grid>
 
     </div>

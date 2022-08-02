@@ -10,8 +10,6 @@ function Homepage() {
        { console.log('Homepage session')}
         {console.log(state.email)}
         <Container data={state.email}/>
-
-
         </>
     )
 }

@@ -90,41 +90,41 @@ const useStyles = makeStyles({
 // Dialog 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
-      padding: theme.spacing(2),
+        padding: theme.spacing(2),
     },
     '& .MuiDialogActions-root': {
-      padding: theme.spacing(1),
+        padding: theme.spacing(1),
     },
-  }));
-  
-  const BootstrapDialogTitle = (props) => {
+}));
+
+const BootstrapDialogTitle = (props) => {
     const { children, onClose, ...other } = props;
-  
+
     return (
-      <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
-        {children}
-        {onClose ? (
-          <IconButton
-            aria-label="close"
-            onClick={onClose}
-            sx={{
-              position: 'absolute',
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        ) : null}
-      </DialogTitle>
+        <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+            {children}
+            {onClose ? (
+                <IconButton
+                    aria-label="close"
+                    onClick={onClose}
+                    sx={{
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: (theme) => theme.palette.grey[500],
+                    }}
+                >
+                    <CloseIcon />
+                </IconButton>
+            ) : null}
+        </DialogTitle>
     );
-  };
-  
-  BootstrapDialogTitle.propTypes = {
+};
+
+BootstrapDialogTitle.propTypes = {
     children: PropTypes.node,
     onClose: PropTypes.func.isRequired,
-  };
+};
 
 const welcomeStyle = {
     width: '100%',
@@ -209,6 +209,8 @@ function MyCourse(props) {
     const [showUpload, setShowUpload] = React.useState(false);
     const [showNews, setShowNews] = React.useState(true);
     const [showSol, setShowSol] = React.useState(false);
+    const [showSolQuiz, setShowSolQuiz] = React.useState(false);
+    
 
     const [showUploadAssign, setshowUploadAssign] = React.useState(false);
     const [showUploadQuiz, setshowUploadQuiz] = React.useState(false);
@@ -530,7 +532,7 @@ function MyCourse(props) {
             })
             .catch(error => console.error(`Error:${error}`));
     }
-       // Sol Assignment 
+    // Sol Assignment 
     // Sol 
     // Alert 
     const [AssignDataSol, setAssignDataSol] = useState([]);
@@ -550,6 +552,32 @@ function MyCourse(props) {
                 console.log(AssignDataSol)
                 console.log('assignment data Sol');
                 setShowSol(true);
+
+                setLoading(true)
+
+            })
+            .catch(error => console.error(`Error:${error}`));
+    }
+      // Sol Quiz 
+    // Sol 
+    // Alert 
+    const [QuizDataSol, setQuizDataSol] = useState([]);
+
+    const solQuizData = (id) => {
+        console.log(id)
+        axios.get(`${url}quiz-solution/get-quiz-sols`, {
+            params: {
+                quiz: id
+            }
+        })
+            .then((response) => {
+                const allData = response.data;
+                console.log(allData);
+                // setAssignData(response.data);
+                setQuizDataSol(response.data)
+                console.log(AssignDataSol)
+                console.log('assignment data Sol');
+                setShowSolQuiz(true);
 
                 setLoading(true)
 
@@ -622,7 +650,7 @@ function MyCourse(props) {
                 console.log(err)
             })
     }
-      // Delete Quiz 
+    // Delete Quiz 
     // Delete 
     // Alert 
     const deleteDataQuiz = (id) => {
@@ -737,65 +765,108 @@ function MyCourse(props) {
             }
         );
     }
-// Dialog 
-const [openAssignSol, setOpenAssignSol] = React.useState(false);
-
-const handleClickOpenAssignSol = () => {
-    setOpenAssignSol(true);
-};
-const handleCloseAssignSol = () => {
-   // POst Request 
-   axios.put(`${url}assignment-solution/grade`, {
-    marks: studDataMarks,
-    _id: studDataAssignSolId,
-}, { headers }).then(response => {
-    console.log(response)
-    setstudDataMarks(response.data.marks)
-    setOpenAssignSol(false);
-    // Clear Dta 
+    // Dialog 
+    const [openAssignSol, setOpenAssignSol] = React.useState(false);
+    const [openQuizSol, setOpenQuizSol] = React.useState(false);
 
 
-    let timerInterval
-    Swal.fire({
-        title: 'Saved Successfully',
-        timer: 2000,
-        timerProgressBar: true,
-        didOpen: () => {
-            Swal.showLoading()
-            const b = Swal.getHtmlContainer().querySelector('b')
-            timerInterval = setInterval(() => {
-                b.textContent = Swal.getTimerLeft()
-            }, 100)
-        },
-        willClose: () => {
-            clearInterval(timerInterval)
-        }
-    }).then((result) => {
-        /* Read more about handling dismissals below */
-        if (result.dismiss === Swal.DismissReason.timer) {
-            console.log('I was closed by the timer')
-        }
-    
-})
-  
-})
-    .catch(err => {
-        console.log(err)
-    })
-    setOpenAssignSol(false);
-};
-const [studData, setstudData] = useState([]);
-const [studDataPath, setstudDataPath] = useState([]);
-const [studDataSubDate, setstudDataSubDate] = useState([]);
-const [studDataMarks, setstudDataMarks] = useState([]);
-const [studDataAssignName, setstudDataAssignName] = useState([]);
-const [studDataAssignSolId, setstudDataAssignSolId] = useState([]);
+    const handleClickOpenAssignSol = () => {
+        setOpenAssignSol(true);
+    };
+    const handleCloseAssignSol = () => {
+        // POst Request 
+        axios.put(`${url}assignment-solution/grade`, {
+            marks: studDataMarks,
+            _id: studDataAssignSolId,
+        }, { headers }).then(response => {
+            console.log(response)
+            setstudDataMarks(response.data.marks)
+            setOpenAssignSol(false);
+            // Clear Dta 
+
+
+            let timerInterval
+            Swal.fire({
+                title: 'Saved Successfully',
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading()
+                    const b = Swal.getHtmlContainer().querySelector('b')
+                    timerInterval = setInterval(() => {
+                        b.textContent = Swal.getTimerLeft()
+                    }, 100)
+                },
+                willClose: () => {
+                    clearInterval(timerInterval)
+                }
+            }).then((result) => {
+                /* Read more about handling dismissals below */
+                if (result.dismiss === Swal.DismissReason.timer) {
+                    console.log('I was closed by the timer')
+                }
+
+            })
+
+        })
+            .catch(err => {
+                console.log(err)
+            })
+        setOpenAssignSol(false);
+    };
+    const handleCloseQuizSol = () => {
+        // POst Request 
+        axios.put(`${url}quiz-solution/grade`, {
+            marks: studDataMarksQuiz,
+            _id: studDataQuizSolId,
+        }, { headers }).then(response => {
+            console.log(response)
+            setstudDataMarksQuiz(response.data.marks)
+            setOpenQuizSol(false);
+            // Clear Dta 
+
+
+            let timerInterval
+            Swal.fire({
+                title: 'Saved Successfully',
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading()
+                    const b = Swal.getHtmlContainer().querySelector('b')
+                    timerInterval = setInterval(() => {
+                        b.textContent = Swal.getTimerLeft()
+                    }, 100)
+                },
+                willClose: () => {
+                    clearInterval(timerInterval)
+                }
+            }).then((result) => {
+                /* Read more about handling dismissals below */
+                if (result.dismiss === Swal.DismissReason.timer) {
+                    console.log('I was closed by the timer')
+                }
+
+            })
+
+        })
+            .catch(err => {
+                console.log(err)
+            })
+        setOpenAssignSol(false);
+    };
+    const [studData, setstudData] = useState([]);
+    const [studDataPath, setstudDataPath] = useState([]);
+    const [studDataSubDate, setstudDataSubDate] = useState([]);
+    const [studDataMarks, setstudDataMarks] = useState([]);
+    const [studDataAssignName, setstudDataAssignName] = useState([]);
+    const [studDataAssignSolId, setstudDataAssignSolId] = useState([]);
 
 
 
 
     // >getAssignmentSol(row.path,row.submissionTime,row.marks,row.marks,row.submittedBy)
-    const getAssignmentSol = async (solId,assignment,path,submissionTime,marks,submittedBy) => {
+    const getAssignmentSol = async (solId, assignment, path, submissionTime, marks, submittedBy) => {
         setstudDataPath(path);
         setstudDataSubDate(submissionTime);
         setstudDataMarks(marks)
@@ -809,27 +880,75 @@ const [studDataAssignSolId, setstudDataAssignSolId] = useState([]);
             console.log('response')
             console.log(response.data);
             setstudDataAssignName(response.data.name)
-         
+
         })
             .catch(err => {
                 console.log(err)
             })
-// Get User 
+        // Get User 
 
-        await  axios.get(`${url}user/get`, {
+        await axios.get(`${url}user/get`, {
             params: {
                 _id: submittedBy
             }
         })
             .then((response) => {
-            console.log(response);
-            setstudData(response.data.name)
-            setOpenAssignSol(true);
+                console.log(response);
+                setstudData(response.data.name)
+                setOpenAssignSol(true);
 
 
-          
-                
-        }).catch(error => console.error(`Error:${error}`));
+
+
+            }).catch(error => console.error(`Error:${error}`));
+    }
+    // Quiz 
+    const [studDataQuiz, setstudDataQuiz] = useState([]);
+    const [studDataPathQuiz, setstudDataPathQuiz] = useState([]);
+    const [studDataSubDateQuiz, setstudDataSubDateQuiz] = useState([]);
+    const [studDataMarksQuiz, setstudDataMarksQuiz] = useState([]);
+    const [studDataQuizName, setstudDataQuizName] = useState([]);
+    const [studDataQuizSolId, setstudDataQuizSolId] = useState([]);
+
+
+
+
+    // >getAssignmentSol(row.path,row.submissionTime,row.marks,row.marks,row.submittedBy)
+    const getQuizSol = async (solId, assignment, path, submissionTime, marks, submittedBy) => {
+        setstudDataPathQuiz(path);
+        setstudDataSubDateQuiz(submissionTime);
+        setstudDataMarksQuiz(marks)
+        setstudDataQuizSolId(solId)
+        // Get Assignment 
+        await axios.get(`${url}quiz-question/get`, {
+            params: {
+                _id: assignment
+            }
+        }, { headers }).then(response => {
+            console.log('response')
+            console.log(response.data);
+            setstudDataQuizName(response.data.name)
+
+        })
+            .catch(err => {
+                console.log(err)
+            })
+        // Get User 
+
+        await axios.get(`${url}user/get`, {
+            params: {
+                _id: submittedBy
+            }
+        })
+            .then((response) => {
+                console.log(response);
+                setstudDataQuiz(response.data.name)
+                setOpenQuizSol(true);
+
+
+
+
+            }).catch(error => console.error(`Error:${error}`));
     }
     //  Update Assignment 
     const assignUpdate = async () => {
@@ -904,26 +1023,26 @@ const [studDataAssignSolId, setstudDataAssignSolId] = useState([]);
         getQuiz(idData);
 
     }
-        // Get Quiz 
-        const getQuiz = async (idData) => {
-            await axios.get(`${url}quiz-question/get`, {
-                params: {
-                    _id: idData
-                }
-            }, { headers }).then(response => {
-                console.log('response')
-                console.log(response.data);
-                setViewQuizId(response.data._id)
-                setViewQuizDue(response.data.dueDate)
-                setViewQuizFilePath(response.data.filePath)
-                setViewQuizNumbers(response.data.numbers)
-                setViewQuizName(response.data.name)
+    // Get Quiz 
+    const getQuiz = async (idData) => {
+        await axios.get(`${url}quiz-question/get`, {
+            params: {
+                _id: idData
+            }
+        }, { headers }).then(response => {
+            console.log('response')
+            console.log(response.data);
+            setViewQuizId(response.data._id)
+            setViewQuizDue(response.data.dueDate)
+            setViewQuizFilePath(response.data.filePath)
+            setViewQuizNumbers(response.data.numbers)
+            setViewQuizName(response.data.name)
+        })
+            .catch(err => {
+                console.log(err)
             })
-                .catch(err => {
-                    console.log(err)
-                })
-        }
-          //  Update Quiz 
+    }
+    //  Update Quiz 
     const QuizUpdate = async () => {
         await axios.put(`${url}quiz-question/update`, {
             _id: viewQuizId,
@@ -1099,8 +1218,8 @@ const [studDataAssignSolId, setstudDataAssignSolId] = useState([]);
             })
 
     }
-     // Quiz update file 
-     const onFileChangeQuizUpdate = (e) => {
+    // Quiz update file 
+    const onFileChangeQuizUpdate = (e) => {
         console.log(e)
         const formData = new FormData();
         formData.append(
@@ -1318,37 +1437,37 @@ const [studDataAssignSolId, setstudDataAssignSolId] = useState([]);
                                                         <TabPanel value="1" style={GridBackground}>
                                                             {/* Assignment  api*/}
                                                             {/* {loading && VideoData.map((row) => ( */}
-                                                                <Card sx={{ minWidth: 275 }} className={classes.margincard}>
-                                                                    <CardContent>
-                                                                        <Grid container spacing={2}>
-                                                                            <Grid item xs={12} md={12}>
-                                                                                <Grid container spacing={2}>
-                                                                                    {/* <Grid item xs={1} md={1}>
+                                                            <Card sx={{ minWidth: 275 }} className={classes.margincard}>
+                                                                <CardContent>
+                                                                    <Grid container spacing={2}>
+                                                                        <Grid item xs={12} md={12}>
+                                                                            <Grid container spacing={2}>
+                                                                                {/* <Grid item xs={1} md={1}>
                                                                                 <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" /> 
                                                                             </Grid> */}
-                                                                                    <Grid item xs={12} md={12}>
-                                                                                        <Typography variant='h6'>Playlist</Typography>
-                                                                                    </Grid>
-
-                                                                                    <Grid item xs={10} md={10}>
-                                                                                    {VideoData.map((datavid, idx) => (
-                                                                  <>
-                                                                        <video width="400" controls>
-                                                                            <source src={`${url}${datavid.path}`} type="video/mp4" />
-                                                                                <source src={`${url}${datavid.path}`} type="video/ogg" />
-                                                                                    Your browser does not support HTML video.
-                                                                                </video>
-                                                                                <br/>
-                                                                                </>
-                                                                                 ))}
-                                                                                    </Grid>
-
+                                                                                <Grid item xs={12} md={12}>
+                                                                                    <Typography variant='h6'>Playlist</Typography>
                                                                                 </Grid>
+
+                                                                                <Grid item xs={10} md={10}>
+                                                                                    {VideoData.map((datavid, idx) => (
+                                                                                        <>
+                                                                                            <video width="400" controls>
+                                                                                                <source src={`${url}${datavid.path}`} type="video/mp4" />
+                                                                                                <source src={`${url}${datavid.path}`} type="video/ogg" />
+                                                                                                Your browser does not support HTML video.
+                                                                                            </video>
+                                                                                            <br />
+                                                                                        </>
+                                                                                    ))}
+                                                                                </Grid>
+
                                                                             </Grid>
                                                                         </Grid>
+                                                                    </Grid>
 
-                                                                    </CardContent>
-                                                                </Card>
+                                                                </CardContent>
+                                                            </Card>
                                                             {/* // ))} */}
 
                                                         </TabPanel>
@@ -1454,13 +1573,21 @@ const [studDataAssignSolId, setstudDataAssignSolId] = useState([]);
                                                                                 }}
                                                                             >View</Button>
                                                                         </Grid>
-                                                                        <Grid item xs={4} md={4}>
+                                                                        <Grid item xs={2} md={2}>
                                                                             <Button size="small"
                                                                                 onClick={() => {
                                                                                     console.log(row._id)
                                                                                     deleteDataQuiz(row._id)
                                                                                 }}
                                                                             >Delete</Button>
+                                                                        </Grid>
+                                                                        <Grid item xs={2} md={2}>
+                                                                            <Button size="small"
+                                                                                onClick={() => {
+                                                                                    console.log(row._id)
+                                                                                    solQuizData(row._id)
+                                                                                }}
+                                                                            >Solutions</Button>
                                                                         </Grid>
                                                                         <Grid item xs={6} md={6}>
                                                                             Due Date:{row.dueDate}
@@ -1630,17 +1757,10 @@ const [studDataAssignSolId, setstudDataAssignSolId] = useState([]);
                                                 </Grid>
                                             </Grid>
 
-
-
-
-
-
                                         </CardContent>
 
                                     </Card></Grid>
                             </Grid>
-
-
                         </Grid>
 
                     </>
@@ -1835,47 +1955,12 @@ const [studDataAssignSolId, setstudDataAssignSolId] = useState([]);
 
                                         </Grid>
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
-                                            {/* <input type="text" name="location" className={classes.inputStyle} placeholder="Enter Total Marks"
-                              value={number}
-                              onChange={(e) => setNumber(e.target.value)
-                              }
-                            /> */}
-                                            <TextField className={classes.btn} id="filled-basic" label="Enter Marks" variant="filled"
+                                            <TextField className={classes.btn} id="filled-basic" variant="filled"
                                                 value={number} onChange={
                                                     (e) => setNumber(e.target.value)
                                                 } />
                                         </Grid>
-                                        {/* <Grid item xs={12} md={12}>
-                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                                <DatePicker
-                                                    label="Basic example"
-                                                    value={value1}
-                                                    onChange={(newValue) => {
-                                                        setValue1(newValue);
-                                                    }}
-                                                    renderInput={(params) => <TextField {...params} />}
-                                                />
-                                            </LocalizationProvider>
-                                        </Grid>
-                                        <Grid item xs={12} md={12}>
-                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                                <TimePicker
-                                                    value={value2}
-                                                    onChange={setValue2}
-                                                    renderInput={(params) => <TextField {...params} />}
-                                                />
-                                            </LocalizationProvider>
-                                        </Grid>
-
-                                        <Grid item xs={12} md={12}>
-                                            <label htmlFor="contained-button-file">
-                                                <Input accept="file/*" id="icon-button-file" type="file" />
-                                                <IconButton color="primary" aria-label="upload picture" component="span">
-                                                    <AttachFileIcon /><Typography>Attach File</Typography>
-                                                </IconButton>
-
-                                            </label>
-                                        </Grid> */}
+                                     
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
                                             <Button variant="contained" className={classes.btn} color='primary' onClick={assignUpload} component="span" >
                                                 Upload
@@ -1888,68 +1973,132 @@ const [studDataAssignSolId, setstudDataAssignSolId] = useState([]);
                                     </Grid>
                                 </CardContent>
                             </Card>
-                            {/* </Grid> */}
-                            {/* </Grid> */}
 
                         </>
 
                         :
                         null}
-                        {/* Comemnt  */}
-                          {showSol ?
+                    {/* Comemnt  */}
+                    {showSol ?
                         <>
-                              <Card sx={{ minWidth: 275 }} className={classes.cardCenter1}>
+                            <Card sx={{ minWidth: 275 }} className={classes.cardCenter1}>
                                 <CardContent>
                                     {/* {loading && viewAssign.map((row) => ( */}
                                     <Grid container >
-                                    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                                    {loading && AssignDataSol.map((row) => (
-                                        <>
+                                        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                                            {loading && AssignDataSol.map((row) => (
+                                                <>
 
-<ListItem disablePadding>
-            <ListItemButton onClick={()=>getAssignmentSol(row._id,row.assignment,row.path,row.submissionTime,row.marks,row.submittedBy)}>
-              <ListItemText primary={row.path} />
-            </ListItemButton>
-          </ListItem>
-      <Divider variant="inset" component="li" />
-      </>
-      ))}
+                                                    <ListItem disablePadding>
+                                                        <ListItemButton onClick={() => getAssignmentSol(row._id, row.assignment, row.path, row.submissionTime, row.marks, row.submittedBy)}>
+                                                            <ListItemText primary={row.path} />
+                                                        </ListItemButton>
+                                                    </ListItem>
+                                                    <Divider variant="inset" component="li" />
+                                                </>
+                                            ))}
 
-      
-    </List>
-    {/* Dialog  */}
-    <BootstrapDialog
-        onClose={()=> setOpenAssignSol(false)}
-        aria-labelledby="customized-dialog-title"
-        open={openAssignSol}
-      >
-        <BootstrapDialogTitle id="customized-dialog-title" onClose={handleCloseAssignSol}>
-        Title:{studDataAssignName}
-        </BootstrapDialogTitle>
-        <DialogContent dividers>
-        <Button className={classes.btnAssign} component="span"
-        // studDataPath
-                                                onClick={viewPdf} >
-                                                {/* <img src=<pdfImg/> */}
-                                                <img className={classes.ImgStyle} src={pdfImg} />
-                                            </Button>
-         
-          <Typography gutterBottom>
-            Submitted By: {studData}
-          </Typography>
-          <Typography gutterBottom>
-            Submission Date/Time: {studDataSubDate}
-          </Typography>
-          <TextField id="outlined-basic" label="Marks" value={studDataMarks} onChange={
-                            (e) => setstudDataMarks(e.target.value)
-                        } variant="outlined" />
-        </DialogContent>
-        <DialogActions>
-          <Button autoFocus onClick={handleCloseAssignSol}>
-            Save changes
-          </Button>
-        </DialogActions>
-      </BootstrapDialog>
+
+                                        </List>
+                                        {/* Dialog  */}
+                                        <BootstrapDialog
+                                            onClose={() => setOpenAssignSol(false)}
+                                            aria-labelledby="customized-dialog-title"
+                                            open={openAssignSol}
+                                        >
+                                            <BootstrapDialogTitle id="customized-dialog-title" onClose={handleCloseAssignSol}>
+                                                Title:{studDataAssignName}
+                                            </BootstrapDialogTitle>
+                                            <DialogContent dividers>
+                                                <Button className={classes.btnAssign} component="span"
+                                                    // studDataPath
+                                                    onClick={viewPdf} >
+                                                    {/* <img src=<pdfImg/> */}
+                                                    <img className={classes.ImgStyle} src={pdfImg} />
+                                                </Button>
+
+                                                <Typography gutterBottom>
+                                                    Submitted By: {studData}
+                                                </Typography>
+                                                <Typography gutterBottom>
+                                                    Submission Date/Time: {studDataSubDate}
+                                                </Typography>
+                                                <TextField id="outlined-basic" label="Marks" value={studDataMarks} onChange={
+                                                    (e) => setstudDataMarks(e.target.value)
+                                                } variant="outlined" />
+                                            </DialogContent>
+                                            <DialogActions>
+                                                <Button autoFocus onClick={handleCloseAssignSol}>
+                                                    Save changes
+                                                </Button>
+                                            </DialogActions>
+                                        </BootstrapDialog>
+
+
+
+                                    </Grid>
+
+                                </CardContent>
+                            </Card>
+
+                        </>
+
+                        :
+                        null}
+                         {showSolQuiz ?
+                        <>
+                            <Card sx={{ minWidth: 275 }} className={classes.cardCenter1}>
+                                <CardContent>
+                                    {/* {loading && viewAssign.map((row) => ( */}
+                                    <Grid container >
+                                        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                                            {loading && QuizDataSol.map((row) => (
+                                                <>
+
+                                                    <ListItem disablePadding>
+                                                        <ListItemButton onClick={() => getQuizSol(row._id, row.assignment, row.path, row.submissionTime, row.marks, row.submittedBy)}>
+                                                            <ListItemText primary={row.path} />
+                                                        </ListItemButton>
+                                                    </ListItem>
+                                                    <Divider variant="inset" component="li" />
+                                                </>
+                                            ))}
+
+
+                                        </List>
+                                        {/* Dialog  */}
+                                        <BootstrapDialog
+                                            onClose={() => setOpenQuizSol(false)}
+                                            aria-labelledby="customized-dialog-title"
+                                            open={openQuizSol}
+                                        >
+                                            <BootstrapDialogTitle id="customized-dialog-title" onClose={handleCloseQuizSol}>
+                                                Title:{studDataQuizName}
+                                            </BootstrapDialogTitle>
+                                            <DialogContent dividers>
+                                                <Button className={classes.btnAssign} component="span"
+                                                    // studDataPath
+                                                    onClick={viewPdf} >
+                                                    {/* <img src=<pdfImg/> */}
+                                                    <img className={classes.ImgStyle} src={pdfImg} />
+                                                </Button>
+
+                                                <Typography gutterBottom>
+                                                    Submitted By: {studDataQuiz}
+                                                </Typography>
+                                                <Typography gutterBottom>
+                                                    Submission Date/Time: {studDataSubDateQuiz}
+                                                </Typography>
+                                                <TextField id="outlined-basic" label="Marks" value={studDataMarksQuiz} onChange={
+                                                    (e) => setstudDataMarksQuiz(e.target.value)
+                                                } variant="outlined" />
+                                            </DialogContent>
+                                            <DialogActions>
+                                                <Button autoFocus onClick={handleCloseQuizSol}>
+                                                    Save changes
+                                                </Button>
+                                            </DialogActions>
+                                        </BootstrapDialog>
 
 
 
@@ -1977,7 +2126,13 @@ const [studDataAssignSolId, setstudDataAssignSolId] = useState([]);
                                             <Typography variant='h6' > Assignment</Typography>
                                         </Grid>
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
-                                            <TextField className={classes.btn} id="filled-basic" label="Enter Title" variant="filled"
+                                            <div className={classes.TextStyle}>
+                                                Enter Title:
+                                            </div>
+
+                                        </Grid>
+                                        <Grid item xs={12} md={12} className={classes.marginstyle}>
+                                            <TextField className={classes.btn} id="filled-basic" variant="filled"
                                                 value={viewAssignName} onChange={
                                                     (e) => setViewAssignName(e.target.value)
                                                 } />
@@ -1987,8 +2142,6 @@ const [studDataAssignSolId, setstudDataAssignSolId] = useState([]);
                                         </Grid>
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
 
-                                            {/* <iframe src="https://people.engr.tamu.edu/choe/choe/courses/12summer/315/lectures/kwon-android01.pdf" width="100%" height="500px">
-                                        </iframe> */}
                                             <Button variant="contained" className={classes.btn} color='primary' component="span"
                                                 onClick={viewPdf} >
                                                 Open Pdf
@@ -2021,7 +2174,7 @@ const [studDataAssignSolId, setstudDataAssignSolId] = useState([]);
                                         </Grid>
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
 
-                                            <TextField className={classes.btn} id="filled-basic" label="Enter Marks" variant="filled"
+                                            <TextField className={classes.btn} id="filled-basic" variant="filled"
                                                 value={viewAssignNumbers} onChange={
                                                     (e) => setViewAssignNumbers(e.target.value)
                                                 } />
@@ -2047,7 +2200,7 @@ const [studDataAssignSolId, setstudDataAssignSolId] = useState([]);
 
                         : null}
 
-{showViewQuiz ?
+                    {showViewQuiz ?
                         <>
                             {/* <Grid container spacing={2}> */}
 
@@ -2061,13 +2214,19 @@ const [studDataAssignSolId, setstudDataAssignSolId] = useState([]);
                                             <Typography variant='h6' > Quiz</Typography>
                                         </Grid>
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
-                                            <TextField className={classes.btn} id="filled-basic" label="Enter Title" variant="filled"
+                                            <div className={classes.TextStyle}>
+                                                Enter Title:
+                                            </div>
+
+                                        </Grid>
+                                        <Grid item xs={12} md={12} className={classes.marginstyle}>
+                                            <TextField className={classes.btn} id="filled-basic" variant="filled"
                                                 value={viewQuizName} onChange={
                                                     (e) => setViewQuizName(e.target.value)
                                                 } />
                                         </Grid>
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
-                                        Quiz File
+                                            Quiz File
                                         </Grid>
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
 
@@ -2105,7 +2264,7 @@ const [studDataAssignSolId, setstudDataAssignSolId] = useState([]);
                                         </Grid>
                                         <Grid item xs={12} md={12} className={classes.marginstyle}>
 
-                                            <TextField className={classes.btn} id="filled-basic" label="Enter Marks" variant="filled"
+                                            <TextField className={classes.btn} id="filled-basic" variant="filled"
                                                 value={viewQuizNumbers} onChange={
                                                     (e) => setViewQuizNumbers(e.target.value)
                                                 } />

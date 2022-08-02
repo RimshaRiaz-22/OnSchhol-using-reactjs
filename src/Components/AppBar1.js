@@ -182,12 +182,12 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
         }),
     }),
 );
-const AppBar1 = (props) => {
+const AppBar1 = ({data}) => {
     const headers = {
         'Content-Type': 'application/json'
     }
     console.log('appbar session')
-    console.log(props.data);
+    // console.log(.data);
     let navigate = useNavigate();
 
     const classes = useStyles();
@@ -219,7 +219,7 @@ const AppBar1 = (props) => {
      const logout = () => {
         console.log('Logout');
         axios.put(`${url}user/logout`, {
-            _id: props.data
+            _id: data
         }, { headers }).then(response => {
             console.log(response);
             console.log('Logout Successfull');
@@ -271,7 +271,7 @@ setSelectedIndex(index);
                                 </SearchIconWrapper>
                                 <StyledInputBase
                                     placeholder="Search…"
-                                    inputProps={{ 'aria-label': 'search' }}
+                                    input={{ 'aria-label': 'search' }}
                                 />
                             </Search></Grid>
                     </Grid> */}
@@ -525,15 +525,15 @@ setSelectedIndex(index);
             </Drawer>
             <Main open={open} style={MarginTop} className={classes.BackGroundMain}>
                 {/* <ProfileData/> */}
-                {show ? <Dashboard data={props.data}/> : null}
-                {show1 ? <StudyPlanner data={props.data}/> : null}
-                {show2 ? <Videos data={props.data}/> : null}
-                {show3 ? <LearningPaths data={props.data}/> : null}
-                {show4 ? < Bookmarks data={props.data}/> : null}
-                {show5 ? < Notes data={props.data}/> : null}
-                {show6 ? <Performance data={props.data}/> : null}
-                {show7 ? <LegalInfo data={props.data}/> : null}
-                {show9 ? < AllCourses data={props.data}/> : null}
+                {show ? <Dashboard data={data}/> : null}
+                {show1 ? <StudyPlanner data={data}/> : null}
+                {show2 ? <Videos data={data}/> : null}
+                {show3 ? <LearningPaths data={data}/> : null}
+                {show4 ? < Bookmarks data={data}/> : null}
+                {show5 ? < Notes data={data}/> : null}
+                {show6 ? <Performance data={data}/> : null}
+                {show7 ? <LegalInfo data={data}/> : null}
+                {show9 ? < AllCourses data={data}/> : null}
 
 
             </Main>

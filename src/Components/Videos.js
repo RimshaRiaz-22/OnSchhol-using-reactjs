@@ -35,6 +35,7 @@ import Box from '@mui/material/Box';
 
 
 
+
 const useStyles = makeStyles({
   GridStyle: {
     // border: ' 1px solid #e4e6ef',
@@ -66,12 +67,12 @@ const useStyles = makeStyles({
     borderRadius: '5px',
     color: 'white',
     marginLeft: '234px'
-  },marginCard:{
-    marginTop:'110px'
-  },btn:{
-    width:'100%'
-  },videoCard:{
-    paddingTop:'50px'
+  }, marginCard: {
+    marginTop: '110px'
+  }, btn: {
+    width: '100%'
+  }, videoCard: {
+    paddingTop: '50px'
   }
 })
 const TextColor = {
@@ -91,6 +92,43 @@ const Videos = (props) => {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+  const [opendetails, setOpenDetails] = React.useState(false);
+  const [classIdVideo, setclassIdVideo] = useState([]);
+  const [classNameVideo, setclassNameVideo] = useState([]);
+  const [classDescriptionVideo, setclassDescriptionVideo] = useState([]);
+
+
+
+  const handleClickOpenClassDetails = (id) => {
+    // setOpenDetails(true);
+    console.log(id);
+    axios.get(`${url}class/get`, {
+      params: {
+        _id: id
+      }
+    })
+      .then((response) => {
+        const allData = response.data;
+        console.log(allData);
+        setclassIdVideo(allData.classId)
+        setclassNameVideo(allData.name)
+        setclassDescriptionVideo(allData.description)
+        setOpenDetails(true);
+        // setData(allData);
+        // setTitle(allData.name);
+        // setClassId(allData.classId);
+        // setDescription(allData.description);
+        // setclassDescriptionUpdate(allData.description)
+        // setclassTitleUpdate(allData.name)
+        // setEnrolledStud(allData.enrolledStudents.length);
+
+      })
+      .catch(error => console.error(`Error:${error}`));
+  };
+
+  const handleCloseDetails = () => {
+    setOpenDetails(false);
   };
   console.log('setting props');
   console.log(props.data)
@@ -116,18 +154,18 @@ const Videos = (props) => {
         console.log(allData);
         console.log('allData');
         setData(response.data);
-      //   axios.get(`${url}user/get`, {
-      //     params: {
-      //         _id: response.class
-      //     }
-      // })
-      //       .then((response) => {
-      //           const allData = response.data;
-      //           console.log(allData);
-      //           setClassUser(response.data);
-                 
-      //       })
-      //       .catch(error => console.error(`Error:${error}`));
+        //   axios.get(`${url}user/get`, {
+        //     params: {
+        //         _id: response.class
+        //     }
+        // })
+        //       .then((response) => {
+        //           const allData = response.data;
+        //           console.log(allData);
+        //           setClassUser(response.data);
+
+        //       })
+        //       .catch(error => console.error(`Error:${error}`));
         setLoading(true)
 
       })
@@ -142,56 +180,56 @@ const Videos = (props) => {
   //   getAllData();
   // }, []);
   // Get all Enrolled Courses
-  const UserIdData=props.data
-const [dataEnrolled, setDataEnrolled] = useState([]);
-const [dataVideos, setDataVideos] = useState([]);
+  const UserIdData = props.data
+  const [dataEnrolled, setDataEnrolled] = useState([]);
+  const [dataVideos, setDataVideos] = useState([]);
 
-const [loadingEnroll, setLoadingEnroll] = useState(false);
-const [showPlaylist, setshowPlaylist] = useState(false);
+  const [loadingEnroll, setLoadingEnroll] = useState(false);
+  const [showPlaylist, setshowPlaylist] = useState(false);
 
 
 
-const getAllDataEnrolled = () => {
+  const getAllDataEnrolled = () => {
     axios.get(`${url}class/get-enrolled-classes`, {
       params: {
-          _id: UserIdData
+        _id: UserIdData
       }
-  })
-        .then((response) => {
-            const allData = response.data;
-            console.log(allData);
-            setDataEnrolled(response.data);
-            setLoadingEnroll(true)
-             
-        })
-        .catch(error => console.error(`Error:${error}`));
-}
+    })
+      .then((response) => {
+        const allData = response.data;
+        console.log(allData);
+        setDataEnrolled(response.data);
+        setLoadingEnroll(true)
 
-const OpenPlaylist = (CourseId) => {
-  console.log(CourseId);
-  OpenPlaylistDialog(CourseId);
+      })
+      .catch(error => console.error(`Error:${error}`));
+  }
 
-}
-const OpenPlaylistDialog = (CourseId) => {
-  console.log(CourseId);
+  const OpenPlaylist = (CourseId) => {
+    console.log(CourseId);
+    OpenPlaylistDialog(CourseId);
+
+  }
+  const OpenPlaylistDialog = (CourseId) => {
+    console.log(CourseId);
     axios.get(`${url}class-video/get-class-videos`, {
-    params: {
-      _id:CourseId,
-      
-    }
-})
-    .then((response) => {
+      params: {
+        _id: CourseId,
+
+      }
+    })
+      .then((response) => {
         const allData = response.data;
         console.log(allData);
         setDataVideos(allData);
         setshowPlaylist(true);
 
-    })
-    .catch(error => console.error(`Error:${error}`));
-// setLoading(true)
+      })
+      .catch(error => console.error(`Error:${error}`));
+    // setLoading(true)
 
 
-}
+  }
 
   return (
     <>
@@ -204,55 +242,68 @@ const OpenPlaylistDialog = (CourseId) => {
               <Typography variant='h6' style={heading}>All Videos</Typography>
             </Grid>
             <Grid item xs={12} md={12}>
-            <TabContext value={value}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <TabList onChange={handleChange} aria-label="lab API tabs example">
-            <Tab label="Playlists" value="1" />
-            <Tab label="Classes Playlists" value="2" />
-          </TabList>
-        </Box>
-        <TabPanel value="1">
-           {data.map((datavid, idx) => (
+              <TabContext value={value}>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                  <TabList onChange={handleChange} aria-label="lab API tabs example">
+                    <Tab label="Playlists" value="1" />
+                    <Tab label="Classes Playlists" value="2" />
+                  </TabList>
+                </Box>
+                <TabPanel value="1">
+                  {data.map((datavid, idx) => (
 
-            <Grid item xs={12} md={12}>
+                    <Grid item xs={12} md={12}>
 
-              <Card variant="outlined">
-                <>
-                  <CardContent>
-                    <Grid container>
-                      <Grid item xs={12} md={8}>
-                      <>
-                        <video width='100%'  controls>
-                          <source src={`${url}${datavid.path}`} type="video/mp4" />
-                          <source src={`${url}${datavid.path}`} type="video/ogg" />
-                          Your browser does not support HTML video.
-                        </video>
-                        <br />
-                      </>
-                      </Grid>
-                      <Grid item xs={12} md={4}>
-                        <Grid conatiner >
-                          <Grid item xs={12} md={12}>
-                        <Typography variant='h6' style={heading}>Class Code:{ }</Typography>
+                      <Card variant="outlined">
+                        <>
+                          <CardContent>
+                            <Grid container>
+                              <Grid item xs={12} md={12}>
+                                <>
+                                  <video width='100%' controls>
+                                    <source src={`${url}${datavid.path}`} type="video/mp4" />
+                                    <source src={`${url}${datavid.path}`} type="video/ogg" />
+                                    Your browser does not support HTML video.
+                                  </video>
+                                  <br />
+                                </>
+                              </Grid>
+                              <Grid item xs={12} md={12}>
+                                <Button variant="outlined" onClick={() => handleClickOpenClassDetails(datavid.class)}>View Details</Button>
+                                <Dialog
+                                  open={opendetails}
+                                  onClose={handleCloseDetails}
+                                  aria-labelledby="alert-dialog-title"
+                                  aria-describedby="alert-dialog-description"
+                                >
+                                  <DialogTitle id="alert-dialog-title">
+                                    Class Code: {classIdVideo}
+                                  </DialogTitle>
+                                  <DialogContent>
+                                    <DialogContentText id="alert-dialog-description">
+                                      Class Name :{classNameVideo}
+                                    </DialogContentText>
+                                    <DialogContentText id="alert-dialog-description">
+                                      Class Description :{classDescriptionVideo}
+                                    </DialogContentText>
+                                  </DialogContent>
+                                </Dialog>
+                              </Grid>
 
-                        </Grid>
+                            </Grid>
+                            {/* {data.map((datavid, idx) => ( */}
 
-                      </Grid>
-                      </Grid>
+                            {/* ))} */}
+                          </CardContent>
+
+                        </>
+                      </Card>
+
                     </Grid>
-                    {/* {data.map((datavid, idx) => ( */}
-                     
-                    {/* ))} */}
-                  </CardContent>
-
-                </>
-              </Card>
-
-            </Grid>
-                    ))}
-        </TabPanel>
-        <TabPanel value="2">
-        <Card sx={{ minWidth: 275 }}>
+                  ))}
+                </TabPanel>
+                <TabPanel value="2">
+                  <Card sx={{ minWidth: 275 }}>
                     <CardContent>
                       <Grid container spacing={2}>
                         <Grid item xs={12} md={12}>
@@ -264,15 +315,15 @@ const OpenPlaylistDialog = (CourseId) => {
 
                         </Grid>
                         {loadingEnroll && dataEnrolled.map((row) => (
-                        <Grid item xs={12} md={4}>
-                        <Button variant="outlined" className={classes.btn}
-                         onClick={() => OpenPlaylist(row._id)}
-                         >
-                                {row.name}
+                          <Grid item xs={12} md={4}>
+                            <Button variant="outlined" className={classes.btn}
+                              onClick={() => OpenPlaylist(row._id)}
+                            >
+                              {row.name}
                             </Button>
-                        </Grid>
+                          </Grid>
                         ))}
-                       
+
 
                       </Grid>
 
@@ -286,33 +337,39 @@ const OpenPlaylistDialog = (CourseId) => {
                   </Card>
 
                   {showPlaylist ?
-                        <>
+                    <>
+                    
+                    <Card variant="outlined">
+                    
+                          <CardContent>
 
-{dataVideos.map((datavid, idx) => (
+                      {dataVideos.map((datavid, idx) => (
 
-<Grid item xs={12} md={4} className={classes.videoCard}>
-          <>
-            <video   controls>
-              <source src={`${url}${datavid.path}`} type="video/mp4" />
-              <source src={`${url}${datavid.path}`} type="video/ogg" />
-              Your browser does not support HTML video.
-            </video>
-            <br />
-          </>
+                        <Grid item xs={12} md={4} className={classes.videoCard}>
+                          <>
+                            <video width='100%' controls>
+                              <source src={`${url}${datavid.path}`} type="video/mp4" />
+                              <source src={`${url}${datavid.path}`} type="video/ogg" />
+                              Your browser does not support HTML video.
+                            </video>
+                            <br />
+                          </>
 
-</Grid>
-        ))}
-                                    </>
-                                    :null}
-        </TabPanel>
-      </TabContext>
+                        </Grid>
+                      ))}
+                      </CardContent>
+                      </Card>
+                    </>
+                    : null}
+                </TabPanel>
+              </TabContext>
             </Grid>
-        
+
 
             {/* <Grid item xs={12} md={12}>
           <Grid container spacing={2}> */}
             {/* {loading && data.map((row) => ( */}
-           
+
 
             {/* ))} */}
             {/* </Grid>
@@ -321,10 +378,10 @@ const OpenPlaylistDialog = (CourseId) => {
 
           </Grid>
           {/* Dialog */}
-          
+
           {/* Dialog End  */}
         </Grid>
-        <Grid  item xs={12} md={4}>
+        <Grid item xs={12} md={4}>
         </Grid>
       </Grid>
     </>
